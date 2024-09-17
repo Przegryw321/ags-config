@@ -11,7 +11,7 @@ export const reload_css = (): void => {
   App.applyCss(output, true)
 };
 
-Utils.monitorFile(scss_path, reload_css, {
+export const auto_scss_reload = () => Utils.monitorFile(scss_path, reload_css, {
   flags: Gio.FileMonitorFlags.WATCH_MOVES,
   recursive: true,
 });

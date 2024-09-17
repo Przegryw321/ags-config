@@ -1,5 +1,160 @@
-const workspaces = Widget.Label({
-  label: 'test',
-})
+import Cairo from "gi://cairo";
+import Gtk from "gi://Gtk?version=3.0";
+import Pango from "gi://Pango?version=1.0";
+const PangoCairo = imports.gi.PangoCairo;
 
+const Hyprland = await Service.import('hyprland');
+
+const dummyWs             = Widget.Box({ className: 'workspace' });
+const dummyActiveWs       = Widget.Box({ className: 'workspace-active' });
+const dummySecondActiveWs = Widget.Box({ className: 'workspace-active-second' })
+const dummyOccupiedWs     = Widget.Box({ className: 'workspace-occupied' });
+
+const draw_workspaces = (area: any, cr: any, count: number) => {
+  cr.setAntialias(Cairo.Antialias.BEST);
+
+  const { width, height } = area.get_allocation();
+
+  const wsStyleContext = dummyWs.get_style_context();
+  const wsDiameter     = wsStyleContext.get_property('min-width', Gtk.StateFlags.NORMAL);
+  const wsRadius       = wsDiameter / 2;
+  const wsFontFamily   = wsStyleContext.get_property('font-family', Gtk.StateFlags.NORMAL);
+  const wsFontSize     = wsStyleContext.get_property('font-size', Gtk.StateFlags.NORMAL);
+  const wsfg           = wsStyleContext.get_property('color', Gtk.StateFlags.NORMAL);
+
+  const occupiedStyleContext = dummyOccupiedWs.get_style_context();
+  const occupiedfg           = occupiedStyleContext.get_property('color', Gtk.StateFlags.NORMAL);
+  const occupiedbg           = occupiedStyleContext.get_property('background-color', Gtk.StateFlags.NORMAL);
+
+  const activeWsCenterY = height / 2;
+  const activeRadius    = wsRadius / 1.2;
+  // arbitrarily smaller radius for decorative dot
+  const indicatorRadius = activeRadius / 5;
+
+  const widgetWidth = wsDiameter * count;
+  const widgetOffset = (width - widgetWidth) / 2;
+
+  const activeMainStyleContext = dummyActiveWs.get_style_context();
+  const activeMainFG           = activeMainStyleContext.get_property('color', Gtk.StateFlags.NORMAL);
+  const activeMainBG           = activeMainStyleContext.get_property('background-color', Gtk.StateFlags.NORMAL);
+  const activeMainWs           = area.attribute.activeWorkspaces[0];
+  const activeMainWsCenterX    = wsDiameter * activeMainWs - wsRadius + widgetOffset;
+
+  const activeSecondStyleContext = dummySecondActiveWs.get_style_context();
+  const activeSecondFG           = activeSecondStyleContext.get_property('color', Gtk.StateFlags.NORMAL);
+  const activeSecondBG           = activeSecondStyleContext.get_property('background-color', Gtk.StateFlags.NORMAL);
+  const activeSecondWs           = area.attribute.activeWorkspaces[1];
+  const activeSecondWsCenterX    = wsDiameter * activeSecondWs - wsRadius + widgetOffset;
+
+  area.set_size_request(wsDiameter * count, wsDiameter);
+
+  // Font
+  const layout   = PangoCairo.create_layout(cr);
+  const fontDesc = Pango.font_description_from_string(`${wsFontFamily[0]} ${wsFontSize}`);
+  layout.set_font_description(fontDesc);
+
+  const wsMask = area.attribute.workspaceMask;
+  const wsCenterY = height / 2;
+  for (let i = 1; i <= count; ++i) {
+    // Draw occupied workspace background
+    if (wsMask & (1 << i)) {
+      cr.setSourceRGBA(occupiedbg.red, occupiedbg.green, occupiedbg.blue, occupiedbg.alpha);
+
+      // The extra +1 to the rectangle width is to fix the 1 pixel gap that is
+      // created otherwise. The most likely culprit is rounding error.
+
+      const wsCenterX = (wsDiameter * i) - wsRadius + widgetOffset;
+      if (!(wsMask & (1 << (i - 1)))) { // Draw (
+        cr.arc(wsCenterX + 1, wsCenterY, wsRadius, 0.5 * Math.PI, -0.5 * Math.PI);
+        cr.fill();
+      } else { // Draw =
+        cr.rectangle(wsCenterX - wsRadius, wsCenterY - wsRadius, wsRadius + 1, wsDiameter);
+        cr.fill();
+      }
+      if (!(wsMask & (1 << (i + 1)))) { // Draw )
+        cr.arc(wsCenterX, wsCenterY, wsRadius, -0.5 * Math.PI, 0.5 * Math.PI);
+        cr.fill();
+      } else { // Draw =
+        cr.rectangle(wsCenterX, wsCenterY - wsRadius, wsRadius + 1, wsDiameter);
+        cr.fill();
+      }
+
+      cr.setSourceRGBA(occupiedfg.red, occupiedfg.green, occupiedfg.blue, occupiedfg.alpha);
+    } else {
+      cr.setSourceRGBA(wsfg.red, wsfg.green, wsfg.blue, wsfg.alpha);
+    }
+
+    // Draw workspace number
+    layout.set_text(`${i}`, -1);
+    const [layoutWidth, layoutHeight] = layout.get_pixel_size();
+    const x = (wsDiameter * i) - (layoutWidth / 2) - wsRadius + widgetOffset;
+    const y = (height - layoutHeight) / 2;
+    cr.moveTo(x, y);
+    PangoCairo.show_layout(cr, layout);
+    cr.stroke();
+  }
+
+  // Draw main active workspace
+  cr.setSourceRGBA(activeMainBG.red, activeMainBG.green, activeMainBG.blue, activeMainBG.alpha);
+  cr.arc(activeMainWsCenterX, activeWsCenterY, activeRadius, 0, 2 * Math.PI);
+  cr.fill();
+
+  cr.setSourceRGBA(activeMainFG.red, activeMainFG.green, activeMainFG.blue, activeMainFG.alpha);
+  cr.arc(activeMainWsCenterX, activeWsCenterY, indicatorRadius, 0, 2 * Math.PI);
+  cr.fill();
+
+  // Draw second active workspace
+  cr.setSourceRGBA(activeSecondBG.red, activeSecondBG.green, activeSecondBG.blue, activeSecondBG.alpha);
+  cr.arc(activeSecondWsCenterX, activeWsCenterY, activeRadius, 0, 2 * Math.PI);
+  cr.fill()
+
+  cr.setSourceRGBA(activeSecondFG.red, activeSecondFG.green, activeSecondFG.blue, activeSecondFG.alpha);
+  cr.arc(activeSecondWsCenterX, activeWsCenterY, indicatorRadius, 0, 2 * Math.PI);
+  cr.fill();
+};
+
+const dispatch = (id: number) => Hyprland.messageAsync(`dispatch workspace ${id}`);
+
+const WorkspaceButton = (i: number) => Widget.Button({
+  className: 'workspace',
+  tooltipMarkup: `Przełącz na ${i} pulpit`,
+  onClicked: () => dispatch(i),
+});
+
+const Workspaces = (count: number = 10) => Widget.Box({
+  className: 'workspaces',
+  children: Array.from({ length: count }, (_, i) => i + 1).map(WorkspaceButton),
+
+  attribute: {
+    workspaceMask: 0,
+    activeWorkspaces: [0, 0],
+    updateMask(self: any) {
+      const workspaces = Hyprland.workspaces;
+      let workspaceMask = 0;
+      for (let i = 0; i < workspaces.length; ++i) {
+        const ws = workspaces[i];
+        if (ws.id <= 0 || ws.id > count) continue;
+        if (ws.windows > 0)
+          workspaceMask |= 1 << ws.id;
+      }
+      self.attribute.workspaceMask = workspaceMask;
+      self.queue_draw();
+    }
+  },
+
+  setup: self => self
+    .hook(Hyprland.active.workspace, self => {
+      const mainMonitor   = Hyprland.monitors[0]?.activeWorkspace.id;
+      const secondMonitor = Hyprland.monitors[1]?.activeWorkspace.id;
+
+      if (mainMonitor)   self.attribute.activeWorkspaces[0] = mainMonitor;
+      if (secondMonitor) self.attribute.activeWorkspaces[1] = secondMonitor;
+
+      if (mainMonitor || secondMonitor) self.queue_draw();
+    })
+    .hook(Hyprland, self => self.attribute.updateMask(self), 'notify::workspaces')
+    .on('draw', (area, cr) => draw_workspaces(area, cr, count))
+});
+
+const workspaces = Workspaces();
 export default workspaces;

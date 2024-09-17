@@ -1,7 +1,7 @@
 import { Bar } from './windows/bar';
 
 import Config from './services/config';
-import { reload_css } from './scss_auto_reload';
+import { reload_css, auto_scss_reload } from './scss';
 
 const _dummy = Widget.Label({
   setup: self => {
@@ -13,6 +13,7 @@ const _dummy = Widget.Label({
   }
 });
 
+auto_scss_reload();
 
 const windows = [
   Bar(),

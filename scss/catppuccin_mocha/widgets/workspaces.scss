@@ -1,0 +1,27 @@
+.workspaces {
+  padding: .5rem 0rem;
+}
+
+.workspace {
+  font-family: Baloo;
+  font-size: 1rem;
+  color: $subtext0;
+
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+}
+
+.workspace-occupied {
+  color: $text;
+  background: $base;
+}
+
+.workspace-active {
+  background: $accent;
+  color: $crust;
+}
+
+.workspace-active-second {
+  background: $green;
+  color: $crust;
+}

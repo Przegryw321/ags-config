@@ -2,19 +2,28 @@ import Config from '../services/config';
 
 import workspaces from '../widgets/workspaces';
 
-const left = Widget.Box({})
+const left = Widget.Box({
+  children: [
+    Widget.Label('LEFT'),
+  ],
+})
 const center = Widget.Box({
   children: [
     workspaces,
   ],
 })
-const right = Widget.Box({})
+const right = Widget.Box({
+  children: [
+    Widget.Label('RIGHT'),
+  ],
+})
 
 export const Bar = async (monitor: number = 0) => Widget.Window({
   monitor,
   name: 'bar',
   anchor: ['top', 'left', 'right'],
   exclusivity: 'exclusive',
+
   child: Widget.CenterBox({
     startWidget: left,
     centerWidget: center,

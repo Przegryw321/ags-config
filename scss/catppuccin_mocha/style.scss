@@ -1,8 +1,19 @@
+@import "colors.scss";
+
+$accent: $blue;
+
 * {
   all: unset;
 }
 
 window {
   background: black;
-  color: white;
+  color: $text;
+  font-family: Baloo;
 }
+
+#bar {
+  background: $crust;
+}
+
+@import "widgets/workspaces.scss";
