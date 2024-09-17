@@ -17,11 +17,13 @@
 }
 
 .workspace-active {
-  background: $accent;
+  background-color: $blue;
+  border-color: $mauve;
   color: $crust;
 }
 
 .workspace-active-second {
-  background: $green;
+  background-color: $green;
+  border-color: $peach;
   color: $crust;
 }
