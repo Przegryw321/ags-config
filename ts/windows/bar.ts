@@ -6,6 +6,7 @@ import { ArchIcon } from '../widgets/archicon';
 import { WindowButton } from '../widgets/window_button';
 import { ActiveWindow } from '../widgets/active_window';
 import { ActivePlayerWrapper, PlayerSummary } from '../widgets/player';
+import { Systray } from '../widgets/systray';
 
 const left = Widget.Box({
   children: [
@@ -35,6 +36,7 @@ const right = Widget.Box({
   css: 'padding-right: .5rem;',
   children: [
     right_start,
+    Systray({ className: 'systray' }),
     BarTime(),
   ],
 })
