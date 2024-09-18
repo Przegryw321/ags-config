@@ -35,7 +35,7 @@ export const BarTime = ({ ... rest } = {}) => Widget.Box({
 
 export const PopupDate = ({ ...rest } = {}, btClass = '') => Widget.Revealer({
   ...rest,
-  revealChild: true,
+  revealChild: false,
   transition: 'slide_left',
   transitionDuration: 500,
 
