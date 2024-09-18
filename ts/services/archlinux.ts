@@ -5,11 +5,11 @@ class Archlinux extends Service {
     Service.register(
       this,
       {
-        'updates-changed': ['int'],
+        'updates-changed': ['jsobject'],
         'shutdown-changed': ['int'],
       },
       {
-        'updates': ['int', 'r'],
+        'updates': ['jsobject', 'r'],
         'shutdown-schedule': ['int', 'r'],
       },
     );
