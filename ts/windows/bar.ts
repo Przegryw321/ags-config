@@ -1,6 +1,7 @@
 import Config from '../services/config';
 
 import workspaces from '../widgets/workspaces';
+import bartime from '../widgets/bartime';
 
 const left = Widget.Box({
   children: [
@@ -13,8 +14,11 @@ const center = Widget.Box({
   ],
 })
 const right = Widget.Box({
+  hpack: 'end',
+  vpack: 'center',
+  css: 'padding-right: .5rem;',
   children: [
-    Widget.Label('RIGHT'),
+    bartime,
   ],
 })
 
