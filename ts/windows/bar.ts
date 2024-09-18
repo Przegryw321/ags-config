@@ -5,6 +5,7 @@ import { BarTime } from '../widgets/bartime';
 import { ArchIcon } from '../widgets/archicon';
 import { WindowButton } from '../widgets/window_button';
 import { ActiveWindow } from '../widgets/active_window';
+import { ActivePlayerWrapper, PlayerSummary } from '../widgets/player';
 
 const left = Widget.Box({
   children: [
@@ -21,11 +22,19 @@ const center = Widget.Box({
     Workspaces(),
   ],
 })
+const right_start = Widget.Box({
+  hexpand: true,
+  hpack: 'start',
+  children: [
+    ActivePlayerWrapper(PlayerSummary)
+  ],
+});
 const right = Widget.Box({
-  hpack: 'end',
   vpack: 'center',
+  hexpand: true,
   css: 'padding-right: .5rem;',
   children: [
+    right_start,
     BarTime(),
   ],
 })

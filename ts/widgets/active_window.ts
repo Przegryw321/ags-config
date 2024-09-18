@@ -13,6 +13,7 @@ export const ActiveWindowClass = () => Widget.Label({
 });
 
 export const ActiveWindow = () => Widget.Box({
+  className: 'activewindow',
   vertical: true,
   vpack: 'center',
 

@@ -1,0 +1,24 @@
+.player-trackinfo-title {
+  font-size: 1.1rem;
+  padding: 0px;
+  margin: 0px;
+}
+
+.player-trackinfo-artists {
+  font-size: 1.1rem;
+  color: $subtext1;
+  padding: 0px;
+  margin: 0px;
+}
+
+.player-trackalbum {
+  $size: 2.4rem;
+  min-width: $size;
+  min-height: $size;
+  border-radius: 5px;
+  margin-right: .5rem;
+
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}

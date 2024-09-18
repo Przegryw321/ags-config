@@ -10,7 +10,7 @@ $accent: $blue;
 // Cabin, Cantarell, Gabarito, Inter, Lexend, Rubik
 window {
   color: $text;
-  font-family: Gabarito, IPAGothic;
+  font-family: Gabarito, VL Gothic;
 }
 
 tooltip {
@@ -49,3 +49,4 @@ menuitem {
 @import "widgets/applist.scss";
 @import "widgets/updates.scss";
 @import "widgets/active_window.scss";
+@import "widgets/player.scss";
