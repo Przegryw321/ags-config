@@ -2,3 +2,12 @@
   background: $crust;
 }
 
+.bar-archicon {
+  font-size: 2.3rem;
+
+  padding: 0rem .3rem;
+
+  &:hover {
+    background: $base;
+  }
+}

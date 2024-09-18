@@ -1,0 +1,27 @@
+@mixin startmenu-border {
+  border: 1px solid $surface2;
+  border-radius: 20px;
+}
+
+.startmenu-leftbar {
+  background: $base;
+  padding: 1rem;
+
+  @include startmenu-border;
+  border-right: none;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+
+.startmenu-applist {
+  background: $crust;
+
+  padding: .5rem;
+  padding-bottom: 10rem;
+
+  @include startmenu-border;
+  border-left: none;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}

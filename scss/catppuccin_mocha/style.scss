@@ -1,4 +1,5 @@
 @import "colors.scss";
+@import "mixins.scss";
 
 $accent: $blue;
 
@@ -7,7 +8,6 @@ $accent: $blue;
 }
 
 window {
-  background: black;
   color: $text;
   font-family: Baloo;
 }
@@ -19,8 +19,30 @@ tooltip {
   border-radius: 5px;
 }
 
+menu {
+  background: $base;
+  color: $text;
+
+  border: 1px solid $surface2;
+  border-radius: 8px;
+
+  padding: .5rem;
+}
+
+menuitem {
+  padding: .4rem;
+
+  &:hover {
+    background: $surface0;
+    border-radius: 6px;
+  }
+}
+
 @import "windows/bar.scss";
 @import "windows/bar_secondary.scss";
+@import "windows/startmenu.scss";
 
 @import "widgets/workspaces.scss";
 @import "widgets/bartime.scss";
+@import "widgets/powermenu.scss";
+@import "widgets/applist.scss";

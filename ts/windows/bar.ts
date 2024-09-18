@@ -2,10 +2,16 @@ import Config from '../services/config';
 
 import { Workspaces } from '../widgets/workspaces';
 import { BarTime } from '../widgets/bartime';
+import { ArchIcon } from '../widgets/archicon';
+import { WindowButton } from '../widgets/window_button';
 
 const left = Widget.Box({
-  css: 'padding-left: .5rem;',
   children: [
+    WindowButton(
+      ArchIcon({ className: 'bar-archicon' }),
+      'startmenu',
+      'Pokaż menu startowe',
+    ),
   ],
 })
 const center = Widget.Box({
