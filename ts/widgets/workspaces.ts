@@ -146,7 +146,7 @@ const WorkspaceButton = (i: number) => Widget.Button({
   onClicked: () => dispatch(i),
 });
 
-const Workspaces = (count: number = 10) => Widget.Box({
+export const Workspaces = (count: number = 10) => Widget.Box({
   className: 'workspaces',
   children: Array.from({ length: count }, (_, i) => i + 1).map(WorkspaceButton),
 
@@ -180,6 +180,3 @@ const Workspaces = (count: number = 10) => Widget.Box({
     .hook(Hyprland, self => self.attribute.updateMask(self), 'notify::workspaces')
     .on('draw', (area, cr) => draw_workspaces(area, cr, count))
 });
-
-const workspaces = Workspaces();
-export default workspaces;

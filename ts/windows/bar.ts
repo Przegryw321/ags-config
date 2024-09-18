@@ -1,16 +1,16 @@
 import Config from '../services/config';
 
-import workspaces from '../widgets/workspaces';
+import { Workspaces } from '../widgets/workspaces';
 import bartime from '../widgets/bartime';
 
 const left = Widget.Box({
+  css: 'padding-left: .5rem;',
   children: [
-    Widget.Label('LEFT'),
   ],
 })
 const center = Widget.Box({
   children: [
-    workspaces,
+    Workspaces(),
   ],
 })
 const right = Widget.Box({

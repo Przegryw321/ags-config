@@ -15,6 +15,9 @@ window {
 #bar {
   background: $crust;
 }
+#bar-secondary {
+  background: none;
+}
 
 @import "widgets/workspaces.scss";
 @import "widgets/bartime.scss";
