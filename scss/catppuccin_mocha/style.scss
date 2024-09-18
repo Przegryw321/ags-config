@@ -12,6 +12,13 @@ window {
   font-family: Baloo;
 }
 
+tooltip {
+  background: $crust;
+  color: $text;
+  border: 1px solid $surface2;
+  border-radius: 5px;
+}
+
 @import "windows/bar.scss";
 @import "windows/bar_secondary.scss";
 
