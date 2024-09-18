@@ -42,11 +42,12 @@ const StartmenuApplist = () => Widget.Box({
 
 export const StartMenu = async (monitor: number = 0) => Widget.Window({
   monitor,
-  visible: true,
+  visible: false,
   name: 'startmenu',
   anchor: ['top', 'left'],
   margins: [20],
   exclusivity: 'normal',
+  layer: 'overlay',
 
   child: Widget.Box({
     children: [
