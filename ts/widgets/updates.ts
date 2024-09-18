@@ -1,8 +1,8 @@
-import plural from "../lib/plural";
+import Plural from "../lib/plural";
 import Archlinux from "../services/archlinux";
 
 export const UpdateTooltip = (max_length: number) => Archlinux.bind('updates').as(updates => {
-    let output = `<span font_weight="bold">${updates.length} ${plural.updates(updates.length)} ${plural.available(updates.length)}${updates.length > 0 ? ':' : ''}</span>`;
+    let output = `<span font_weight="bold">${updates.length} ${Plural.updates(updates.length)} ${Plural.available(updates.length)}${updates.length > 0 ? ':' : ''}</span>`;
     const length = updates.length;
 
     if (length == 0) return output;
