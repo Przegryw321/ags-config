@@ -4,6 +4,7 @@ import { Workspaces } from '../widgets/workspaces';
 import { BarTime } from '../widgets/bartime';
 import { ArchIcon } from '../widgets/archicon';
 import { WindowButton } from '../widgets/window_button';
+import { ActiveWindow } from '../widgets/active_window';
 
 const left = Widget.Box({
   children: [
@@ -12,6 +13,7 @@ const left = Widget.Box({
       'startmenu',
       'Pokaż menu startowe',
     ),
+    ActiveWindow(),
   ],
 })
 const center = Widget.Box({
