@@ -1,4 +1,5 @@
 import Glib from 'gi://GLib';
+const Hyprland = await Service.import('hyprland');
 
 export const DateTimeString = (format: string) => Glib.DateTime.new_now_local().format(format);
 
@@ -22,7 +23,8 @@ export const Date = () => DateTimeLabel('%A, %d %B', {
   vpack: 'center',
 });
 
-const BarTime = () => Widget.Box({
+export const BarTime = ({ ... rest } = {}) => Widget.Box({
+  ...rest,
   vpack: 'center',
   vertical: true,
   children: [
@@ -31,5 +33,29 @@ const BarTime = () => Widget.Box({
   ],
 });
 
-const bartime = BarTime();
-export default bartime;
+export const PopupDate = ({ ...rest } = {}, btClass = '') => Widget.Revealer({
+  ...rest,
+  revealChild: true,
+  transition: 'slide_left',
+  transitionDuration: 500,
+
+  child: BarTime({ className: btClass }),
+
+  setup: self => self.hook(Hyprland, (self, event, args) => {
+    switch (event) {
+      case 'fullscreen':
+        self.reveal_child = Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id === Hyprland.active.workspace.id);
+        break;
+      case 'workspace':
+        self.reveal_child = Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id == args);
+        break;
+    }
+
+    // make duration longer when hiding
+    if (self.reveal_child)
+      self.transition_duration = 1000;
+    else
+      self.transition_duration = 500;
+  }, 'event')
+});
+

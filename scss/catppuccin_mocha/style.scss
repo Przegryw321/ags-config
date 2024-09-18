@@ -12,12 +12,8 @@ window {
   font-family: Baloo;
 }
 
-#bar {
-  background: $crust;
-}
-#bar-secondary {
-  background: none;
-}
+@import "windows/bar.scss";
+@import "windows/bar_secondary.scss";
 
 @import "widgets/workspaces.scss";
 @import "widgets/bartime.scss";

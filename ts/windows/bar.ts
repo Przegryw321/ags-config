@@ -1,7 +1,7 @@
 import Config from '../services/config';
 
 import { Workspaces } from '../widgets/workspaces';
-import bartime from '../widgets/bartime';
+import { BarTime } from '../widgets/bartime';
 
 const left = Widget.Box({
   css: 'padding-left: .5rem;',
@@ -18,7 +18,7 @@ const right = Widget.Box({
   vpack: 'center',
   css: 'padding-right: .5rem;',
   children: [
-    bartime,
+    BarTime(),
   ],
 })
 

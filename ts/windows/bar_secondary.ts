@@ -1,4 +1,5 @@
 import { Workspaces } from '../widgets/workspaces';
+import { PopupDate } from '../widgets/bartime';
 
 const left = Widget.Box({
   children: [
@@ -16,8 +17,9 @@ const center = Widget.Box({
   ],
 });
 const right = Widget.Box({
+  hpack: 'end',
   children: [
-
+    PopupDate({}, 'bar-secondary-bartime'),
   ],
 });
 
