@@ -1,5 +1,6 @@
 import { SleepButton, LogoutButton, RebootButton, PoweroffButton } from "../widgets/powermenu";
 import { Applist } from "../widgets/applist";
+import { UpdateCount } from "../widgets/updates";
 
 const PowerOptions = () => Widget.Box({
   vertical: true,
@@ -19,6 +20,7 @@ const Leftbar = () => Widget.Box({
   vertical: true,
 
   children: [
+    UpdateCount(),
     PowerOptions(),
   ]
 });

@@ -7,9 +7,10 @@ $accent: $blue;
   all: unset;
 }
 
+// Cabin, Cantarell, Gabarito, Inter, Lexend, Rubik
 window {
   color: $text;
-  font-family: Baloo;
+  font-family: Gabarito, IPAGothic;
 }
 
 tooltip {
@@ -46,3 +47,4 @@ menuitem {
 @import "widgets/bartime.scss";
 @import "widgets/powermenu.scss";
 @import "widgets/applist.scss";
+@import "widgets/updates.scss";
