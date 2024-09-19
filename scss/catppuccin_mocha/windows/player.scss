@@ -1,0 +1,103 @@
+.playerwin-layout {
+  padding: 1rem;
+
+  // image background;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+
+  // dim background
+  //background-blend-mode: difference;
+  //background-color: hsl(0, 0, 15);
+  background-blend-mode: darken;
+  background-color: #aaa;
+
+  // border
+  border: 1px solid $surface1;
+  border-radius: 20px;
+
+  // dimensions
+  min-width: 50rem;
+  min-height: 20rem;
+}
+
+@mixin playerwin-textshadow {
+  text-shadow: 2px 2px 2px $crust;
+}
+
+.playerwin-trackinfo .player-trackinfo-title {
+  font-size: 3rem;
+  @include playerwin-textshadow;
+}
+
+.playerwin-trackinfo .player-trackinfo-artists {
+  font-size: 2rem;
+  @include playerwin-textshadow;
+}
+
+.playerwin-volume value {
+  font-size: 0rem;
+}
+
+.playerwin-volume trough {
+  min-width: .6rem;
+  min-height: 10rem;
+  background: $base;
+  border-radius: 8px;
+}
+
+.playerwin-volume highlight {
+  background: $green;
+  border-radius: 8px;
+}
+
+.playerwin-volume {
+  padding: .3rem;
+  padding-left: 1rem;
+}
+
+.playerwin-misc-controls {
+  @include nerd-icons;
+  @include playerwin-textshadow;
+
+  margin-bottom: -.5rem;
+
+  & .player-shuffle-on {
+    color: $green;
+  }
+
+  & .player-loop-on {
+    color: $green;
+  }
+
+  & .shuffle .icon {
+    font-size: 2.5rem;
+    margin-left: -.8rem;
+  }
+
+  & .loop .icon {
+    font-size: 3rem;
+    margin-left: -.7rem;
+  }
+
+  & button {
+    min-width: 3rem;
+  }
+
+  & button:hover {
+    background: rgba($crust, 0.6);
+    border-radius: 10px;
+  }
+}
+
+.playerwin-main-controls {
+  @include material-symbols;
+  @include playerwin-textshadow;
+
+  font-size: 3rem;
+
+  & button:hover {
+    background: rgba($crust, 0.6);
+    border-radius: 10px;
+  }
+}

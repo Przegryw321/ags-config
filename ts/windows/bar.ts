@@ -27,7 +27,11 @@ const right_start = Widget.Box({
   hexpand: true,
   hpack: 'start',
   children: [
-    ActivePlayerWrapper(PlayerSummary)
+    WindowButton(
+      ActivePlayerWrapper(PlayerSummary),
+      'player',
+      'Pokaż odtwarzacz',
+    ),
   ],
 });
 const right = Widget.Box({

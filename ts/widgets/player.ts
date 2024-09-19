@@ -41,7 +41,8 @@ export const PlayerctldWrapper = (widgetCreator: (player: MprisPlayer) => Gtk.Wi
 // lines be at a pleasing distance form each other.
 let is_track_jp = false;
 let is_artist_jp = false;
-export const TrackInfo = (player: MprisPlayer) => Widget.Box({
+export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
+  ...props,
   vertical: true,
 
   children: [
@@ -89,6 +90,133 @@ export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
   hpack: 'start',
   vpack: 'center',
   css: player.bind('cover_path').as(path => `background-image: url('${path}')`),
+});
+
+export const PlayerVolume = (player: MprisPlayer, { ...props } = {}) => Widget.Slider({
+  ...props,
+  value: 0,
+  min: 0,
+  max: 1,
+  roundDigits: 8,
+
+  onChange: ({ value }) => player.volume = value,
+
+  setup: self => self.hook(player, self => {
+    self.visible = player.volume !== -1;
+    self.value = player.volume;
+  }),
+});
+
+export const PlayerShuffleButton = (player: MprisPlayer, { ...props } = {}) => Widget.Button({
+  ...props,
+
+  child: Widget.Label({
+    className: 'icon',
+    label: '\uf074',
+  }),
+
+  onClicked: player.shuffle,
+
+  setup: self => self.hook(player, self => {
+    self.visible = player.shuffle_status !== null;
+    self.toggleClassName('player-shuffle-on', player.shuffle_status || false);
+  }),
+});
+
+export const PlayerLoopButton = (player: MprisPlayer, { ...props } = {}) => Widget.Button({
+  ...props,
+
+  child: Widget.Label({
+    className: 'icon',
+    label: '\udb81\udc56',
+
+    setup: self => self.hook(player, self => {
+      const loop = player.loop_status;
+
+      switch (loop) {
+        case 'Track':
+          self.toggleClassName('player-loop-on', true);
+          self.label = '\udb81\udc58'
+          break;
+        case 'Playlist':
+          self.toggleClassName('player-loop-on', true);
+          self.label = '\udb81\udc56'
+          break;
+        default:
+          self.toggleClassName('player-loop-on', false);
+          self.label = '\udb81\udc56'
+          break;
+      }
+    }),
+  }),
+
+  onClicked: player.loop,
+
+  setup: self => self.hook(player, self => {
+    self.visible = player.loop_status !== null;
+  })
+});
+
+export const PlayerMiscControls = (player: MprisPlayer, { ...props} = {}) => Widget.Box({
+  ...props,
+
+  children: [
+    PlayerShuffleButton(player, { className: 'shuffle' }),
+    PlayerLoopButton(player, { className: 'loop' }),
+  ],
+});
+
+export const PlayPauseButton = (player: MprisPlayer, { ...props } = {}) => Widget.Button({
+  ...props,
+
+  child: Widget.Label({
+    className: 'icon',
+    label: player.bind('play_back_status').as(status => {
+      switch (status) {
+        case 'Paused':
+          //return '\ue037';
+          return '\ue1c4'
+        case 'Playing':
+          //return '\ue034';
+          return '\ue1a2';
+        case 'Stopped':
+          //return '\uef71';
+          return '\uef71';
+      }
+    }),
+  }),
+
+  onClicked: player.playPause,
+});
+
+export const PrevButton = (player: MprisPlayer, { ...props } = {}) => Widget.Button({
+  ...props,
+
+  child: Widget.Label({
+    className: 'icon',
+    label: '\ue045',
+  }),
+
+  onClicked: player.previous,
+});
+
+export const NextButton = (player: MprisPlayer, { ...props } = {}) => Widget.Button({
+  ...props,
+
+  child: Widget.Label({
+    className: 'icon',
+    label: '\ue044',
+  }),
+
+  onClicked: player.next,
+});
+
+export const PlayerMainControls = (player: MprisPlayer, { ...props } = {}) => Widget.CenterBox({
+  ...props,
+
+  startWidget: PrevButton(player, { className: 'prev' }),
+  centerWidget: PlayPauseButton(player, { className: 'playpause' }),
+  endWidget: NextButton(player, { className: 'next', }),
 });
 
 export const PlayerSummary = (player: MprisPlayer) => Widget.Box({
