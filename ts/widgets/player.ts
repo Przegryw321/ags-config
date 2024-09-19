@@ -7,7 +7,8 @@ const Mpris = await Service.import('mpris');
 export const PLAYERCTLD = 'org.mpris.MediaPlayer2.playerctld';
 export const FIREFOX = 'org.mpris.MediaPlayer2.firefox';
 
-export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer) => Gtk.Widget) => Widget.Stack({
+export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: object) => Gtk.Widget, props = { className: '' }) => Widget.Stack({
+  className: props.className,
   children: {}, // GC cries for some reason if this is removed
   transition: 'slide_down',
   transitionDuration: 1000,
@@ -21,7 +22,7 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer) => Gtk.
       if (self.get_visible_child_name() !== busname)
         self.set_visible_child_name(busname);
     } else {
-      self.add_named(widgetCreator(player), busname);
+      self.add_named(widgetCreator(player, props), busname);
     }
   }, 'player-changed'),
 });
@@ -219,7 +220,8 @@ export const PlayerMainControls = (player: MprisPlayer, { ...props } = {}) => Wi
   endWidget: NextButton(player, { className: 'next', }),
 });
 
-export const PlayerSummary = (player: MprisPlayer) => Widget.Box({
+export const PlayerSummary = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
+  ...props,
   vpack: 'center',
   children: [
     TrackAlbum(player),

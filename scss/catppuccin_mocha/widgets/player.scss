@@ -22,3 +22,11 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.player-summary {
+  padding-left: .2rem;
+}
+.player-summary:hover {
+  background: $base;
+  border-radius: 5px;
+}

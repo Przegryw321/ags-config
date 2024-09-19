@@ -28,7 +28,7 @@ const right_start = Widget.Box({
   hpack: 'start',
   children: [
     WindowButton(
-      ActivePlayerWrapper(PlayerSummary),
+      ActivePlayerWrapper(PlayerSummary, { className: 'player-summary' }),
       'player',
       'Pokaż odtwarzacz',
     ),
