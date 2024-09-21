@@ -41,7 +41,7 @@ const PlayerWindowLayout = (player: MprisPlayer) => Widget.Box({
 
 export const PlayerWindow = async (monitor: number = 0) => Widget.Window({
   monitor,
-  visible: false,
+  visible: true,
   name: 'player',
   anchor: ['top'],
   margins: [20],

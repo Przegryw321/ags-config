@@ -12,6 +12,7 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
   children: {}, // GC cries for some reason if this is removed
   transition: 'slide_down',
   transitionDuration: 1000,
+  homogeneous: false,
 
   setup: self => self.hook(Mpris, (self, busname) => {
     if (!busname) return;
@@ -20,7 +21,7 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
     if (!player) return;
 
     // Using player.entry instead of name in order to include playerctld shifts
-    const name = player.entry;
+    const name = player.entry || player.name;
 
     if (self.children.hasOwnProperty(name)) {
       if (self.get_visible_child_name() !== name)
