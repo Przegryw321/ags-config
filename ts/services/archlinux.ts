@@ -38,9 +38,9 @@ class Archlinux extends Service {
     // lesson learned the hard way
     Utils.monitorFile(schedule, file => this.#onScheduleChange(file));
 
-    setTimeout(() => this.#checkUpdates(), 10000);
-    setInterval(this.#checkUpdates, 3600000);
-    Utils.monitorFile(pacman_lock, () => this.#checkUpdates());
+    setTimeout(() => this.#checkUpdates().catch(console.error), 10000);
+    setInterval(() => this.#checkUpdates().catch(console.error), 3600000);
+    Utils.monitorFile(pacman_lock, () => this.#checkUpdates().catch(console.error));
   }
 
   async #checkUpdates() {
