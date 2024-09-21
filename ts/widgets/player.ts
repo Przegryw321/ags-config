@@ -14,15 +14,17 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
   transitionDuration: 1000,
 
   setup: self => self.hook(Mpris, (self, busname) => {
-    if (!busname || busname === PLAYERCTLD) return;
-      const player = Mpris.getPlayer(busname);
-      if (!player) return;
+    if (!busname) return;
 
-    if (self.children.hasOwnProperty(busname)) {
-      if (self.get_visible_child_name() !== busname)
-        self.set_visible_child_name(busname);
-    } else {
-      self.add_named(widgetCreator(player, props), busname);
+    const player = Mpris.getPlayer(busname);
+    if (!player) return;
+
+    // Using player.entry instead of name in order to include playerctld shifts
+    if (self.children.hasOwnProperty(player.entry)) {
+      if (self.get_visible_child_name() !== player.entry)
+        self.set_visible_child_name(player.entry);
+    } else if (player.name !== 'playerctld') {
+      self.add_named(widgetCreator(player, props), player.entry);
     }
   }, 'player-changed'),
 });
@@ -37,11 +39,6 @@ export const PlayerWrapper = (busname: string, widgetCreator: (player: MprisPlay
 export const PlayerctldWrapper = (widgetCreator: (player: MprisPlayer) => Gtk.Widget) =>
   PlayerWrapper(PLAYERCTLD, widgetCreator);
 
-// Japanese fonts take up space differently than latin ones.
-// These hacks are to make the the text look properly centered, and have the
-// lines be at a pleasing distance form each other.
-let is_track_jp = false;
-let is_artist_jp = false;
 export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
   ...props,
   vertical: true,
@@ -51,39 +48,44 @@ export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box(
       className: 'player-trackinfo-title',
       hpack: 'start',
       label: '',
-
-      setup: self => self.hook(player, self => {
-        self.label = player.track_title;
-        is_track_jp = Boolean(has_jp_chars(self.label));
-
-        if (is_track_jp) {
-          let output = 'font-family: VL Gothic;';
-          if (!is_artist_jp) output += 'margin-top: .5rem;';
-          self.css = output;
-        } else {
-          self.css = 'margin-bottom: -.4rem';
-        }
-      }),
     }),
     Widget.Label({
       className: 'player-trackinfo-artists',
       hpack: 'start',
       label: '',
-
-      setup: self => self.hook(player, self => {
-        self.label = player.track_artists.join(", ");
-        is_artist_jp = Boolean(has_jp_chars(self.label));
-
-        if (is_artist_jp) {
-          let output = 'font-family: VL Gothic;';
-          if (!is_track_jp) output += 'margin-bottom: .4rem;';
-          self.css = output;
-        } else {
-          self.css = 'margin-top: -.3rem';
-        }
-      }),
     }),
   ],
+
+  setup: self => self.hook(player, self => {
+    const titleLabel   = self.children[0];
+    const artistsLabel = self.children[1];
+
+    const title        = player.track_title;
+    const artists      = player.track_artists.join(", ");
+    const is_title_jp  = Boolean(has_jp_chars(title));
+    const is_artist_jp = Boolean(has_jp_chars(artists));
+
+    titleLabel.label   = title;
+    artistsLabel.label = artists;
+
+    // Japanese fonts take up space differently than latin ones.
+    // These hacks are to make the the text look properly centered, and have the
+    // lines be at a pleasing distance form each other.
+    if (is_title_jp) {
+      let css = 'font-family: VL Gothic; margin-top: .2rem;';
+      if (!is_artist_jp) css += 'margin-top: .5rem;';
+      titleLabel.css = css;
+    } else {
+      titleLabel.css = 'margin-bottom: -.4rem;';
+    }
+    if (is_artist_jp) {
+      let css = 'font-family: VL Gothic;';
+      if (!is_title_jp) css += 'margin-bottom: .4rem;';
+      artistsLabel.css = css;
+    } else {
+      artistsLabel.css = 'margin-top: -.3rem;';
+    }
+  }),
 });
 
 export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
