@@ -20,11 +20,15 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
     if (!player) return;
 
     // Using player.entry instead of name in order to include playerctld shifts
-    if (self.children.hasOwnProperty(player.entry)) {
-      if (self.get_visible_child_name() !== player.entry)
-        self.set_visible_child_name(player.entry);
+    const name = player.entry;
+
+    if (self.children.hasOwnProperty(name)) {
+      if (self.get_visible_child_name() !== name)
+        self.set_visible_child_name(name);
     } else if (player.name !== 'playerctld') {
-      self.add_named(widgetCreator(player, props), player.entry);
+      // omit actually using playerctld, because it will get stuck on it and
+      // the transition animation won't play
+      self.add_named(widgetCreator(player, props), name);
     }
   }, 'player-changed'),
 });
