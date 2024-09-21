@@ -3,6 +3,7 @@ import { BarSecondary } from './windows/bar_secondary';
 import { StartMenu } from './windows/startmenu';
 import { Clickaway } from './windows/clickaway';
 import { PlayerWindow } from './windows/player';
+import { VolumePopup } from './windows/volume_popup';
 
 import Config from './services/config';
 import { reload_css, auto_scss_reload } from './scss';
@@ -30,6 +31,7 @@ const windows = [
   Clickaway(0, clickaway_windows),
   Clickaway(1, clickaway_windows),
   PlayerWindow(),
+  VolumePopup(),
 ];
 
 App.config({
