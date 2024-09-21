@@ -93,6 +93,31 @@ export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
   css: player.bind('cover_path').as(path => `background-image: url('${path}')`),
 });
 
+export const PausedIcon = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
+  ...props,
+
+  children: [
+    Widget.Label({
+      className: 'icon',
+      visible: player.bind('play_back_status').as(status => status === 'Paused'),
+      //label: '\ue1c4',
+      label: '\ue1a2',
+    }),
+  ],
+});
+
+export const PausedOverlayIcon = (player: MprisPlayer, widgetCreator: (player: MprisPlayer) => Gtk.Widget, { ...props } = {}) => Widget.Overlay({
+  ...props,
+  child: widgetCreator(player),
+  overlays: [
+    PausedIcon(player, {
+      className: 'paused-icon',
+      hpack: 'center',
+      vpack: 'center',
+    }),
+  ],
+});
+
 export const PlayerVolume = (player: MprisPlayer, { ...props } = {}) => Widget.Slider({
   ...props,
   value: 0,
@@ -224,7 +249,7 @@ export const PlayerSummary = (player: MprisPlayer, { ...props } = {}) => Widget.
   ...props,
   vpack: 'center',
   children: [
-    TrackAlbum(player),
+    PausedOverlayIcon(player, TrackAlbum),
     TrackInfo(player),
   ],
 });
