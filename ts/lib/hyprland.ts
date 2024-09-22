@@ -1,12 +1,12 @@
 const Hyprland = await Service.import('hyprland');
 
-export const is_focused_fullscreen = (event: string, args: string) => {
+export const is_focused_fullscreen = (event: string, _args: string) => {
   switch (event) {
     case 'fullscreen':
-      return Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id === Hyprland.active.workspace.id);
     case 'workspace':
-      return Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id === Number(args));
+      const mainMonitorActive = Hyprland.monitors[0].activeWorkspace.id;
+      return Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id === mainMonitorActive);
     default:
-      return false;
+      return null;
   }
 };
