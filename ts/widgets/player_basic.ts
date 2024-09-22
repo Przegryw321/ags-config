@@ -6,7 +6,7 @@ export const PausedIcon = (player: MprisPlayer, { ...props } = {}) => Widget.Box
   children: [
     Widget.Label({
       className: 'icon',
-      visible: player.bind('play_back_status').as(status => status === 'Paused'),
+      visible: player.bind('play_back_status').as(status => status === 'Paused' || !player.can_play),
       //label: '\ue1c4',
       label: '\ue1a2',
     }),
