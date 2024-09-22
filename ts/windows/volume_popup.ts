@@ -39,7 +39,7 @@ export const VolumePopup = async () => Widget.Window({
 
   attribute: {
     timeoutId: <Source | null> null,
-    counter: 1, // amount of events to ignore at startup
+    counter: 2, // amount of events to ignore at startup
     lastVolume: 0,
     lastPort: <string | null | undefined> null,
   },
