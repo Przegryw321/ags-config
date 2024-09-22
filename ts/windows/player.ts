@@ -57,6 +57,6 @@ export const PlayerWindow = async (monitor: number = 0) => Widget.Window({
   child: ActivePlayerWrapper(PlayerWindowLayout),
 
   setup: self => self.hook(App, self => {
-    if (Object.keys(self.child.children).length === 0) self.visible = false;
+    if (Object.keys(self.child.get_children()).length === 0) self.visible = false;
   }, 'window-toggled')
 });
