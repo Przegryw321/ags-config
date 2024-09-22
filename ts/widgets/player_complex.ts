@@ -13,11 +13,13 @@ export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box(
       className: 'player-trackinfo-title',
       hpack: 'start',
       label: '',
+      truncate: 'end',
     }),
     Widget.Label({
       className: 'player-trackinfo-artists',
       hpack: 'start',
       label: '',
+      truncate: 'end',
     }),
   ],
 
