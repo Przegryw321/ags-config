@@ -5,10 +5,13 @@ import { BarTime } from '../widgets/bartime';
 import { ArchIcon } from '../widgets/archicon';
 import { WindowButton } from '../widgets/window_button';
 import { ActiveWindow } from '../widgets/active_window';
-import { ActivePlayerWrapper, PlayerSummary } from '../widgets/player';
+import { ActivePlayerWrapper } from '../widgets/player_wrappers';
+import { PlayerSummary } from '../widgets/player_complex';
 import { Systray } from '../widgets/systray';
 
-const left = Widget.Box({
+const Mpris = await Service.import('mpris');
+
+const Left = () => Widget.Box({
   children: [
     WindowButton(
       ArchIcon({ className: 'bar-archicon' }),
@@ -18,28 +21,32 @@ const left = Widget.Box({
     ActiveWindow(),
   ],
 })
-const center = Widget.Box({
+const Center = () => Widget.Box({
   children: [
     Workspaces(),
   ],
 })
-const right_start = Widget.Box({
+const RightLeft = () => Widget.Box({
   hexpand: true,
   hpack: 'start',
   children: [
     WindowButton(
       ActivePlayerWrapper(PlayerSummary, { className: 'player-summary' }),
       'player',
-      'Pokaż odtwarzacz',
+      'Pokaż odtwarzacz', {
+        setup: (self: any) => self.hook(Mpris, (self: any) => {
+          self.visible = Object.keys(self.child.get_children()).length > 0;
+        }, 'player-changed'),
+      },
     ),
   ],
 });
-const right = Widget.Box({
+const Right = () => Widget.Box({
   vpack: 'center',
   hexpand: true,
   css: 'padding-right: .5rem;',
   children: [
-    right_start,
+    RightLeft(),
     Systray({ className: 'systray' }),
     BarTime(),
   ],
@@ -52,9 +59,9 @@ export const Bar = async (monitor: number = 0) => Widget.Window({
   exclusivity: 'exclusive',
 
   child: Widget.CenterBox({
-    startWidget: left,
-    centerWidget: center,
-    endWidget: right,
+    startWidget: Left(),
+    centerWidget: Center(),
+    endWidget: Right(),
   }),
 
   setup: self => {

@@ -1,3 +1,9 @@
+#player {
+  // backup background in case album image is missing
+  background: $base;
+  border-radius: 20px;
+}
+
 .playerwin-layout {
   padding: 1rem;
 
@@ -97,6 +103,16 @@
   font-size: 3rem;
 
   & button:hover {
+    background: rgba($crust, 0.6);
+    border-radius: 10px;
+  }
+}
+
+.playerwin-shift {
+  @include playerwin-textshadow;
+  font-size: 3rem;
+
+  &:hover {
     background: rgba($crust, 0.6);
     border-radius: 10px;
   }

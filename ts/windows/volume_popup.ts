@@ -1,6 +1,8 @@
 import { Source } from "types/@girs/glib-2.0/glib-2.0.cjs";
-import { OutputDeviceIcon, Volume, VolumeSlider } from "../widgets/volume";
-const Audio = await Service.import('audio');
+import { OutputDeviceIcon, VolumeSlider } from "../widgets/volume";
+import { is_focused_fullscreen } from "ts/lib/hyprland";
+const Audio    = await Service.import('audio');
+const Hyprland = await Service.import('hyprland');
 
 const VolumeLabel = () => Widget.Label({
   className: 'volpop-volume-label',
@@ -37,32 +39,36 @@ export const VolumePopup = async () => Widget.Window({
 
   attribute: {
     timeoutId: <Source | null> null,
-    counter: -2,
+    counter: 1, // amount of events to ignore at startup
     lastVolume: 0,
     lastPort: <string | null | undefined> null,
   },
 
-  setup: self => self.hook(Audio.speaker, self => {
-    const lastVolume = self.attribute.lastVolume;
-    const lastPort   = self.attribute.lastPort;
+  setup: self => self
+    .hook(Audio.speaker, self => {
+      const lastVolume = self.attribute.lastVolume;
+      const lastPort   = self.attribute.lastPort;
 
-    // ignore everything except volume and output device changes
-    if (lastVolume === Audio.speaker.volume && lastPort === Audio.speaker.stream?.port) {
-      return;
-    }
+      // ignore everything except volume and output device changes
+      if (lastVolume === Audio.speaker.volume && lastPort === Audio.speaker.stream?.port) {
+        return;
+      }
 
-    self.attribute.lastVolume = Audio.speaker.volume;
-    self.attribute.lastPort   = Audio.speaker.stream?.port;
+      self.attribute.lastVolume = Audio.speaker.volume;
+      self.attribute.lastPort   = Audio.speaker.stream?.port;
 
-    // there are 2 events sent at startup, so we need to ignore them
-    if (self.attribute.counter < 0) {
-      self.attribute.counter += 1;
-      return;
-    }
+      if (self.attribute.counter > 0) {
+        self.attribute.counter -= 1;
+        return;
+      }
 
-    // hide the popup after 3 seconds, but 'bump' it with every new event
-    if (self.attribute.timeoutId) clearTimeout(self.attribute.timeoutId);
-    self.attribute.timeoutId = setTimeout(() => self.visible = false, 3000);
-    self.visible = true;
-  }),
+      // hide the popup after 3 seconds, but 'bump' it with every new event
+      if (self.attribute.timeoutId) clearTimeout(self.attribute.timeoutId);
+      self.attribute.timeoutId = setTimeout(() => self.visible = false, 3000);
+      self.visible = true;
+    })
+    .hook(Hyprland, (self, event, args) => {
+      // We don't need it to respect the bar when fullscreen
+      self.exclusivity = is_focused_fullscreen(event, args) ? 'ignore' : 'normal';
+    }, 'event'),
 });

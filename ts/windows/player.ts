@@ -1,5 +1,7 @@
 import { MprisPlayer } from "types/service/mpris";
-import { TrackInfo, PlayerVolume, ActivePlayerWrapper, PlayerMiscControls, PlayerMainControls } from "../widgets/player";
+import { ActivePlayerWrapper } from "../widgets/player_wrappers";
+import { PlayerVolume, ShiftButton } from "../widgets/player_basic";
+import { TrackInfo, PlayerMiscControls, PlayerMainControls } from "../widgets/player_complex";
 
 const PlayerTopHalf = (player: MprisPlayer) => Widget.Box({
   vexpand: true,
@@ -25,6 +27,10 @@ const PlayerBottomHalf = (player: MprisPlayer) => Widget.CenterBox({
 
   startWidget:  PlayerMiscControls(player, { className: 'playerwin-misc-controls' }),
   centerWidget: PlayerMainControls(player, { className: 'playerwin-main-controls' }),
+  endWidget:    ShiftButton({
+    className: 'playerwin-shift',
+    hpack: 'end',
+  }),
 });
 
 const PlayerWindowLayout = (player: MprisPlayer) => Widget.Box({
@@ -41,7 +47,7 @@ const PlayerWindowLayout = (player: MprisPlayer) => Widget.Box({
 
 export const PlayerWindow = async (monitor: number = 0) => Widget.Window({
   monitor,
-  visible: true,
+  visible: false,
   name: 'player',
   anchor: ['top'],
   margins: [20],
@@ -49,4 +55,8 @@ export const PlayerWindow = async (monitor: number = 0) => Widget.Window({
   exclusivity: 'normal',
 
   child: ActivePlayerWrapper(PlayerWindowLayout),
+
+  setup: self => self.hook(App, self => {
+    if (Object.keys(self.child.children).length === 0) self.visible = false;
+  }, 'window-toggled')
 });

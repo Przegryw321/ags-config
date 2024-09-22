@@ -1,4 +1,5 @@
 import Glib from 'gi://GLib';
+import { is_focused_fullscreen } from '../lib/hyprland';
 const Hyprland = await Service.import('hyprland');
 
 export const DateTimeString = (format: string) => Glib.DateTime.new_now_local().format(format);
@@ -42,14 +43,7 @@ export const PopupDate = ({ ...rest } = {}, btClass = '') => Widget.Revealer({
   child: BarTime({ className: btClass }),
 
   setup: self => self.hook(Hyprland, (self, event, args) => {
-    switch (event) {
-      case 'fullscreen':
-        self.reveal_child = Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id === Hyprland.active.workspace.id);
-        break;
-      case 'workspace':
-        self.reveal_child = Hyprland.clients.some(c => c.fullscreen === 2 && c.workspace.id == args);
-        break;
-    }
+    self.reveal_child = is_focused_fullscreen(event, args);
 
     // make duration longer when hiding
     if (self.reveal_child)
