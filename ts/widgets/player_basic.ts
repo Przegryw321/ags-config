@@ -87,8 +87,7 @@ export const PlayPauseButton = (player: MprisPlayer, { ...props } = {}) => Widge
   child: Widget.Label({
     className: 'icon',
     label: player.bind('play_back_status').as(status => {
-      // trap to see if this check is actually necessary
-      if (!player.can_play) return '\ue5c9';
+      if (!player.can_play) return '\ue1c4';
 
       switch (status) {
         case 'Paused':
