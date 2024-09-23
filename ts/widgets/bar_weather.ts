@@ -10,8 +10,15 @@ export const WeatherName = ({ ...props } = {}) => Widget.Label({
   label: Weather.bind('description')
 });
 
-export const TempIcon = ({ style, ...props }) => Widget.Box({
+export const TempIcon = ({ ...props } = {}) => Widget.Box({
   ...props,
+  className: Weather.bind('temp').as(temp => {
+    if (temp === null) return '';
+    if (temp >= 25) return 'hot';
+    if (temp >= 15) return 'warm';
+    if (temp >  0) return 'cold';
+    return 'freezing';
+  }),
 
   children: [
     Widget.Label({
@@ -20,14 +27,9 @@ export const TempIcon = ({ style, ...props }) => Widget.Box({
     }),
     Widget.Label({
       className: 'label',
+      label: Weather.bind('temp').as(t => `${Math.round(t ?? -273)}°C`),
     }),
   ],
-
-  setup: self => self.hook(Weather, (self, _weather: CurrentWeather | null) => {
-    const temp = Math.round(Weather.temp ?? -273);
-    self.children[1].label = `${temp}°C`;
-    self.class_name = style(temp);
-  })
 });
 
 export const WindSpeedIcon = ({ ...props } = {}) => Widget.Box({
@@ -64,14 +66,7 @@ export const WeatherSummaryNumbers = ({ ...props } = {}) => Widget.Box({
   ...props,
 
   children: [
-    TempIcon({
-      style: (temp: number) => {
-        if (temp > 25) return 'hot';
-        if (temp > 15) return 'warm';
-        if (temp > 0) return 'cold';
-        return 'freezing';
-      }
-    }),
+    TempIcon(),
     WindSpeedIcon({ className: 'wind' }),
     HumidityIcon({ className: 'humidity' }),
   ],
@@ -83,7 +78,6 @@ export const WeatherSummaryInfo = ({ ...props } = {}) => Widget.Box({
   children: [
     WeatherName({
       className: 'name',
-      //hpack: 'start',
     }),
     WeatherSummaryNumbers({
       spacing: 10,
