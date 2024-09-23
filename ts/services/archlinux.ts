@@ -6,11 +6,11 @@ class Archlinux extends Service {
       this,
       {
         'updates-changed': ['jsobject'],
-        'shutdown-changed': ['int'],
+        'shutdown-changed': ['double'], // type needs to be double because overflow
       },
       {
         'updates': ['jsobject', 'r'],
-        'shutdown-schedule': ['int', 'r'],
+        'shutdown-schedule': ['double', 'r'], // same as before
       },
     );
   }

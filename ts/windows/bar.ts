@@ -8,6 +8,7 @@ import { ActiveWindow } from '../widgets/active_window';
 import { ActivePlayerWrapper } from '../widgets/player_wrappers';
 import { PlayerSummary } from '../widgets/player_complex';
 import { Systray } from '../widgets/systray';
+import { ShutdownLeft } from '../widgets/shutdown';
 
 const Mpris = await Service.import('mpris');
 
@@ -47,6 +48,7 @@ const Right = () => Widget.Box({
   css: 'padding-right: .5rem;',
   children: [
     RightLeft(),
+    ShutdownLeft({ className: 'bar-shutdown' }),
     Systray({ className: 'systray' }),
     BarTime(),
   ],
