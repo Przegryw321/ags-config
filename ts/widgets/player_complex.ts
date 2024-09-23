@@ -2,6 +2,7 @@ import { MprisPlayer } from 'resource:///com/github/Aylur/ags/service/mpris.js';
 import Gtk from 'gi://Gtk?version=3.0';
 import { has_jp_chars } from "../lib/utils";
 
+import { FIREFOX } from './player_wrappers';
 import { NextButton, PausedIcon, PlayerLoopButton, PlayerShuffleButton, PlayPauseButton, PrevButton } from './player_basic';
 
 export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
@@ -62,7 +63,15 @@ export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
   className: 'player-trackalbum',
   hpack: 'start',
   vpack: 'center',
-  css: player.bind('cover_path').as(path => `background-image: url('${path}')`),
+  css: player.bind('cover_path').as(path => {
+    let css = `background-image: url('${path}');`;
+    if (player.bus_name.startsWith(FIREFOX)) {
+      css += 'min-width: 4rem;';
+    } else {
+      css += 'min-width: 2.4rem;';
+    }
+    return css;
+  }),
 });
 
 export const PausedOverlayIcon = (player: MprisPlayer, widgetCreator: (player: MprisPlayer) => Gtk.Widget, { ...props } = {}) => Widget.Overlay({
