@@ -67,8 +67,10 @@ export const VolumePopup = async () => Widget.Window({
       self.attribute.timeoutId = setTimeout(() => self.visible = false, 3000);
       self.visible = true;
     })
-    .hook(Hyprland, (self, event, args) => {
+    .hook(Hyprland, (self, event, _args) => {
       // We don't need it to respect the bar when fullscreen
-      self.exclusivity = is_focused_fullscreen(event, args) ? 'ignore' : 'normal';
+      const is_fullscreen = is_focused_fullscreen(event);
+      if (is_fullscreen === null) return;
+      self.exclusivity = is_fullscreen ? 'ignore' : 'normal';
     }, 'event'),
 });

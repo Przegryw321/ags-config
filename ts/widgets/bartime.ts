@@ -42,8 +42,8 @@ export const PopupDate = ({ ...rest } = {}, btClass = '') => Widget.Revealer({
 
   child: BarTime({ className: btClass }),
 
-  setup: self => self.hook(Hyprland, (self, event, args) => {
-    self.reveal_child = is_focused_fullscreen(event, args) ?? self.reveal_child;
+  setup: self => self.hook(Hyprland, (self, event, _args) => {
+    self.reveal_child = is_focused_fullscreen(event) ?? self.reveal_child;
 
     // make duration longer when hiding
     if (self.reveal_child)

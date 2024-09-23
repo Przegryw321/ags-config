@@ -1,6 +1,6 @@
 const Hyprland = await Service.import('hyprland');
 
-export const is_focused_fullscreen = (event: string, _args: string) => {
+export const is_focused_fullscreen = (event: string) => {
   switch (event) {
     case 'fullscreen':
     case 'workspace':
