@@ -9,3 +9,16 @@
   font-family: Baloo;
   color: $subtext1;
 }
+
+.monday { color: $red; }
+.tuesday { color: $peach; }
+.wednesday { color: $yellow; }
+.thursday { color: $green; }
+.friday { color: $blue; }
+.saturday { color: $pink; }
+.sunday { color: $mauve; }
+
+.winter { color: $sapphire; }
+.spring { color: $green; }
+.summer { color: darken($yellow, 20%); }
+.autumn { color: $peach; }
