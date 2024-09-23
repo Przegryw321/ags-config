@@ -4,3 +4,10 @@ export const LabelButton = ({ label, ...props }) => Widget.Button({
     label,
   }),
 });
+
+export const IconButton = ({ icon, ...props }) => Widget.Button({
+  ...props,
+  child: Widget.Icon({
+    icon,
+  }),
+});

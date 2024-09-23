@@ -68,7 +68,7 @@ const Right = () => Widget.Box({
     Separator(),
     MiscButtons({ className: 'bar-misc-buttons' }),
     Separator(),
-    BarTime(),
+    BarTime({ className: 'bartime' }),
   ],
 });
 

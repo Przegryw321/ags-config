@@ -12,6 +12,8 @@ export const is_focused_fullscreen = (event: string) => {
 };
 
 const HYPRLAND_SCRIPTS = `${App.configDir}/../hypr/hyprland/scripts`;
-export const screenshot_region  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_region`);
-export const screenshot_window  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_window`);
-export const screenshot_monitor = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_monitor`);
+export const screenshot_region  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_region`).catch(console.error);
+export const screenshot_window  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_window`).catch(console.error);
+export const screenshot_monitor = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_monitor`).catch(console.error);
+
+export const set_wallpaper = (path: string) => Utils.execAsync(`${HYPRLAND_SCRIPTS}/set_wallpaper ${path}`).catch(console.error);

@@ -1,9 +1,8 @@
 import Gtk from 'gi://Gtk?version=3.0';
 import Config from '../services/config';
+import FileMonitor from '../services/file_monitor';
 
 import { Title, ComboBoxOption, SwitchOption, NumberOption, ButtonOption } from '../widgets/setting_widgets';
-
-import { get_themes } from '../lib/utils';
 
 const ThemeSettings = () => Widget.Box({
   vertical: true,
@@ -12,8 +11,15 @@ const ThemeSettings = () => Widget.Box({
     ComboBoxOption({
       label: 'Zmień motyw',
       option: 'theme',
-      items: get_themes(),
-      setup(self: Gtk.ComboBoxText) {
+      items: FileMonitor.themes ?? [],
+
+      setup(self: any) {
+        self.hook(FileMonitor, (self: Gtk.ComboBoxText, themes: string[] | null) => {
+          if (!themes) return;
+          self.remove_all();
+          themes?.forEach(theme => self.append(theme, theme));
+          self.set_active_id(Config.options['theme']);
+        }, 'themes-changed');
         self.set_active_id(Config.options['theme']);
       }
     }),
@@ -21,7 +27,7 @@ const ThemeSettings = () => Widget.Box({
       label1: 'Zmień tapetę',
       label2: 'Otwórz',
       onClicked: () => {
-        App.openWindow('wallpaper');
+        App.toggleWindow('wallpaper');
         App.closeWindow('settings');
       }
     }),
@@ -59,13 +65,13 @@ const SettingsLayout = () => Widget.Box({
   ],
 });
 
-export const Settings = (monitor: number = 0) => Widget.Window({
+export const Settings = async (monitor: number = 0) => Widget.Window({
   monitor,
   visible: false,
   name: 'settings',
   anchor: ['top', 'right'],
   margins: [20],
-  layer: 'top',
+  layer: 'overlay',
   exclusivity: 'normal',
   keymode: 'on-demand',
 

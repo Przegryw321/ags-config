@@ -27,7 +27,8 @@ const VolumePopupLayout = () => Widget.Box({
   ],
 });
 
-export const VolumePopup = async () => Widget.Window({
+export const VolumePopup = async (monitor: number | undefined = undefined) => Widget.Window({
+  monitor,
   visible: false,
   name: 'volumepopup',
   anchor: ['top'],

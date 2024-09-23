@@ -1,5 +1,5 @@
 import { screenshot_monitor, screenshot_region, screenshot_window } from "../lib/hyprland";
-import { LabelButton } from "./label_button";
+import { LabelButton } from "./button";
 import { Menu, MenuLabel } from "./menu";
 
 export const SettingsButton = ({ ...props } = {}) => LabelButton({

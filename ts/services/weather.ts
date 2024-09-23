@@ -62,13 +62,13 @@ class Weather extends Service {
         'current-weather-changed': ['jsobject'],
       },
       {
-        ['current-weather']: ['jsobject', 'r'],
-        ['description']: ['string', 'r'],
-        ['icon']: ['string', 'r'],
-        ['temp']: ['int', 'r'],
-        ['pressure']: ['int', 'r'],
-        ['humidity']: ['int', 'r'],
-        ['wind-speed']: ['int', 'r'],
+        'current-weather': ['jsobject', 'r'],
+        'description': ['string', 'r'],
+        'icon': ['string', 'r'],
+        'temp': ['int', 'r'],
+        'pressure': ['int', 'r'],
+        'humidity': ['int', 'r'],
+        'wind-speed': ['int', 'r'],
       },
     );
   }

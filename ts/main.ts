@@ -5,9 +5,12 @@ import { Clickaway } from './windows/clickaway';
 import { PlayerWindow } from './windows/player';
 import { VolumePopup } from './windows/volume_popup';
 import { Settings } from './windows/settings';
+import { Wallpaper } from './windows/wallpaper';
 
 import Config from './services/config';
 import { reload_css, auto_scss_reload } from './scss';
+
+Config.add('theme', 'catppuccin_mocha');
 
 const _dummy = Widget.Label({
   setup: self => {
@@ -35,6 +38,7 @@ const windows = [
   PlayerWindow(),
   VolumePopup(),
   Settings(),
+  Wallpaper(),
 ];
 
 App.config({

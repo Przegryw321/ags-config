@@ -1,4 +1,4 @@
-export const Clickaway = (monitor: number = 0, windows: string[]) => Widget.Window({
+export const Clickaway = async (monitor: number = 0, windows: string[]) => Widget.Window({
   monitor,
   visible: false,
   name: `clickaway${monitor}`,

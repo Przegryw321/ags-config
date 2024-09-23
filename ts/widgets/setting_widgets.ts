@@ -1,7 +1,7 @@
 import Gtk from 'gi://Gtk?version=3.0';
 import { ComboBox } from '../widgets/combobox';
 import Config from '../services/config';
-import { LabelButton } from './label_button';
+import { LabelButton } from './button';
 
 export const Title = (text: string) => Widget.Label({
   className: 'settings-title',
@@ -71,7 +71,8 @@ export const ComboBoxOption = ({
     child: ComboBox({
       items,
       onChanged(self: Gtk.ComboBoxText) {
-        Config.set(option, self.get_active_id());
+        const active = self.get_active_id();
+        if (active) Config.set(option, active);
       },
       setup,
     }),

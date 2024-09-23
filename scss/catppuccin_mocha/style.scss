@@ -3,7 +3,7 @@
 
 $accent: $blue;
 
-* {
+window, window button {
   all: unset;
 }
 
@@ -31,6 +31,7 @@ menu {
 }
 
 menuitem {
+  color: $text;
   padding: .4rem;
 
   &:hover {
@@ -45,6 +46,7 @@ menuitem {
 @import "windows/player.scss";
 @import "windows/volume_popup.scss";
 @import "windows/settings.scss";
+@import "windows/wallpaper.scss";
 
 @import "widgets/workspaces.scss";
 @import "widgets/bartime.scss";
