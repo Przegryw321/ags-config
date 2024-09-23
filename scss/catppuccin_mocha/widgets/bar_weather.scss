@@ -1,0 +1,39 @@
+.bar-weather {
+  padding-right: .5rem;
+}
+
+.bar-weather-icon {
+  font-size: 3rem;
+}
+
+.bar-weather .icon {
+  @include material-symbols;
+  font-size: 1rem;
+}
+
+.bar-weather .name {
+  margin-bottom: -.5rem;
+}
+
+.bar-weather {
+  .hot {
+    color: $red;
+  }
+  .warm {
+    color: $yellow;
+  }
+  .cold {
+    color: $blue;
+  }
+  .freezing {
+    color: $sky;
+  }
+}
+
+.bar-weather .wind {
+  color: $green;
+}
+
+.bar-weather .humidity {
+  color: $blue;
+}

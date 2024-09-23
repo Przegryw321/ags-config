@@ -9,8 +9,17 @@ import { ActivePlayerWrapper } from '../widgets/player_wrappers';
 import { PlayerSummary } from '../widgets/player_complex';
 import { Systray } from '../widgets/systray';
 import { ShutdownLeft } from '../widgets/shutdown';
+import { BarWeather } from '../widgets/bar_weather';
 
 const Mpris = await Service.import('mpris');
+
+const LeftRight = () => Widget.Box({
+  hexpand: true,
+  hpack: 'end',
+  children: [
+    BarWeather({ className: 'bar-weather' }),
+  ]
+});
 
 const Left = () => Widget.Box({
   children: [
@@ -20,13 +29,16 @@ const Left = () => Widget.Box({
       'Pokaż menu startowe',
     ),
     ActiveWindow(),
+    LeftRight(),
   ],
-})
+});
+
 const Center = () => Widget.Box({
   children: [
     Workspaces(),
   ],
-})
+});
+
 const RightLeft = () => Widget.Box({
   hexpand: true,
   hpack: 'start',
@@ -42,6 +54,7 @@ const RightLeft = () => Widget.Box({
     ),
   ],
 });
+
 const Right = () => Widget.Box({
   vpack: 'center',
   hexpand: true,
