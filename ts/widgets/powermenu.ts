@@ -11,6 +11,7 @@ const PowerButton = (name: string, tooltip: string, label: string, cmd: (_: any,
 
 const logout_menu = Menu([
   MenuLabel('Wyloguj się', () => {
+    App.closeWindow('startmenu');
     Hyprland.messageAsync('exit');
   }),
   MenuLabel('Anuluj'),
@@ -18,6 +19,7 @@ const logout_menu = Menu([
 
 const reboot_menu = Menu([
   MenuLabel('Uruchom ponownie', () => {
+    App.closeWindow('startmenu');
     Utils.execAsync('systemctl reboot');
   }),
   MenuLabel('Anuluj'),
@@ -25,12 +27,15 @@ const reboot_menu = Menu([
 
 const poweroff_menu = Menu([
   MenuLabel('Zamknij', () => {
+    App.closeWindow('startmenu');
     Utils.execAsync('shutdown now');
   }),
   MenuLabel('Zamknij za 1 minutę', () => {
+    App.closeWindow('startmenu');
     Utils.execAsync('shutdown +1');
   }),
   MenuLabel('Anuluj', () => {
+    App.closeWindow('startmenu');
     Utils.execAsync('shutdown -c');
   }),
 ]);
