@@ -9,6 +9,7 @@ export const AppIcon = (app: string, closeWindow?: string) => Widget.Button({
         icon: app,
       }),
       Widget.Label({
+        className: 'appicon-label',
         label: app,
       })
     ],

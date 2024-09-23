@@ -67,7 +67,6 @@ const WallpaperList = () => Widget.FlowBox({
 
     self.hook(FileMonitor, (self: Gtk.FlowBox, wallpapers: WallpaperInfo[] | null) => {
       if (!wallpapers) return;
-      self.unselect_all();
 
       self.get_children().forEach((child: any) => {
         child.child.child.destroy();
@@ -102,6 +101,7 @@ const WallpaperLayout = () => Widget.Box({
 
 export const Wallpaper = async (monitor: number = 0) => Widget.Window({
   monitor,
+  visible: false,
   name: 'wallpaper',
   anchor: ['right', 'top', 'bottom'],
   margins: [20],

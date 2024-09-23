@@ -41,6 +41,7 @@ switch slider {
 }
 
 entry {
+  color: $text;
   background: $mantle;
 
   @include settings-border;
@@ -48,7 +49,7 @@ entry {
 
 #settings button {
   background: $mantle;
-  padding: .2rem;
+  padding: .3rem;
 
   &:hover {
     background: $surface0;
