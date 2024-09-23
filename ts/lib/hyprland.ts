@@ -10,3 +10,8 @@ export const is_focused_fullscreen = (event: string) => {
       return null;
   }
 };
+
+const HYPRLAND_SCRIPTS = `${App.configDir}/../hypr/hyprland/scripts`;
+export const screenshot_region  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_region`);
+export const screenshot_window  = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_window`);
+export const screenshot_monitor = () => Utils.execAsync(`${HYPRLAND_SCRIPTS}/screenshot_monitor`);

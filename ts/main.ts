@@ -4,6 +4,7 @@ import { StartMenu } from './windows/startmenu';
 import { Clickaway } from './windows/clickaway';
 import { PlayerWindow } from './windows/player';
 import { VolumePopup } from './windows/volume_popup';
+import { Settings } from './windows/settings';
 
 import Config from './services/config';
 import { reload_css, auto_scss_reload } from './scss';
@@ -23,6 +24,7 @@ auto_scss_reload();
 const clickaway_windows = [
   'startmenu',
   'player',
+  //'settings',
 ];
 const windows = [
   Bar(),
@@ -32,6 +34,7 @@ const windows = [
   Clickaway(1, clickaway_windows),
   PlayerWindow(),
   VolumePopup(),
+  Settings(),
 ];
 
 App.config({

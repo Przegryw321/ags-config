@@ -81,6 +81,7 @@ export const WeatherSummaryInfo = ({ ...props } = {}) => Widget.Box({
     }),
     WeatherSummaryNumbers({
       spacing: 10,
+      hpack: 'center',
     }),
   ],
 });

@@ -19,3 +19,20 @@
   color: $red;
   padding-right: 1rem;
 }
+
+.separator {
+  color: $overlay0;
+  font-family: sans;
+  padding: 0rem .5rem;
+  margin-top: -.3rem;
+}
+
+.bar-misc-buttons {
+  @include material-symbols;
+  font-size: 1.5rem;
+
+  button:hover {
+    background: $base;
+    border-radius: 5px;
+  }
+}

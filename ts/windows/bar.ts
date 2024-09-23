@@ -10,6 +10,8 @@ import { PlayerSummary } from '../widgets/player_complex';
 import { Systray } from '../widgets/systray';
 import { ShutdownLeft } from '../widgets/shutdown';
 import { BarWeather } from '../widgets/bar_weather';
+import { MiscButtons } from '../widgets/misc_buttons';
+import { Separator } from '../widgets/misc_widgets';
 
 const Mpris = await Service.import('mpris');
 
@@ -63,9 +65,12 @@ const Right = () => Widget.Box({
     RightLeft(),
     ShutdownLeft({ className: 'bar-shutdown' }),
     Systray({ className: 'systray' }),
+    Separator(),
+    MiscButtons({ className: 'bar-misc-buttons' }),
+    Separator(),
     BarTime(),
   ],
-})
+});
 
 export const Bar = async (monitor: number = 0) => Widget.Window({
   monitor,
@@ -82,13 +87,16 @@ export const Bar = async (monitor: number = 0) => Widget.Window({
   setup: self => {
     Config.add('bar_floating', false);
     Config.add('bar_margin', 20);
+    Config.add('bar_corner_radius', 10);
 
     self.hook(Config, self => {
       if (Config.options['bar_floating']) {
         const m = Config.options['bar_margin'];
-        self.margins = [m, m, 0, m]
+        self.margins = [m, m, 0, m];
+        self.css = `border-radius: ${Config.options['bar_corner_radius']}px;`;
       } else {
-        self.margins = [0]
+        self.margins = [0];
+        self.css = 'border-radius: 0px;';
       }
     });
   }

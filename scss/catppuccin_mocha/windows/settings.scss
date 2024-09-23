@@ -1,0 +1,57 @@
+.settings-layout {
+  padding: 1rem;
+  padding-top: 0rem;
+
+  background: $base;
+  border: 1px solid $surface1;
+  border-radius: 20px;
+
+  min-width: 20rem;
+}
+
+.settings-title {
+  font-size: 2rem;
+  font-weight: bold;
+  padding-top: 1rem;
+}
+
+.settings-label {
+  font-size: 1.1rem;
+}
+
+.option {
+  padding-top: .4rem;
+}
+
+@mixin settings-border {
+  border: 1px solid $surface0;
+  border-radius: 6px;
+}
+
+switch {
+  background: $mantle;
+  
+  @include settings-border;
+  border-radius: 99px;
+}
+
+switch slider {
+  background: linear-gradient(to bottom right, $blue, $sky);
+  border-radius: 99px;
+}
+
+entry {
+  background: $mantle;
+
+  @include settings-border;
+}
+
+#settings button {
+  background: $mantle;
+  padding: .2rem;
+
+  &:hover {
+    background: $surface0;
+  }
+  @include settings-border;
+}

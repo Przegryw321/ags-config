@@ -75,7 +75,7 @@ export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
     return css;
   }),
 
-  setup: self => {
+  setup: () => {
     Config.add('album_enlarge_firefox', false);
   }
 });
