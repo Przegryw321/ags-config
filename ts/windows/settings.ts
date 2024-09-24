@@ -39,6 +39,10 @@ const BarSettings = () => Widget.Box({
   children: [
     Title('Pasek zadań'),
     SwitchOption({
+      label: 'Powiększ obraz firefox',
+      option: 'album_enlarge_firefox',
+    }),
+    SwitchOption({
       label: 'Pływający pasek',
       option: 'bar_floating',
     }),

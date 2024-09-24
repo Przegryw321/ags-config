@@ -61,22 +61,28 @@ export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box(
   }),
 });
 
+const TrackAlbumCssHelper = (player: MprisPlayer) => {
+  let css = `background-image: url('${player.cover_path}');`;
+  if (Config.options['album_enlarge_firefox'] && player.bus_name.startsWith(FIREFOX)) {
+    css += 'min-width: 4rem;';
+  } else {
+    css += 'min-width: 2.4rem;';
+  }
+  return css;
+}
+
 export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
   className: 'player-trackalbum',
   hpack: 'start',
   vpack: 'center',
-  css: player.bind('cover_path').as(path => {
-    let css = `background-image: url('${path}');`;
-    if (Config.options['album_enlarge_firefox'] && player.bus_name.startsWith(FIREFOX)) {
-      css += 'min-width: 4rem;';
-    } else {
-      css += 'min-width: 2.4rem;';
-    }
-    return css;
-  }),
+  css: player.bind('cover_path').as(_ => TrackAlbumCssHelper(player)),
 
-  setup: () => {
+  setup: self => {
     Config.add('album_enlarge_firefox', false);
+
+    self.hook(Config, self => {
+      self.css = TrackAlbumCssHelper(player);
+    });
   }
 });
 

@@ -29,6 +29,7 @@ export const SwitchOption = ({ label, option, ...props }) => Option({
   child: Widget.Switch({
     hpack: 'end',
     onActivate: ({ active }) => Config.set(option, active),
+    active: Config.options[option],
   }),
 });
 
