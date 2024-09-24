@@ -83,7 +83,7 @@ const WeatherSettings = () => Widget.Box({
     ButtonOption({
       label1: 'Odśwież pogodę',
       label2: 'Odśwież',
-      onClicked: () => Weather.fetchCurrentWeather(true),
+      onClicked: () => Weather.current.checkWeather(true),
     })
   ],
 });
