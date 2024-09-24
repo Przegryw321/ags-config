@@ -234,6 +234,7 @@ class CurrentWeather extends Service {
     this.options = params.options;
 
     this.checkWeather();
+    Utils.timeout(900000, () => this.checkWeather());
   }
 
   /**
@@ -298,10 +299,7 @@ class CurrentWeather extends Service {
 
 class WeatherForecast extends Service {
   static {
-    Service.register(
-      this,
-      {
-      },
+    Service.register(this, {},
       {
         'forecast': ['jsobject', 'r'],
       },
@@ -333,7 +331,8 @@ class WeatherForecast extends Service {
     this.#icons  = params.icons;
     this.options = params.options;
 
-    this.checkForecast().catch(console.error);
+    this.checkForecast();
+    Utils.timeout(900000, () => this.checkForecast());
   }
 
   /**
