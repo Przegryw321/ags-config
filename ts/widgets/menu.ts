@@ -1,6 +1,6 @@
 export const Menu = (items: any) => Widget.Menu({
   children: items,
-})
+});
 
 export const MenuLabel = (label: string, onActivate = () => {}) => Widget.MenuItem({
   child: Widget.Label({
@@ -8,4 +8,4 @@ export const MenuLabel = (label: string, onActivate = () => {}) => Widget.MenuIt
     hpack: 'start',
   }),
   onActivate,
-})
+});

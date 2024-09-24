@@ -24,6 +24,7 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
         activePlayer = name;
         return;
       }
+      console.log('name1:', name);
       self.add_named(widgetCreator(player, props), name);
     });
 
@@ -45,6 +46,7 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
         } else if (player.name !== 'playerctld') {
           // omit actually using playerctld, because it will get stuck on it and
           // the transition animation won't play
+          console.log('name2:', name);
           self.add_named(widgetCreator(player, props), name);
         }
       }, 'player-changed')

@@ -74,7 +74,7 @@ export const Settings = async (monitor: number = 0) => Widget.Window({
   visible: false,
   name: 'settings',
   anchor: ['top', 'right'],
-  margins: [20],
+  margins: [10],
   layer: 'overlay',
   exclusivity: 'normal',
   keymode: 'on-demand',

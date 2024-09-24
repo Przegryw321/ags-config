@@ -43,7 +43,6 @@ const WallpaperPreview = (icon: string, path: string) => Widget.Box({
       label: path.slice(path.lastIndexOf('/') + 1),
       truncate: 'end',
       hpack: 'center',
-      vpack: 'end',
     }),
   ],
 });
@@ -68,15 +67,12 @@ const WallpaperList = () => Widget.FlowBox({
     self.hook(FileMonitor, (self: Gtk.FlowBox, wallpapers: WallpaperInfo[] | null) => {
       if (!wallpapers) return;
 
-      self.get_children().forEach((child: any) => {
-        child.child.child.destroy();
-        child.child.destroy();
-        self.remove(child);
-      });
+      self.get_children().forEach(child => child.destroy());
 
       wallpapers.forEach(({ thumbnail, path }) => {
         self.add(WallpaperButton(thumbnail, path));
       });
+      self.show_all();
     }, 'wallpapers-changed');
   }
 });

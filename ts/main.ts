@@ -8,19 +8,9 @@ import { Settings } from './windows/settings';
 import { Wallpaper } from './windows/wallpaper';
 
 import Config from './services/config';
-import { reload_css, auto_scss_reload } from './scss';
+import { auto_scss_reload } from './scss';
 
 Config.add('theme', 'catppuccin_mocha');
-
-const _dummy = Widget.Label({
-  setup: self => {
-    Config.add('theme', 'catppuccin_mocha');
-    self.hook(Config, () => {
-      reload_css();
-      Config.saveToFile();
-    });
-  }
-});
 
 auto_scss_reload();
 

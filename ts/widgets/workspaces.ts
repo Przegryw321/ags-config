@@ -13,6 +13,7 @@ const dummyActiveWs = Widget.Box({ className: 'workspace-active' });
 const dummySecondActiveWs = Widget.Box({ className: 'workspace-active-second' })
 const dummyOccupiedWs = Widget.Box({ className: 'workspace-occupied' });
 
+// this function is basically copied from end_4's dotfiles
 const draw_workspaces = (area: any, cr: any, count: number) => {
   const textOffset = +1;
 

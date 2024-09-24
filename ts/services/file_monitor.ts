@@ -38,6 +38,11 @@ class FileMonitor extends Service {
   #themesMonitor: Gio.FileMonitor | null = null;
   #wallpapersMonitor: Gio.FileMonitor | null = null;
 
+  #monitorFlags = {
+    recursive: false,
+    flags: Gio.FileMonitorFlags.NONE,
+  };
+
   get themes()         { return this.#themes; }
   get wallpapers()     { return this.#wallpapers; }
   get themes_dir()     { return this.#themesDir; }
@@ -48,14 +53,14 @@ class FileMonitor extends Service {
     this.#themesMonitor?.cancel();
 
     this.getThemes();
-    this.#themesMonitor = Utils.monitorFile(this.#themesDir, _file => this.getThemes());
+    this.#themesMonitor = Utils.monitorFile(this.#themesDir, _file => this.getThemes(), this.#monitorFlags);
   }
   set wallpapers_dir(dir: string) {
     this.#wallpapersDir = dir;
     this.#wallpapersMonitor?.cancel();
 
     this.getWallpapers();
-    this.#wallpapersMonitor = Utils.monitorFile(this.#wallpapersDir, _file => this.getWallpapers());
+    this.#wallpapersMonitor = Utils.monitorFile(this.#wallpapersDir, _file => this.getWallpapers(), this.#monitorFlags);
   }
 
   constructor() {
@@ -80,14 +85,16 @@ class FileMonitor extends Service {
   }
 
   async getThemes() {
+    console.log('themes');
     const dir      = Gio.File.new_for_path(this.#themesDir);
     const children = dir.enumerate_children('', Gio.FileQueryInfoFlags.NONE, null);
-
 
     let file: FileInfo | null = null;
     let themes: string[] = [];
     while (file = children.next_file(null)) {
-      themes.push(file.get_name());
+      if (file.get_file_type() & Gio.FileType.DIRECTORY) {
+        themes.push(file.get_name());
+      }
     }
 
     this.#setThemes(themes);

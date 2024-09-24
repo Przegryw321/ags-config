@@ -1,7 +1,7 @@
 import Plural from "../lib/plural";
 import Archlinux from "../services/archlinux";
 
-export const UpdateTooltip = (max_length: number) => Archlinux.bind('updates').as(updates => {
+export const UpdateTooltip = (max_length: number = 65) => Archlinux.bind('updates').as(updates => {
     let output = `<span font_weight="bold">${updates.length} ${Plural.updates(updates.length)} ${Plural.available(updates.length)}${updates.length > 0 ? ':' : ''}</span>`;
     const length = updates.length;
 
@@ -38,7 +38,7 @@ export const UpdateIcon = ({ ...rest } = {}) => Widget.Label({
 
 export const UpdateCount = () => Widget.Box({
   vertical: true,
-  tooltipMarkup: UpdateTooltip(65),
+  tooltipMarkup: UpdateTooltip(),
 
   children: [
     UpdateIcon({

@@ -14,7 +14,7 @@ window {
 }
 
 tooltip {
-  background: $crust;
+  background: $mantle;
   color: $text;
   border: 1px solid $surface2;
   border-radius: 5px;
@@ -37,6 +37,13 @@ menuitem {
   &:hover {
     background: $surface0;
     border-radius: 6px;
+  }
+
+  // menu items seem to have a margin on the sides from nowhere
+  // * { all: unset; } removes it, but i want to keep some of the things items
+  // unstyles
+  & label {
+    margin: 0rem -1.5rem;
   }
 }
 

@@ -141,6 +141,18 @@ class Weather extends Service {
       this.#humidity       = null;
       this.#windSpeed      = null;
     }
+    await this.#fetchIcon();
+  }
+
+  async #fetchIcon() {
+    if (!this.#currentWeather) return;
+    const icon      = this.#currentWeather.weather[0].icon;
+    const icon_path = `${this.#weatherIconsPath}/${icon}.png`;
+    const file      = Gio.file_new_for_path(icon_path);
+    if (!file.query_exists(null)) {
+      const icon_url = `${this.#urlIconStart}/${icon}@2x.png`;
+      await curl(icon_url, icon_path);
+    }
   }
 
   async #fetchCurrentWeather() {
@@ -166,13 +178,7 @@ class Weather extends Service {
     this.#readCurrentWeather();
     if (!this.#currentWeather) return;
 
-    const icon      = this.#currentWeather.weather[0].icon;
-    const icon_path = `${this.#weatherIconsPath}/${icon}.png`;
-    const file      = Gio.file_new_for_path(icon_path);
-    if (!file.query_exists(null)) {
-      const icon_url = `${this.#urlIconStart}/${icon}@2x.png`;
-      await curl(icon_url, icon_path);
-    }
+    this.#fetchIcon();
 
     this.changed('current-weather');
     this.emit('current-weather-changed', this.#currentWeather);
@@ -181,6 +187,12 @@ class Weather extends Service {
   async readCurrentWeather() {
     await this.#readCurrentWeather();
     this.changed('current-weather');
+    this.changed('description');
+    this.changed('icon');
+    this.changed('temp');
+    this.changed('pressure');
+    this.changed('humidity');
+    this.changed('wind-speed');
     this.emit('current-weather-changed', this.#currentWeather);
   }
 
