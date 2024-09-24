@@ -1,9 +1,10 @@
 import Gio from 'gi://Gio';
 import { curl } from '../lib/utils';
 
+import Config from './config';
+
 export interface WeatherOptions {
-  latitude: number,
-  longitude: number,
+  city: string,
   units: string,
   lang: string,
 };
@@ -94,7 +95,7 @@ class Weather extends Service {
   // info to pass to the api
   #urlStart     = 'https://api.openweathermap.org/data/2.5/weather';
   #urlIconStart = 'https://openweathermap.org/img/wn';
-  options: WeatherOptions | null = null;
+  #options: WeatherOptions;
 
   get current_weather() { return this.#currentWeather; }
   get description()     { return this.#description; }
@@ -108,15 +109,29 @@ class Weather extends Service {
     super();
 
     this.#appId = Utils.readFile(this.#keyPath).trim();
-    this.options = {
-      latitude: 53.5521,
-      longitude: 14.5718,
-      units: 'metric',
-      lang: 'pl',
+
+    Config.add('weather_city', 'London');
+    Config.add('weather_units', 'metric');
+    Config.add('weather_lang', 'en');
+    this.#options = {
+      city: Config.options['weather_city'],
+      units: Config.options['weather_units'],
+      lang: Config.options['weather_lang'],
     };
 
     this.#fetchCurrentWeather();
     setTimeout(() => this.#fetchCurrentWeather(), 3600000);
+  }
+
+  #update() {
+    this.changed('current-weather');
+    this.changed('description');
+    this.changed('icon');
+    this.changed('temp');
+    this.changed('pressure');
+    this.changed('humidity');
+    this.changed('wind-speed');
+    this.emit('current-weather-changed', this.#currentWeather);
   }
 
   async #readCurrentWeather() {
@@ -151,49 +166,59 @@ class Weather extends Service {
     const file      = Gio.file_new_for_path(icon_path);
     if (!file.query_exists(null)) {
       const icon_url = `${this.#urlIconStart}/${icon}@2x.png`;
-      await curl(icon_url, icon_path);
+      await curl(icon_url, icon_path).catch(console.error);
     }
   }
 
   async #fetchCurrentWeather() {
-    if (!this.options) return;
+    const url = `${this.#urlStart}\
+?appid=${this.#appId}\
+&q=${this.#options.city}\
+&units=${this.#options.units}\
+&lang=${this.#options.lang}`;
 
+    await curl(url, this.#weatherJsonPath).catch(console.error);
+
+    await this.#readCurrentWeather();
+    if (!this.#currentWeather) return;
+
+    await this.#fetchIcon();
+    this.#update();
+  }
+
+  /**
+   * Reads in data from the weather json file
+  */
+  async readCurrentWeather() {
+    await this.#readCurrentWeather();
+    this.#update();
+  }
+
+  /**
+   * Makes an API call to get the current weather if the file is old enough
+   * @param [force=false] - skip the check and force an api call
+  */
+  async fetchCurrentWeather(force: boolean = false) {
     const lastUpdated = Number(await Utils.execAsync(`date -r ${this.#weatherJsonPath} +%s`).catch(() => null));
     const now         = +new Date / 1000;
 
-    if (lastUpdated && now - lastUpdated < 3600) {
+    if (!force && lastUpdated && now - lastUpdated < 3600) {
       await this.readCurrentWeather();
       if (this.#currentWeather) return
     }
 
-    const url = `${this.#urlStart}\
-?appid=${this.#appId}\
-&lat=${this.options.latitude}\
-&lon=${this.options.longitude}\
-&units=${this.options.units}\
-&lang=${this.options.lang}`;
-
-    await curl(url, this.#weatherJsonPath);
-
-    this.#readCurrentWeather();
-    if (!this.#currentWeather) return;
-
-    this.#fetchIcon();
-
-    this.changed('current-weather');
-    this.emit('current-weather-changed', this.#currentWeather);
+    this.#fetchCurrentWeather();
   }
 
-  async readCurrentWeather() {
-    await this.#readCurrentWeather();
-    this.changed('current-weather');
-    this.changed('description');
-    this.changed('icon');
-    this.changed('temp');
-    this.changed('pressure');
-    this.changed('humidity');
-    this.changed('wind-speed');
-    this.emit('current-weather-changed', this.#currentWeather);
+  /**
+   * Reloads weather options from the Config service
+  */
+  reloadOptions() {
+    this.#options = {
+      city: Config.options['weather_city'],
+      units: Config.options['weather_units'],
+      lang: Config.options['weather_lang'],
+    };
   }
 
   getFullIconPath(icon: string) {

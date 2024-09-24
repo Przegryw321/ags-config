@@ -59,6 +59,7 @@ class Config extends Service {
 
     this.changed('options');
     this.emit('config-changed', this.#options);
+    this.saveToFile();
   }
 
   /**
@@ -69,6 +70,7 @@ class Config extends Service {
 
     this.changed('options');
     this.emit('config-changed', this.#options);
+    this.saveToFile();
   }
 }
 

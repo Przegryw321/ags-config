@@ -9,9 +9,9 @@ export interface ComboBoxProps {
 const ComboBoxBasic = Widget.subclass(Gtk.ComboBoxText);
 
 export const ComboBox = (props: ComboBoxProps) => ComboBoxBasic({
-    setup(self) {
-      if (props.items) props.items.forEach((item: string) => self.append(item, item));
-      if (props.onChanged) self.on('changed', props.onChanged);
-      if (props.setup) props.setup(self);
-    }
-  });
+  setup(self) {
+    if (props.items) props.items.forEach((item: string) => self.append(item, item));
+    if (props.onChanged) self.on('changed', props.onChanged);
+    if (props.setup) props.setup(self);
+  }
+});

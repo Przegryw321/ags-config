@@ -85,7 +85,6 @@ class FileMonitor extends Service {
   }
 
   async getThemes() {
-    console.log('themes');
     const dir      = Gio.File.new_for_path(this.#themesDir);
     const children = dir.enumerate_children('', Gio.FileQueryInfoFlags.NONE, null);
 

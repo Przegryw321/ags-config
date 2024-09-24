@@ -33,6 +33,26 @@ export const SwitchOption = ({ label, option, ...props }) => Option({
   }),
 });
 
+export const EntryOption = ({
+  label,
+  option,
+  widthChars = <number|undefined> 10,
+  onAccept = <((self: Gtk.Entry) => void) | undefined> undefined,
+  ...props
+}) => Option({
+    ...props,
+    label,
+    child: Widget.Entry({
+      text: Config.options[option],
+      hpack: 'end',
+      xalign: 0.5,
+      widthChars,
+      onAccept: self => {
+        Config.set(option, self.text);
+        if (onAccept) onAccept(self);
+      }
+    }),
+  });
 
 export const NumberOption = ({
   label,
@@ -64,6 +84,7 @@ export const ComboBoxOption = ({
   label,
   option,
   items = <string[] | undefined> undefined,
+  onChanged = <((self: Gtk.ComboBoxText) => void) | undefined> undefined,
   setup = <((self: Gtk.ComboBoxText) => void) | undefined> undefined,
   ...props
 }) => Option({
@@ -74,8 +95,12 @@ export const ComboBoxOption = ({
       onChanged(self: Gtk.ComboBoxText) {
         const active = self.get_active_id();
         if (active) Config.set(option, active);
+        if (onChanged) onChanged(self);
       },
-      setup,
+      setup(self: Gtk.ComboBoxText) {
+        self.set_active_id(Config.options[option]);
+        if (setup) setup(self);
+      }
     }),
   });
 
