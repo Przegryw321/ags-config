@@ -1,5 +1,6 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=3.0';
 
 export const has_jp_chars = (str: string) => str.match('[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]');
 
@@ -26,6 +27,10 @@ export const file_age = (path: string): GLib.TimeSpan | null => {
   }
 
   return null;
+}
+
+export const get_property = (context: Gtk.StyleContext, property: string) => {
+  return context.get_property(property, Gtk.StateFlags.NORMAL);
 }
 
 /**

@@ -6,6 +6,7 @@ import { PlayerWindow } from './windows/player';
 import { VolumePopup } from './windows/volume_popup';
 import { Settings } from './windows/settings';
 import { Wallpaper } from './windows/wallpaper';
+import { WeatherWindow } from './windows/weather_window';
 
 import Config from './services/config';
 import { auto_scss_reload } from './scss';
@@ -30,6 +31,7 @@ const windows = [
   VolumePopup(),
   Settings(),
   Wallpaper(),
+  WeatherWindow(),
 ];
 
 App.config({

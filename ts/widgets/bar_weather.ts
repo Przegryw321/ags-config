@@ -1,72 +1,10 @@
-import Weather from '../services/weather';
-
-export const WeatherIcon = ({ ...props } = {}) => Widget.Icon({
-  ...props,
-  icon: Weather.current.bind('icon_path'),
-});
-
-export const WeatherName = ({ ...props } = {}) => Widget.Label({
-  ...props,
-  label: Weather.current.bind('description').as(d => `${d}`),
-});
-
-export const TempIcon = ({ ...props } = {}) => Widget.Box({
-  ...props,
-  className: Weather.current.bind('temp').as(temp => {
-    if (temp == null) return '';
-    if (temp >= 25) return 'hot';
-    if (temp >= 15) return 'warm';
-    if (temp >  0) return 'cold';
-    return 'freezing';
-  }),
-
-  children: [
-    Widget.Label({
-      className: 'icon',
-      label: '\ue1ff',
-    }),
-    Widget.Label({
-      className: 'label',
-      label: Weather.current.bind('temp').as(t => `${Math.round(t ?? -273)}°C`),
-    }),
-  ],
-});
-
-export const WindSpeedIcon = ({ ...props } = {}) => Widget.Box({
-  ...props,
-
-  children: [
-    Widget.Label({
-      className: 'icon',
-      label: '\uefd8',
-    }),
-    Widget.Label({
-      className: 'label',
-      label: Weather.current.bind('wind_speed').as(s => `${s}m/s`),
-    }),
-  ],
-});
-
-export const HumidityIcon = ({ ...props } = {}) => Widget.Box({
-  ...props,
-
-  children: [
-    Widget.Label({
-      className: 'icon',
-      label: '\ue798',
-    }),
-    Widget.Label({
-      className: 'label',
-      label: Weather.current.bind('humidity').as(h => `${h}%`),
-    }),
-  ],
-});
+import { TempIcon, WindSpeedIcon, HumidityIcon, WeatherName, WeatherIcon, TempClass } from './weather';
 
 export const WeatherSummaryNumbers = ({ ...props } = {}) => Widget.Box({
   ...props,
 
   children: [
-    TempIcon(),
+    TempIcon({ className: TempClass() }),
     WindSpeedIcon({ className: 'wind' }),
     HumidityIcon({ className: 'humidity' }),
   ],

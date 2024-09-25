@@ -19,7 +19,11 @@ const LeftRight = () => Widget.Box({
   hexpand: true,
   hpack: 'end',
   children: [
-    BarWeather({ className: 'bar-weather' }),
+    WindowButton(
+      BarWeather({ className: 'bar-weather' }),
+      'weather',
+      'Pokaż pogodę',
+    ),
   ]
 });
 

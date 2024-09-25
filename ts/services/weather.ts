@@ -130,7 +130,7 @@ export interface Forecast {
   wind: Wind,
   visibility: number,
   pop: number,
-  rain3h: number,
+  rain3h: number | undefined,
   pod: string,
 }
 
@@ -172,7 +172,7 @@ function toForecast(forecast: ForecastRaw): Forecast {
     wind: forecast.wind,
     visibility: forecast.visibility,
     pop: forecast.pop,
-    rain3h: forecast.rain['3h'],
+    rain3h: forecast.rain?.['3h'],
     pod: forecast.sys.pod,
   };
 }

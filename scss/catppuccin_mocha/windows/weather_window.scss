@@ -1,0 +1,77 @@
+.weather-layout {
+  background: $base;
+  border: 1px solid $surface1;
+  border-radius: 20px;
+
+  padding: 1rem;
+  min-width: 25rem;
+}
+
+.cw-top-left {
+  font-size: 1.5rem;
+}
+
+.cw-city {
+  color: $subtext1;
+  font-size: 2rem;
+  padding-bottom: 1rem;
+}
+
+.cw-timezone {
+  background: $mantle;
+  padding: .5rem;
+  border-radius: 10px;
+
+  min-width: 10rem;
+  margin-top: .5rem;
+
+  & .timezone {
+    color: $pink;
+  }
+}
+
+.cw-info {
+  min-width: 10rem;
+  background: $mantle;
+  padding: .5rem;
+  border-radius: 10px;
+}
+
+.cw-info-label {
+  color: $subtext1;
+}
+
+.cw-direction {
+  min-width: 4.5rem;
+  min-height: .2rem;
+  font-size: .8rem;
+  font-family: Barlow;
+  color: $green;
+  border-color: $surface0;
+  background: $lavender;
+}
+
+.cw-wind {
+  color: $green;
+  background: $mantle;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  & .speed {
+    margin-top: .3rem;
+  }
+  & .icon {
+    @include material-symbols;
+  }
+}
+
+.cw-sunset {
+  color: $flamingo;
+  min-width: 6.5rem;
+  background: $mantle;
+  border-radius: 10px;
+  padding: .5rem;
+
+  margin-top: .5rem;
+}

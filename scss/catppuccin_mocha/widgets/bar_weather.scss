@@ -1,5 +1,10 @@
 .bar-weather {
   padding-right: .5rem;
+
+  &:hover {
+    background: $base;
+    border-radius: 5px;
+  }
 }
 
 .bar-weather-icon {
@@ -15,25 +20,31 @@
   margin-bottom: -.5rem;
 }
 
-.bar-weather {
-  .hot {
-    color: $red;
-  }
-  .warm {
-    color: $yellow;
-  }
-  .cold {
-    color: $sapphire;
-  }
-  .freezing {
-    color: $sky;
-  }
+.hot {
+  color: $red;
+}
+.warm {
+  color: $yellow;
+}
+.cold {
+  color: $sapphire;
+}
+.freezing {
+  color: darken($sapphire, 10%);
 }
 
-.bar-weather .wind {
+.wind {
   color: $green;
 }
 
-.bar-weather .humidity {
+.humidity {
   color: $blue;
+}
+
+.pressure {
+  color: $mauve;
+}
+
+.clouds {
+  color: $lavender;
 }
