@@ -67,7 +67,7 @@ export interface WeatherResponse {
   coord: Coord,
   weather: WeatherInfo[],
   base: string,
-  main: WeatherData,
+  main:WeatherData,
   visibility: number,
   wind: Wind,
   rain: Rain1h,
@@ -80,7 +80,7 @@ export interface WeatherResponse {
   cod: number,
 }
 
-export interface Forecast {
+export interface ForecastRaw {
   dt: number,
   main: WeatherData,
   weather: WeatherInfo[],
@@ -108,8 +108,30 @@ export interface ForecastResponse {
   cod: number,
   message: number,
   cnt: number,
-  list: Forecast[],
+  list: ForecastRaw[],
   city: City,
+}
+
+export interface Forecast {
+  dt: number,
+  temp: number,
+  feels_like: number,
+  temp_min: number,
+  temp_max: number,
+  pressure: number,
+  humidity: number,
+  sea_level: number,
+  ground_level: number,
+  id: number,
+  main: string,
+  description: string,
+  icon: string,
+  clouds: number,
+  wind: Wind,
+  visibility: number,
+  pop: number,
+  rain3h: number,
+  pod: string,
 }
 
 interface WeatherParams {
@@ -125,6 +147,34 @@ function isWeatherResponse(object: any): object is WeatherResponse {
 
 function isForecastResponse(object: any): object is ForecastResponse {
   return 'list' in object;
+}
+
+/*
+ * Convert a ForecastRaw object to a Forecast
+ * @param forecast - the ForecastRaw object
+*/
+function toForecast(forecast: ForecastRaw): Forecast {
+  return {
+    dt: forecast.dt,
+    temp: forecast.main.temp,
+    feels_like: forecast.main.feels_like,
+    temp_min: forecast.main.temp_min,
+    temp_max: forecast.main.temp_max,
+    pressure: forecast.main.pressure,
+    humidity: forecast.main.humidity,
+    sea_level: forecast.main.sea_level,
+    ground_level: forecast.main.grnd_level,
+    id: forecast.weather[0].id,
+    main: forecast.weather[0].main,
+    description: forecast.weather[0].description,
+    icon: forecast.weather[0].icon,
+    clouds: forecast.clouds.all,
+    wind: forecast.wind,
+    visibility: forecast.visibility,
+    pop: forecast.pop,
+    rain3h: forecast.rain['3h'],
+    pod: forecast.sys.pod,
+  };
 }
 
 /*
@@ -363,7 +413,7 @@ class WeatherForecast extends Service {
     const json = JSON.parse(await Utils.readFileAsync(this.#path));
 
     if (isForecastResponse(json)) {
-      this.#forecast = json.list;
+      this.#forecast = json.list.map(toForecast);
     } else {
       this.#forecast = null;
     }
@@ -372,7 +422,7 @@ class WeatherForecast extends Service {
   async #downloadIcons() {
     let promises: Promise<string | undefined>[] = [];
     this.#forecast?.forEach(forecast => {
-      const icon = forecast.weather[0].icon;
+      const icon = forecast.icon;
       const path = this.#iconPath(icon);
       promises.push(downloadIcon(icon, path));
     });
