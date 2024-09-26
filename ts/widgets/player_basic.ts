@@ -1,4 +1,6 @@
 import { MprisPlayer } from 'resource:///com/github/Aylur/ags/service/mpris.js';
+import { PLAYERCTLD } from './player_wrappers';
+const Mpris = await Service.import('mpris');
 
 export const PausedIcon = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
   ...props,
@@ -142,5 +144,9 @@ export const ShiftButton = ({ ...props } = {}) => Widget.Button({
   }),
 
   onClicked: () => Utils.execAsync('playerctld shift'),
+
+  setup: self => self.hook(Mpris, self => {
+    self.visible = Mpris.players.filter(p => p.bus_name !== PLAYERCTLD).length > 1;
+  }),
 });
 

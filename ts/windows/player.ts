@@ -2,6 +2,7 @@ import { MprisPlayer } from "types/service/mpris";
 import { ActivePlayerWrapper } from "../widgets/player_wrappers";
 import { PlayerVolume, ShiftButton } from "../widgets/player_basic";
 import { TrackInfo, PlayerMiscControls, PlayerMainControls } from "../widgets/player_complex";
+const Mpris = await Service.import('mpris');
 
 const PlayerTopHalf = (player: MprisPlayer) => Widget.Box({
   vexpand: true,
