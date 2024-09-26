@@ -333,6 +333,7 @@ const ForecastSelector = (stack: any) => Widget.Box({
     });
 
     for (let i = 1; i < days.length; ++i) {
+      if (days[i].length === 0) continue;
       const max = days[i].reduce((prev, curr) => {
         return (prev.temp > curr.temp) ? prev : curr;
       });
