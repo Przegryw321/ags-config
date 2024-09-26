@@ -19,16 +19,15 @@
   padding-bottom: 1.8rem;
 }
 
-.cw-date {
+.cw-time {
   font-size: 1.2rem;
-  color: $subtext1;
   margin-top: -2rem;
   padding-bottom: .5rem;
 }
 
-.cw-time {
-  @extend .cw-date;
-  color: $mauve;
+.cw-date {
+  @extend .cw-time;
+  color: $subtext1;
 }
 
 .cw-timezone {
@@ -109,10 +108,6 @@
   .icon {
     font-size: 4rem;
     margin: -.5rem;
-  }
-
-  .time {
-    color: $mauve;
   }
 
   &:hover {

@@ -25,3 +25,33 @@ $surface0: #313244;
 $base: #1e1e2e;
 $mantle: #181825;
 $crust: #11111b;
+
+// days of the week
+.monday { color: $red; }
+.tuesday { color: $maroon; }
+.wednesday { color: $yellow; }
+.thursday { color: $green; }
+.friday { color: $blue; }
+.saturday { color: $pink; }
+.sunday { color: $mauve; }
+
+// seasons
+.winter { color: $sapphire; }
+.spring { color: $green; }
+.summer { color: darken($yellow, 20%); }
+.autumn { color: $peach; }
+
+// weather: temperature
+.hot { color: $red; }
+.warm { color: $yellow; }
+.cold { color: $sapphire; }
+.freezing { color: darken($sapphire, 10%); }
+
+// weather: other parameters
+.wind { color: $green; }
+.humidity { color: $blue; }
+.pressure { color: $mauve; }
+.clouds { color: $teal; }
+
+// other
+.time { color: $lavender; }

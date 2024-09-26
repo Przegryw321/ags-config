@@ -19,32 +19,3 @@
 .bar-weather .name {
   margin-bottom: -.5rem;
 }
-
-.hot {
-  color: $red;
-}
-.warm {
-  color: $yellow;
-}
-.cold {
-  color: $sapphire;
-}
-.freezing {
-  color: darken($sapphire, 10%);
-}
-
-.wind {
-  color: $green;
-}
-
-.humidity {
-  color: $blue;
-}
-
-.pressure {
-  color: $mauve;
-}
-
-.clouds {
-  color: $lavender;
-}

@@ -172,7 +172,9 @@ const CurrentWeatherLeft = (weather: Forecast, now: boolean = false) => {
   });
   const time_label = () => Widget.Label({
     label: date.format('%H:%M'),
-    className: 'cw-time',
+    className: 'cw-time time',
+    hpack: 'start',
+    vpack: 'start',
   });
   const time_box = () => Widget.Box({
     spacing: 10,
