@@ -17,7 +17,7 @@ auto_scss_reload();
 
 const clickaway_windows = [
   'startmenu',
-  'player',
+  //'player',
   'settings',
   'wallpaper',
   'weather',

@@ -1,17 +1,30 @@
 import { MprisPlayer } from "types/service/mpris";
 import { ActivePlayerWrapper } from "../widgets/player_wrappers";
-import { PlayerVolume, ShiftButton } from "../widgets/player_basic";
+import { AlbumLabel, PlayerVolume, ShiftButton } from "../widgets/player_basic";
 import { TrackInfo, PlayerMiscControls, PlayerMainControls } from "../widgets/player_complex";
-const Mpris = await Service.import('mpris');
+
+const PlayerTrackInfo = (player: MprisPlayer) => Widget.Box({
+  vertical: true,
+  children: [
+    TrackInfo(player, {
+      className: 'playerwin-trackinfo',
+      hexpand: true,
+      vexpand: true,
+    }),
+    AlbumLabel(player, {
+      className: 'playerwin-trackinfo-album',
+      truncate: 'end',
+      hpack: 'start',
+      vpack: 'end',
+    }),
+  ],
+});
 
 const PlayerTopHalf = (player: MprisPlayer) => Widget.Box({
   vexpand: true,
 
   children: [
-    TrackInfo(player, {
-      className: 'playerwin-trackinfo',
-      hexpand: true,
-    }),
+    PlayerTrackInfo(player),
     PlayerVolume(player, {
       className: 'playerwin-volume',
       vertical: true,

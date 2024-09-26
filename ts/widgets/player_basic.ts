@@ -150,3 +150,7 @@ export const ShiftButton = ({ ...props } = {}) => Widget.Button({
   }),
 });
 
+export const AlbumLabel = (player: MprisPlayer, { ...props } = {}) => Widget.Label({
+  ...props,
+  label: player.bind('track_album'),
+});
