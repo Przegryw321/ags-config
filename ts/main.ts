@@ -20,6 +20,7 @@ const clickaway_windows = [
   'player',
   'settings',
   'wallpaper',
+  'weather',
 ];
 const windows = [
   Bar(),

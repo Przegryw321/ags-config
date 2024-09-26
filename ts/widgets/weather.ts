@@ -6,14 +6,14 @@ export const WeatherIcon = ({ ...props } = {}) => Widget.Icon({
   icon: Weather.current.bind('icon_path'),
 });
 
-export const TempClass = (property: 'temp' | 'feels_like' | 'temp_min' | 'temp_max' = 'temp') => Weather.current.bind(property).as(temp => {
+export const TempClass = (temp: number | null | undefined) => {
   if (temp == null) return '';
   temp = Math.round(temp);
   if (temp >= 25) return 'hot';
   if (temp >= 15) return 'warm';
   if (temp >  0) return 'cold';
   return 'freezing';
-});
+};
 
 
 export const TempLabel = ({ ...props } = {}) => Widget.Label({
@@ -40,7 +40,7 @@ export const WeatherName = ({ ...props } = {}) => Widget.Label({
 
 export const WindSpeedLabel = ({ ...props } = {}) => Widget.Label({
   ...props,
-  label: Weather.current.bind('wind_speed').as(s => `${s}m/s`),
+  label: Weather.current.bind('wind').as(wind => `${wind?.speed}m/s`),
 });
 
 export const WindSpeedIcon = ({ ...props } = {}) => Widget.Box({
@@ -74,7 +74,7 @@ export const HumidityIcon = ({ ...props } = {}) => Widget.Box({
 
 export const WeatherCity = ({ ...props } = {}) => Widget.Label({
   ...props,
-  label: Weather.current.bind('name').as(n => `${n}`),
+  label: Weather.current.bind('city').as(n => `${n}`),
 });
 
 export const FeelsLikeLabel = ({ ...props } = {}) => Widget.Label({
@@ -95,7 +95,7 @@ export const CloudsLabel = ({ ...props } = {}) => Widget.Label({
 export const WindDirection = ({ ...props } = {}) => Compass({
   ...props,
   setup: (self: any) => self.hook(Weather.current, (self: any) => {
-    self.attribute.value = Weather.current.wind_deg;
+    self.attribute.value = Weather.current.wind?.deg;
     self.queue_draw();
   })
 });

@@ -1,10 +1,11 @@
 import { TempIcon, WindSpeedIcon, HumidityIcon, WeatherName, WeatherIcon, TempClass } from './weather';
+import Weather from '../services/weather';
 
 export const WeatherSummaryNumbers = ({ ...props } = {}) => Widget.Box({
   ...props,
 
   children: [
-    TempIcon({ className: TempClass() }),
+    TempIcon({ className: Weather.current.bind('temp').as(TempClass) }),
     WindSpeedIcon({ className: 'wind' }),
     HumidityIcon({ className: 'humidity' }),
   ],

@@ -1,8 +1,9 @@
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 import { curl, file_age } from '../lib/utils';
 
 import Config from './config';
+
+const INTERVAL = 1800000; // 30 minutes
 
 export interface WeatherOptions {
   city: string,
@@ -126,12 +127,17 @@ export interface Forecast {
   main: string,
   description: string,
   icon: string,
+  icon_path: string,
   clouds: number,
   wind: Wind,
   visibility: number,
   pop: number,
   rain3h: number | undefined,
   pod: string,
+  city: string,
+  sunrise: number,
+  sunset: number,
+  timezone: number,
 }
 
 interface WeatherParams {
@@ -152,8 +158,11 @@ function isForecastResponse(object: any): object is ForecastResponse {
 /*
  * Convert a ForecastRaw object to a Forecast
  * @param forecast - the ForecastRaw object
+ * @param city     - the City object
+ * @param icons    - path to the icons directory
 */
-function toForecast(forecast: ForecastRaw): Forecast {
+function toForecast({ forecast, city, icons }): Forecast {
+  const icon = forecast.weather[0].icon;
   return {
     dt: forecast.dt,
     temp: forecast.main.temp,
@@ -167,13 +176,18 @@ function toForecast(forecast: ForecastRaw): Forecast {
     id: forecast.weather[0].id,
     main: forecast.weather[0].main,
     description: forecast.weather[0].description,
-    icon: forecast.weather[0].icon,
+    icon,
+    icon_path: `${icons}/${icon}.png`,
     clouds: forecast.clouds.all,
     wind: forecast.wind,
     visibility: forecast.visibility,
     pop: forecast.pop,
     rain3h: forecast.rain?.['3h'],
     pod: forecast.sys.pod,
+    city: city.name,
+    sunrise: city.sunrise,
+    sunset: city.sunset,
+    timezone: city.timezone,
   };
 }
 
@@ -205,28 +219,26 @@ class CurrentWeather extends Service {
       {
       },
       {
-        'main':         ['string', 'r'],
-        'description':  ['string', 'r'],
-        'icon':         ['string', 'r'],
-        'temp':         ['float',  'r'],
-        'feels-like':   ['float',  'r'],
-        'temp-min':     ['float',  'r'],
-        'temp-max':     ['float',  'r'],
-        'pressure':     ['int',    'r'],
-        'humidity':     ['int',    'r'],
-        'sea-level':    ['int',    'r'],
-        'ground-level': ['int',    'r'],
-        'visibility':   ['int',    'r'],
-        'wind-speed':   ['float',  'r'],
-        'wind-deg':     ['int',    'r'],
-        'wind-gust':    ['float',  'r'],
-        'rain1h':       ['float',  'r'],
-        'clouds':       ['int',    'r'],
-        'dt':           ['double', 'r'],
-        'sunrise':      ['double', 'r'],
-        'sunset':       ['double', 'r'],
-        'timezone':     ['int',    'r'],
-        'name':         ['string', 'r'],
+        'main':         ['string',   'r'],
+        'description':  ['string',   'r'],
+        'icon':         ['string',   'r'],
+        'temp':         ['float',    'r'],
+        'feels-like':   ['float',    'r'],
+        'temp-min':     ['float',    'r'],
+        'temp-max':     ['float',    'r'],
+        'pressure':     ['int',      'r'],
+        'humidity':     ['int',      'r'],
+        'sea-level':    ['int',      'r'],
+        'ground-level': ['int',      'r'],
+        'visibility':   ['int',      'r'],
+        'wind':         ['jsobject', 'r'],
+        'rain1h':       ['float',    'r'],
+        'clouds':       ['int',      'r'],
+        'dt':           ['double',   'r'],
+        'sunrise':      ['double',   'r'],
+        'sunset':       ['double',   'r'],
+        'timezone':     ['int',      'r'],
+        'name':         ['string',   'r'],
       },
     );
   }
@@ -254,16 +266,14 @@ class CurrentWeather extends Service {
   get sea_level()    { return this.#response?.main.sea_level; }
   get ground_level() { return this.#response?.main.grnd_level; }
   get visibility()   { return this.#response?.visibility; }
-  get wind_speed()   { return this.#response?.wind.speed; }
-  get wind_deg()     { return this.#response?.wind.deg; }
-  get wind_gust()    { return this.#response?.wind.gust; }
+  get wind()         { return this.#response?.wind; }
   get rain1h()       { return this.#response?.rain['1h']; }
   get clouds()       { return this.#response?.clouds.all; }
   get dt()           { return this.#response?.dt; }
   get sunrise()      { return this.#response?.sys.sunrise; }
   get sunset()       { return this.#response?.sys.sunset; }
   get timezone()     { return this.#response?.timezone; }
-  get name()         { return this.#response?.name; }
+  get city()         { return this.#response?.name; }
 
   get weather_url() {
     return `https://api.openweathermap.org/data/2.5/weather\
@@ -284,7 +294,7 @@ class CurrentWeather extends Service {
     this.options = params.options;
 
     this.checkWeather();
-    Utils.timeout(900000, () => this.checkWeather());
+    Utils.timeout(INTERVAL, () => this.checkWeather());
   }
 
   /**
@@ -333,9 +343,7 @@ class CurrentWeather extends Service {
     this.changed('sea-level');
     this.changed('ground-level');
     this.changed('visibility');
-    this.changed('wind-speed');
-    this.changed('wind-deg');
-    this.changed('wind-gust');
+    this.changed('wind');
     this.changed('rain1h');
     this.changed('clouds');
     this.changed('dt');
@@ -351,12 +359,12 @@ class WeatherForecast extends Service {
   static {
     Service.register(this, {},
       {
-        'forecast': ['jsobject', 'r'],
+        'forecasts': ['jsobject', 'r'],
       },
     );
   }
 
-  #forecast: Forecast[] | null = null;
+  #forecasts: Forecast[] | null = null;
 
   readonly #appId: string;
 
@@ -364,7 +372,7 @@ class WeatherForecast extends Service {
   #path: string;
   #icons: string;
 
-  get forecast() { return this.#forecast; }
+  get forecasts() { return this.#forecasts; }
 
   get forecast_url() {
     return `https://api.openweathermap.org/data/2.5/forecast\
@@ -382,7 +390,7 @@ class WeatherForecast extends Service {
     this.options = params.options;
 
     this.checkForecast();
-    Utils.timeout(900000, () => this.checkForecast());
+    Utils.timeout(INTERVAL, () => this.checkForecast());
   }
 
   /**
@@ -392,16 +400,16 @@ class WeatherForecast extends Service {
   */
   async checkForecast(force: boolean = false) {
     const age   = file_age(this.#path);
-    const hour3 = 10800000000;
+    const hour = 3600000000;
 
-    if (force || !age || age > hour3) {
+    if (force || !age || age > hour) {
       await this.#downloadForecast().catch(console.error);
     }
 
     await this.#readForecast().catch(console.error);
     await this.#downloadIcons().catch(console.error);
 
-    this.changed('forecast');
+    this.changed('forecasts');
     this.emit('changed');
   }
 
@@ -413,15 +421,19 @@ class WeatherForecast extends Service {
     const json = JSON.parse(await Utils.readFileAsync(this.#path));
 
     if (isForecastResponse(json)) {
-      this.#forecast = json.list.map(toForecast);
+      this.#forecasts = json.list.map(forecast => toForecast({
+        forecast,
+        city: json.city,
+        icons: this.#icons,
+      }));
     } else {
-      this.#forecast = null;
+      this.#forecasts = null;
     }
   }
 
   async #downloadIcons() {
     let promises: Promise<string | undefined>[] = [];
-    this.#forecast?.forEach(forecast => {
+    this.#forecasts?.forEach(forecast => {
       const icon = forecast.icon;
       const path = this.#iconPath(icon);
       promises.push(downloadIcon(icon, path));

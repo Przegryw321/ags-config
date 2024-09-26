@@ -35,22 +35,24 @@ export const Date = () => DateTimeLabel({
   hpack: 'end',
 });
 
+export const WeekdayClass = (label: string) => {
+  const weekday = label.slice(0, 3);
+  switch (weekday) {
+    case 'pon': return 'monday';
+    case 'wto': return 'tuesday';
+    case 'śro': return 'wednesday';
+    case 'czw': return 'thursday';
+    case 'pią': return 'friday';
+    case 'sob': return 'saturday';
+    case 'nie': return 'sunday';
+  }
+};
+
 export const Weekday = () => DateTimeStyleLabel({
   mainClassName: 'bartime-weekday',
   format: '%A',
 
-  style: (label: string) => {
-    const weekday = label.slice(0, 3);
-    switch (weekday) {
-      case 'pon': return 'monday';
-      case 'wto': return 'tuesday';
-      case 'śro': return 'wednesday';
-      case 'czw': return 'thursday';
-      case 'pią': return 'friday';
-      case 'sob': return 'saturday';
-      case 'nie': return 'sunday';
-    }
-  },
+  style: WeekdayClass,
 });
 
 export const MonthDay = () => DateTimeLabel({
