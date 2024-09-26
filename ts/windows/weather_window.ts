@@ -225,6 +225,12 @@ const WeatherStack = () => Widget.Stack({
   transition: 'slide_left',
   transitionDuration: 800,
   children: {}, // GC, don't remove
+  setup: self => self.hook(App, (self, _window) => {
+    if (!App.getWindow('weather')?.visible) {
+      const child = self.get_child_by_name(Weather.current.dt?.toString() ?? null);
+      if (child) self.set_visible_child(child);
+    }
+  }, 'window-toggled')
 });
 
 const WeatherButton = (weather: Forecast, stack: any, type: 'date' | 'time') => {
