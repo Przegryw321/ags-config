@@ -51,6 +51,7 @@
 
   border: 3px solid $base;
   border-radius: 8px;
+  @include boxshadow;
 }
 
 .playerwin-volume highlight {
