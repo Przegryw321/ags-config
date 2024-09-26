@@ -5,3 +5,7 @@
 @mixin nerd-icons {
   font-family: JetBrainsMono Nerd Font;
 }
+
+@mixin textshadow {
+  text-shadow: 2px 2px 2px $crust;
+}

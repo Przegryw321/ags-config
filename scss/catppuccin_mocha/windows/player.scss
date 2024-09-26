@@ -25,18 +25,14 @@
   min-height: 20rem;
 }
 
-@mixin playerwin-textshadow {
-  text-shadow: 2px 2px 2px $crust;
-}
-
 .playerwin-trackinfo .player-trackinfo-title {
   font-size: 3rem;
-  @include playerwin-textshadow;
+  @include textshadow;
 }
 
 .playerwin-trackinfo .player-trackinfo-artists {
   font-size: 2rem;
-  @include playerwin-textshadow;
+  @include textshadow;
 }
 
 .playerwin-volume value {
@@ -68,7 +64,7 @@
 
 .playerwin-misc-controls {
   @include nerd-icons;
-  @include playerwin-textshadow;
+  @include textshadow;
 
   margin-bottom: -.5rem;
 
@@ -102,7 +98,7 @@
 
 .playerwin-main-controls {
   @include material-symbols;
-  @include playerwin-textshadow;
+  @include textshadow;
 
   font-size: 3rem;
 
@@ -113,7 +109,7 @@
 }
 
 .playerwin-shift {
-  @include playerwin-textshadow;
+  @include textshadow;
   font-size: 3rem;
 
   &:hover {
