@@ -44,14 +44,14 @@ export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box(
     // lines be at a pleasing distance form each other.
     if (is_title_jp) {
       let css = 'font-family: VL Gothic; margin-top: .2rem;';
-      if (!is_artist_jp) css += 'margin-top: .5rem;';
+      if (!is_artist_jp && artists) css += 'margin-top: .5rem;';
       titleLabel.css = css;
     } else {
       titleLabel.css = 'margin-bottom: -.4rem;';
     }
     if (is_artist_jp) {
       let css = 'font-family: VL Gothic;';
-      if (!is_title_jp) css += 'margin-bottom: .4rem;';
+      if (!is_title_jp && title) css += 'margin-bottom: .4rem;';
       artistsLabel.css = css;
     } else {
       artistsLabel.css = 'margin-top: -.3rem;';
