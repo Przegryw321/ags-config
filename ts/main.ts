@@ -35,6 +35,8 @@ const windows = [
   WeatherWindow(),
 ];
 
+globalThis.Config = Config;
+
 App.config({
   windows: await Promise.all(windows),
 });
