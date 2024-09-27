@@ -34,7 +34,7 @@ const Left = () => Widget.Box({
       'startmenu',
       'Pokaż menu startowe',
     ),
-    ActiveWindow(),
+    ActiveWindow({ vpack: 'center' }),
     LeftRight(),
   ],
 });

@@ -1,26 +1,30 @@
 const Hyprland = await Service.import('hyprland');
 
-export const ActiveWindowTitle = () => Widget.Label({
+export const ActiveWindowTitle = ({ ...props } = {}) => Widget.Label({
+  ...props,
   className: 'activewindow-title',
-  hpack: 'start',
   label: Hyprland.active.client.bind('title'),
-  truncate: 'end',
 });
 
-export const ActiveWindowClass = () => Widget.Label({
+export const ActiveWindowClass = ({ ...props } = {}) => Widget.Label({
+  ...props,
   className: 'activewindow-class',
-  hpack: 'start',
   label: Hyprland.active.client.bind('class'),
-  truncate: 'end',
 });
 
-export const ActiveWindow = () => Widget.Box({
+export const ActiveWindow = ({ ...props } = {}) => Widget.Box({
+  ...props,
   className: 'activewindow',
   vertical: true,
-  vpack: 'center',
 
   children: [
-    ActiveWindowTitle(),
-    ActiveWindowClass(),
+    ActiveWindowTitle({
+      truncate: 'end',
+      hpack: 'start',
+    }),
+    ActiveWindowClass({
+      truncate: 'end',
+      hpack: 'start',
+    }),
   ],
 });
