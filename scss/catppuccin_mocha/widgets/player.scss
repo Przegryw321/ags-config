@@ -1,21 +1,16 @@
-.player-trackinfo-title {
+.player-summary .player-trackinfo-title {
   font-size: 1.1rem;
-  padding: 0px;
-  margin: 0px;
+  padding-left: .5rem;
 }
 
-.player-trackinfo-artists {
-  font-size: 1.1rem;
+.player-summary .player-trackinfo-artists {
+  @extend .player-trackinfo-title;
   color: $subtext1;
-  padding: 0px;
-  margin: 0px;
 }
 
 .player-trackalbum {
   min-height: 2.4rem;
   border-radius: 5px;
-  margin-right: .5rem;
-
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -27,8 +22,6 @@
 
   background: rgba(black, 0.8);
   border-radius: 5px;
-
-  margin-right: .5rem;
 
   & .icon {
     margin: -.2rem 0rem;
