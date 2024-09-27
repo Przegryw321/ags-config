@@ -293,7 +293,7 @@ class CurrentWeather extends Service {
     this.#icons  = params.icons;
     this.options = params.options;
 
-    this.checkWeather();
+    this.checkWeather().catch(console.error);
     Utils.timeout(INTERVAL, () => this.checkWeather());
   }
 
@@ -389,7 +389,7 @@ class WeatherForecast extends Service {
     this.#icons  = params.icons;
     this.options = params.options;
 
-    this.checkForecast();
+    this.checkForecast().catch(console.error);
     Utils.timeout(INTERVAL, () => this.checkForecast());
   }
 
@@ -399,7 +399,7 @@ class WeatherForecast extends Service {
    * @param [force=false] - Force the download
   */
   async checkForecast(force: boolean = false) {
-    const age   = file_age(this.#path);
+    const age  = file_age(this.#path);
     const hour = 3600000000;
 
     if (force || !age || age > hour) {

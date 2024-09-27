@@ -126,3 +126,36 @@ export const PopupDate = ({ ...rest } = {}, btClass = '') => Widget.Revealer({
   }, 'event')
 });
 
+/*
+ * A box holding the current date in a '%d.%m' format.
+ * Assigns a class to the day label based on the weekday.
+ * The month class is based on itself.
+*/
+export const ColorDate = (day: string | null, weekday: string | null, month: string | null, { ...props } = {}) => Widget.Box({
+  ...props,
+  visible: false,
+  children: [
+    Widget.Label({
+      className: WeekdayClass(weekday ?? ''),
+      label: day,
+    }),
+    Widget.Label('.'),
+    Widget.Label({
+      className: (() => {
+        switch (month) {
+          case '01': case '02': case '12':
+            return 'winter';
+          case '03': case '04': case '05':
+            return 'spring';
+          case '06': case '07': case '08':
+            return 'summer';
+          case '09': case '10': case '11':
+            return 'autumn';
+          default: return '';
+        }
+      })(),
+      label: month,
+    })
+  ]
+});
+

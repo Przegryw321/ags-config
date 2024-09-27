@@ -2,8 +2,18 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk?version=3.0';
 
+/* 
+ * Check if a string has japanese characters.
+ * Returns a regex match.
+ * @param str - the string
+*/
 export const has_jp_chars = (str: string) => str.match('[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]');
 
+/*
+ * Download a given url and save the result to the output path.
+ * @param url    - the url
+ * @param output - path to the output
+*/
 export const curl = (url: string, output: string) => {
   return Utils.execAsync(`curl ${url} -so ${output}`);
 };
@@ -27,11 +37,23 @@ export const file_age = (path: string): GLib.TimeSpan | null => {
   }
 
   return null;
-}
+};
 
+/*
+ * Get a property from the style context.
+ * Convenience function to omit passing Gtk.StateFlags.NORMAL every time.
+ * @param context  - the style context
+ * @param property - the style property string
+*/
 export const get_property = (context: Gtk.StyleContext, property: string) => {
   return context.get_property(property, Gtk.StateFlags.NORMAL);
-}
+};
+
+/*
+ * Convert a timestamp to a '%H:%M' string.
+ * @param timestamp - the timestamp
+*/
+export const timestamp_to_time = (timestamp: number | undefined) => GLib.DateTime.new_from_unix_local(timestamp ?? 0).format('%H:%M') ?? 'null';
 
 /**
  * Get md5 hash from data
