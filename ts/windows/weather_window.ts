@@ -326,6 +326,7 @@ const ForecastSelector = (stack: any) => Widget.Box({
 
     times.children.forEach(child => child.destroy());
     dates.children.forEach(child => child.destroy());
+    stack.get_children().forEach((child: any) => child.destroy());
 
     const days = forecasts_to_days(Weather.forecast.forecasts ?? []);
   
