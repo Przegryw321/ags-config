@@ -1,6 +1,5 @@
 .settings-layout {
   padding: 1rem;
-  padding-top: 0rem;
 
   background: $base;
   border: 1px solid $surface1;
@@ -9,10 +8,15 @@
   min-width: 20rem;
 }
 
+.settings-header {
+  font-size: 3rem;
+  font-weight: bold;
+  padding-bottom: .5rem;
+}
+
 .settings-title {
   font-size: 2rem;
   font-weight: bold;
-  padding-top: 1rem;
 }
 
 .settings-label {
@@ -28,28 +32,45 @@
   border-radius: 6px;
 }
 
-switch {
+.theme-settings,
+.bar-settings,
+.weather-settings,
+.other-settings {
   background: $mantle;
+  padding: 1rem;
+  border-radius: 20px;
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
+
+#settings switch {
+  background: $crust;
+  margin: 0;
   
   @include settings-border;
   border-radius: 99px;
 }
 
-switch slider {
+#settings switch slider {
   background: linear-gradient(to bottom right, $blue, $sky);
   border-radius: 99px;
 }
 
-entry {
+#settings entry {
   color: $text;
-  background: $mantle;
+  background: $crust;
+
+  min-height: 0;
+  padding: .2rem;
 
   @include settings-border;
 }
 
 #settings button {
-  background: $mantle;
-  padding: .3rem;
+  background: $crust;
+  padding: .2rem;
 
   &:hover {
     background: $surface0;

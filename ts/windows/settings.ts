@@ -5,7 +5,14 @@ import Weather from '../services/weather';
 
 import { Title, ComboBoxOption, SwitchOption, NumberOption, ButtonOption, EntryOption } from '../widgets/setting_widgets';
 
+const SettingsHeader = () => Widget.Label({
+  className: 'settings-header',
+  label: 'Ustawienia',
+  hpack: 'center',
+})
+
 const ThemeSettings = () => Widget.Box({
+  className: 'theme-settings',
   vertical: true,
   children: [
     Title('Motyw'),
@@ -33,6 +40,7 @@ const ThemeSettings = () => Widget.Box({
 });
 
 const BarSettings = () => Widget.Box({
+  className: 'bar-settings',
   vertical: true,
   children: [
     Title('Pasek zadań'),
@@ -58,6 +66,7 @@ const BarSettings = () => Widget.Box({
 });
 
 const WeatherSettings = () => Widget.Box({
+  className: 'weather-settings',
   vertical: true,
   children: [
     Title('Pogoda'),
@@ -89,6 +98,7 @@ const WeatherSettings = () => Widget.Box({
 });
 
 const OtherSettings = () => Widget.Box({
+  className: 'other-settings',
   vertical: true,
   children: [
     Title('Inne'),
@@ -104,6 +114,7 @@ const SettingsLayout = () => Widget.Box({
   vertical: true,
 
   children: [
+    SettingsHeader(),
     ThemeSettings(),
     BarSettings(),
     WeatherSettings(),
