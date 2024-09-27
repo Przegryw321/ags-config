@@ -102,13 +102,13 @@ const ForecastSelector = (stack: any) => Widget.Box({
     WeatherButtons(),
   ],
 
-  setup: self => self.hook(Weather.current, self => {
+  setup: self => self.hook(Weather.current, async self => {
     const times = self.children[0];
     const dates = self.children[1];
 
     times.children.forEach(child => child.destroy());
     dates.children.forEach(child => child.destroy());
-    stack.get_children().forEach((child: any) => child.destroy());
+    stack.children = {};
 
     const days = forecasts_to_days(Weather.forecast.forecasts ?? []);
   
