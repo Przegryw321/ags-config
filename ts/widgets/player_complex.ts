@@ -5,8 +5,6 @@ import { has_jp_chars } from "../lib/utils";
 import { FIREFOX } from './player_wrappers';
 import { NextButton, PausedIcon, PlayerLoopButton, PlayerShuffleButton, PlayPauseButton, PrevButton } from './player_basic';
 
-import Config from '../services/config';
-
 export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
   ...props,
   vertical: true,
@@ -63,7 +61,7 @@ export const TrackInfo = (player: MprisPlayer, { ...props } = {}) => Widget.Box(
 
 const TrackAlbumCssHelper = (player: MprisPlayer) => {
   let css = `background-image: url('${player.cover_path}');`;
-  if (Config.options['album_enlarge_firefox'] && player.bus_name.startsWith(FIREFOX)) {
+  if (player.bus_name.startsWith(FIREFOX)) {
     css += 'min-width: 4rem;';
   } else {
     css += 'min-width: 2.4rem;';
@@ -76,14 +74,6 @@ export const TrackAlbum = (player: MprisPlayer) => Widget.Box({
   hpack: 'start',
   vpack: 'center',
   css: player.bind('cover_path').as(_ => TrackAlbumCssHelper(player)),
-
-  setup: self => {
-    Config.add('album_enlarge_firefox', false);
-
-    self.hook(Config, self => {
-      self.css = TrackAlbumCssHelper(player);
-    });
-  }
 });
 
 export const PausedOverlayIcon = (player: MprisPlayer, widgetCreator: (player: MprisPlayer) => Gtk.Widget, { ...props } = {}) => Widget.Overlay({
