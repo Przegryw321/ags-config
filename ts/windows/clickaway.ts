@@ -1,3 +1,5 @@
+import Config from '../services/config';
+
 export const Clickaway = async (monitor: number = 0, windows: string[]) => Widget.Window({
   monitor,
   visible: false,
@@ -8,9 +10,13 @@ export const Clickaway = async (monitor: number = 0, windows: string[]) => Widge
     onPrimaryClick: () => windows.forEach(App.closeWindow),
   }),
 
-  setup: self => self.hook(App, (self, _window) => {
-    self.visible = windows
-      .map(win => App.getWindow(win)?.visible)
-      .includes(true);
-  }),
+  setup: self => {
+    Config.add('clickaway', true);
+
+    self.hook(App, (self, _window) => {
+      self.visible = Config.options['clickaway'] && windows
+        .map(win => App.getWindow(win)?.visible)
+        .includes(true);
+    });
+  }
 });

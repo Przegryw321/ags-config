@@ -88,6 +88,17 @@ const WeatherSettings = () => Widget.Box({
   ],
 });
 
+const OtherSettings = () => Widget.Box({
+  vertical: true,
+  children: [
+    Title('Inne'),
+    SwitchOption({
+      label: 'Clickaway',
+      option: 'clickaway',
+    })
+  ],
+});
+
 const SettingsLayout = () => Widget.Box({
   className: 'settings-layout',
   vertical: true,
@@ -96,6 +107,7 @@ const SettingsLayout = () => Widget.Box({
     ThemeSettings(),
     BarSettings(),
     WeatherSettings(),
+    OtherSettings(),
   ],
 });
 
