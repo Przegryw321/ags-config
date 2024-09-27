@@ -154,3 +154,20 @@ export const AlbumLabel = (player: MprisPlayer, { ...props } = {}) => Widget.Lab
   ...props,
   label: player.bind('track_album'),
 });
+
+export const PlayerPosition = (player: MprisPlayer, { ...props } = {}) => Widget.Slider({
+  ...props,
+  visible: player.bind('position').as(pos => pos !== -1),
+  value: 0,
+  min: 0,
+  max: player.bind('length'),
+
+  attribute: false,
+
+  onChange: ({ value }) => player.position = value,
+
+  setup: self => self.poll(1000, self => {
+    console.log(player.name, player.position);
+    self.value = player.position;
+  }),
+});

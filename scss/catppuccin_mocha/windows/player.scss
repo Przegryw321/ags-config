@@ -123,3 +123,25 @@
     border-radius: 10px;
   }
 }
+
+.playerwin-position {
+  padding: 1rem 0;
+  value {
+    font-size: 0;
+  }
+  trough {
+    background: rgba($surface2, 0.5);
+    border-radius: 99px;
+    min-height: .1rem;
+  }
+  highlight {
+    background: $green;
+  }
+  slider {
+    background: $green;
+    box-shadow: 0 0 5px $green;
+    &:hover {
+      box-shadow: 0 0 10px white;
+    }
+  }
+}
