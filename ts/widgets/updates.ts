@@ -13,7 +13,7 @@ export const UpdateTooltip = (max_length: number = 65) => Archlinux.bind('update
     const longest_name = updates.reduce((a, b) => (a && a.name.length > b.name.length) ? a : b).name.length;
     const longest_from = updates.reduce((a, b) => (a && a.from.length > b.from.length) ? a : b).from.length;
 
-    output += '<span font_family="Cascadia Code">';
+    output = `<span font_family="monospace">${output}`;
     updates.forEach(update => {
       switch (update.name) {
         case 'linux':
