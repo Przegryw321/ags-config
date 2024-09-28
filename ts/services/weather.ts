@@ -294,7 +294,7 @@ class CurrentWeather extends Service {
     this.options = params.options;
 
     this.checkWeather().catch(console.error);
-    Utils.timeout(INTERVAL, () => this.checkWeather());
+    Utils.interval(INTERVAL, () => this.checkWeather());
   }
 
   /**
@@ -390,7 +390,7 @@ class WeatherForecast extends Service {
     this.options = params.options;
 
     this.checkForecast().catch(console.error);
-    Utils.timeout(INTERVAL, () => this.checkForecast());
+    Utils.interval(INTERVAL, () => this.checkForecast());
   }
 
   /**
