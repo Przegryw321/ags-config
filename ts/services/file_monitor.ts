@@ -1,5 +1,4 @@
 import Gio from 'gi://Gio';
-import { FileInfo } from 'types/@girs/gio-2.0/gio-2.0.cjs';
 
 import Config from './config';
 import { md5 } from '../lib/utils';
@@ -88,7 +87,7 @@ class FileMonitor extends Service {
     const dir      = Gio.File.new_for_path(this.#themesDir);
     const children = dir.enumerate_children('', Gio.FileQueryInfoFlags.NONE, null);
 
-    let file: FileInfo | null = null;
+    let file: Gio.FileInfo | null = null;
     let themes: string[] = [];
     while (file = children.next_file(null)) {
       if (file.get_file_type() & Gio.FileType.DIRECTORY) {
@@ -111,7 +110,7 @@ class FileMonitor extends Service {
 
     const children = dir.enumerate_children('standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
 
-    let file: FileInfo | null = null;
+    let file: Gio.FileInfo | null = null;
     let wallpapers: WallpaperInfo[] = [];
     while (file = children.next_file(null)) {
       switch (file.get_content_type()) {
