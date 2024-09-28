@@ -109,17 +109,23 @@ class FileMonitor extends Service {
       return;
     }
 
-    const children = dir.enumerate_children('', Gio.FileQueryInfoFlags.NONE, null);
+    const children = dir.enumerate_children('standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
 
     let file: FileInfo | null = null;
     let wallpapers: WallpaperInfo[] = [];
     while (file = children.next_file(null)) {
+      switch (file.get_content_type()) {
+        case 'image/png':
+        case 'image/jpeg':
+          break;
+        default: continue;
+      }
       const name      = file.get_name();
       const fullpath  = `${path}/${name}`;
       const uri       = `file://${fullpath}`;
       const hash      = md5(uri);
       const thumbnail = `${App.configDir}/../../.cache/thumbnails/large/${hash}.png`;
-      this.requestThumbnail(fullpath, thumbnail);
+      await this.requestThumbnail(fullpath, thumbnail).catch(console.error);
       wallpapers.push({ thumbnail, path: fullpath });
     }
 
@@ -129,7 +135,7 @@ class FileMonitor extends Service {
   async requestThumbnail(path: string, thumbnail: string) {
     const file = Gio.File.new_for_path(thumbnail);
     if (!file.query_exists(null)) {
-      Utils.execAsync(`gdk-pixbuf-thumbnailer ${path} ${thumbnail}`).catch(console.error);
+      return Utils.execAsync(`gdk-pixbuf-thumbnailer ${path} ${thumbnail}`);
     }
   }
 }
