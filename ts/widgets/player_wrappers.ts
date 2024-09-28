@@ -1,5 +1,6 @@
 import { MprisPlayer } from 'resource:///com/github/Aylur/ags/service/mpris.js';
 import Gtk from 'gi://Gtk?version=3.0';
+import { has_key_containing } from '../lib/utils';
 const Mpris = await Service.import('mpris');
 
 export const PLAYERCTLD = 'org.mpris.MediaPlayer2.playerctld';
@@ -13,22 +14,26 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
   homogeneous: false,
 
   setup: self => {
+    // Some players (like firefox) have multiple instances so the players need
+    // to be identified via busname instead of just the name/entry property.
+    // Playerctld does not give the busname so we need to look for it manually.
+
     let activePlayer = <string | null> null;
 
     Mpris.players.forEach(player => {
-      const name = player.entry || player.name;
       if (player.bus_name === PLAYERCTLD) {
         // Set the active player to be in sync with playerctld.
         // We need to set it later, because there is no guarantee that the
         // widget has been created yet.
-        activePlayer = name;
+        activePlayer = player.entry;
         return;
       }
-      console.log('name1:', name);
-      self.add_named(widgetCreator(player, props), name);
+      self.add_named(widgetCreator(player, props), player.bus_name);
     });
 
-    self.set_visible_child_name(activePlayer)
+    if (activePlayer) {
+      self.set_visible_child_name(has_key_containing(self.children, activePlayer) ?? null);
+    }
 
     self
       .hook(Mpris, (self, busname: string) => {
@@ -37,23 +42,23 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
         const player = Mpris.getPlayer(busname);
         if (!player) return;
 
-        const name = player.entry || player.name;
+        const name = busname === PLAYERCTLD ? player.entry : busname;
+        const key  = has_key_containing(self.children, name);
 
-        if (self.get_child_by_name(name)) {
-          if (self.get_visible_child_name() !== name) {
-            self.set_visible_child_name(name);
+        if (key) {
+          if (self.get_visible_child_name() !== key) {
+            self.set_visible_child_name(key);
           }
-        } else if (player.name !== 'playerctld') {
+        } else if (busname !== PLAYERCTLD) {
           // omit actually using playerctld, because it will get stuck on it and
           // the transition animation won't play
-          console.log('name2:', name);
-          self.add_named(widgetCreator(player, props), name);
+          self.add_named(widgetCreator(player, props), busname);
         }
       }, 'player-changed')
       .hook(Mpris, (self, busname: string) => {
         if (!busname) return;
-        const name = busname.slice(busname.lastIndexOf('.') + 1);
-        self.get_child_by_name(name)?.destroy();
+        // need to delete like this in order to remove the busname from the keys
+        delete self.children[busname];
       }, 'player-closed');
   }
 });

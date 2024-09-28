@@ -55,6 +55,16 @@ export const get_property = (context: Gtk.StyleContext, property: string) => {
 */
 export const timestamp_to_time = (timestamp: number | undefined) => GLib.DateTime.new_from_unix_local(timestamp ?? 0).format('%H:%M') ?? 'null';
 
+/*
+ * Check if an object has a key containing a given string.
+ * Returns the key if found and undefined if not.
+ * @param obj - the object to look through.
+ * @param str - the string to search for.
+*/
+export const has_key_containing = (obj: object, str: string): string | undefined => {
+  return Object.keys(obj).find(key => key.includes(str));
+};
+
 /**
  * Get md5 hash from data
 */
