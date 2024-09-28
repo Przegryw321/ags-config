@@ -124,7 +124,7 @@ class FileMonitor extends Service {
       const uri       = `file://${fullpath}`;
       const hash      = md5(uri);
       const thumbnail = `${App.configDir}/../../.cache/thumbnails/large/${hash}.png`;
-      await this.requestThumbnail(fullpath, thumbnail).catch(console.error);
+      this.requestThumbnail(fullpath, thumbnail).catch(console.error);
       wallpapers.push({ thumbnail, path: fullpath });
     }
 
