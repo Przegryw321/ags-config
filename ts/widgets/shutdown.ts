@@ -22,6 +22,7 @@ export const Shutdown = ({ ...props } = {}) => Widget.Label({
         self.attribute.id = null;
       }
       self.label = '';
+      self.width_chars = 0;
       return;
     }
 
