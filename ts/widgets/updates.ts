@@ -16,8 +16,10 @@ export const UpdateTooltip = (max_length: number = 65) => Archlinux.bind('update
     output = `<span font_family="monospace">${output}`;
     updates.forEach(update => {
       switch (update.name) {
+      // anticipated updates
         case 'linux':
         case 'nvidia':
+        case 'hyprland':
           output += `\n<span fgcolor="#a6e3a1">${update.name.padEnd(longest_name)} ${update.from.padEnd(longest_from)} -> ${update.to}</span>`;
           break;
         default:
