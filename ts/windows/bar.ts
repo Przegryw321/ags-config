@@ -94,18 +94,20 @@ export const Bar = async (monitor: number = 0) => Widget.Window({
     Config.add('bar_corner_radius', 10);
 
     self.hook(Config, self => {
+      const startmenu_button = self.child.children[0]?.children[0];
       if (Config.options['bar_floating']) {
         const m = Config.options['bar_margin'];
         const r = Config.options['bar_corner_radius'];
         self.margins = [m, m, 0, m];
         self.css = `border-radius: ${r}px;`;
 
-        const startmenu_button = self.child.children[0]?.children[0];
         if (startmenu_button)
           startmenu_button.css = `border-radius: ${r}px 0 0 ${r}px;`;
       } else {
         self.margins = [0];
         self.css = 'border-radius: 0;';
+        if (startmenu_button)
+          startmenu_button.css = 'border-radius: 0;';
       }
     });
   }
