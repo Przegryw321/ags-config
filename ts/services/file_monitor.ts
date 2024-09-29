@@ -1,4 +1,5 @@
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 import Config from './config';
 import { md5 } from '../lib/utils';
@@ -123,7 +124,7 @@ class FileMonitor extends Service {
       const fullpath  = `${path}/${name}`;
       const uri       = `file://${fullpath}`;
       const hash      = md5(uri);
-      const thumbnail = `${App.configDir}/../../.cache/thumbnails/large/${hash}.png`;
+      const thumbnail = `${GLib.get_user_cache_dir()}/thumbnails/large/${hash}.png`;
       this.requestThumbnail(fullpath, thumbnail).catch(console.error);
       wallpapers.push({ thumbnail, path: fullpath });
     }
