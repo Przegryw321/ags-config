@@ -53,5 +53,9 @@ $crust: #11111b;
 .pressure { color: $mauve; }
 .clouds { color: $teal; }
 
+// network: connection
+.connecting { color: $yellow; }
+.disconnected { color: $red; }
+
 // other
 .time { color: $lavender; }

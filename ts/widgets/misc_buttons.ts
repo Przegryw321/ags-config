@@ -2,6 +2,7 @@ import { screenshot_monitor, screenshot_region, screenshot_window } from "../lib
 import { LabelButton } from "./button";
 import { Menu, MenuLabel } from "./menu";
 import { UpdateIcon, UpdateTooltip } from "./updates";
+import { NetworkIcon } from './network';
 
 import Archlinux from "../services/archlinux";
 
@@ -36,6 +37,13 @@ export const UpdatesNotification = ({ ... props} = {}) => Widget.Box({
   vpack: 'center',
 });
 
+export const NetworkButton = ({ ...props } = {}) => Widget.Button({
+  ...props,
+  child: NetworkIcon(),
+  vpack: 'center',
+  onPrimaryClick: () => App.toggleWindow('network'),
+});
+
 export const MiscButtons = ({ ...props } = {}) => Widget.Box({
   ...props,
   spacing: 3,
@@ -43,5 +51,6 @@ export const MiscButtons = ({ ...props } = {}) => Widget.Box({
     UpdatesNotification({ className: 'updates' }),
     ScreenshotButton({ className: 'screenshot' }),
     SettingsButton({ className: 'settings' }),
+    NetworkButton({ className: 'network' }),
   ],
 });
