@@ -1,5 +1,5 @@
 import { MprisPlayer } from 'resource:///com/github/Aylur/ags/service/mpris.js';
-import { PLAYERCTLD } from './player_wrappers';
+import ActivePlayer from '../services/active_player';
 const Mpris = await Service.import('mpris');
 
 export const PausedIcon = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
@@ -143,10 +143,10 @@ export const ShiftButton = ({ ...props } = {}) => Widget.Button({
     label: '\ue5f2',
   }),
 
-  onClicked: () => Utils.execAsync('playerctld shift'),
+  onClicked: () => ActivePlayer.shift(),
 
   setup: self => self.hook(Mpris, self => {
-    self.visible = Mpris.players.filter(p => p.bus_name !== PLAYERCTLD).length > 1;
+    self.visible = Mpris.players.length > 1;
   }),
 });
 
@@ -167,7 +167,6 @@ export const PlayerPosition = (player: MprisPlayer, { ...props } = {}) => Widget
   onChange: ({ value }) => player.position = value,
 
   setup: self => self.poll(1000, self => {
-    console.log(player.name, player.position);
     self.value = player.position;
   }),
 });

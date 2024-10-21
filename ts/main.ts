@@ -8,6 +8,7 @@ import { Wallpaper } from './windows/wallpaper';
 import { WeatherWindow } from './windows/weather_window';
 
 import Config from './services/config';
+import ActivePlayer from './services/active_player';
 import { auto_scss_reload } from './scss';
 
 Config.add('theme', 'catppuccin_mocha');
@@ -33,6 +34,10 @@ const windows = [
 ];
 
 globalThis.Config = Config;
+globalThis.playPause = () => ActivePlayer.playPause();
+globalThis.next      = () => ActivePlayer.next();
+globalThis.previous  = () => ActivePlayer.previous();
+globalThis.shift     = () => ActivePlayer.shift();
 
 App.config({
   windows: await Promise.all(windows),

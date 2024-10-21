@@ -47,7 +47,8 @@ const PlayerBottomHalf = (player: MprisPlayer) => Widget.CenterBox({
   }),
 });
 
-const PlayerWindowLayout = (player: MprisPlayer) => Widget.Box({
+const PlayerWindowLayout = (player: MprisPlayer, { ...props } = {}) => Widget.Box({
+  ...props,
   className: 'playerwin-layout',
   vertical: true,
 
