@@ -14,6 +14,7 @@ import { MiscButtons } from '../widgets/misc_buttons';
 import { Separator } from '../widgets/misc_widgets';
 
 const Mpris = await Service.import('mpris');
+const SystemTray = await Service.import('systemtray');
 
 const LeftRight = () => Widget.Box({
   hexpand: true,
@@ -69,7 +70,9 @@ const Right = () => Widget.Box({
     RightLeft(),
     ShutdownLeft({ className: 'bar-shutdown' }),
     Systray({ className: 'systray' }),
-    Separator(),
+    Separator({
+      visible: SystemTray.bind('items').as(items => items.length > 0),
+    }),
     MiscButtons({ className: 'bar-misc-buttons' }),
     Separator(),
     BarTime({ className: 'bartime' }),
