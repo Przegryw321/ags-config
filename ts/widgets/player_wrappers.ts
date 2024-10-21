@@ -17,7 +17,11 @@ export const ActivePlayerWrapper = (widgetCreator: (player: MprisPlayer, props: 
     Mpris.players.forEach(player => {
       self.add_named(widgetCreator(player, props), player.bus_name);
     });
-    self.set_visible_child_name(ActivePlayer.player?.bus_name ?? null);
+
+    const name = ActivePlayer.player?.bus_name ?? '';
+    if (self.children.hasOwnProperty(name)) {
+      self.set_visible_child_name(name);
+    }
 
     self
       .hook(Mpris, (self, busname: string) => {
