@@ -1,5 +1,4 @@
 import { Bar } from './windows/bar';
-import { BarSecondary } from './windows/bar_secondary';
 import { StartMenu } from './windows/startmenu';
 import { Clickaway } from './windows/clickaway';
 import { PlayerWindow } from './windows/player';
@@ -24,10 +23,8 @@ const clickaway_windows = [
 ];
 const windows = [
   Bar(),
-  BarSecondary(),
   StartMenu(),
   Clickaway(0, clickaway_windows),
-  Clickaway(1, clickaway_windows),
   PlayerWindow(),
   VolumePopup(),
   Settings(),

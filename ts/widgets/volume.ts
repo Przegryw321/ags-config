@@ -1,9 +1,8 @@
 import Gtk from 'gi://Gtk?version=3.0';
 const Audio = await Service.import('audio');
 
-export const AUDIO_CARD     = "alsa_output.pci-0000_09_00.3.analog-stereo";
-export const HEADPHONE_PORT = "analog-output-headphones";
-export const SPEAKER_PORT   = "analog-output-lineout";
+export const HEADPHONES = "alsa_output.pci-0000_09_00.3.analog-stereo";
+export const SPEAKERS   = "alsa_output.pci-0000_07_00.1.hdmi-stereo";
 
 export const HEADPHONE_ICON       = '\udb80\udecb';
 export const HEADPHONE_MUTED_ICON = '\udb81\udfce';
@@ -25,13 +24,13 @@ export const OutputDeviceIcon = ({ ...props } = {}) => Widget.Label({
   label: '?',
 
   setup: self => self.hook(Audio.speaker, self => {
-    const port  = Audio.speaker.stream?.port;
+    const port  = Audio.speaker.stream?.name;
     const muted = Audio.speaker.stream?.is_muted;
     switch (port) {
-      case HEADPHONE_PORT:
+      case HEADPHONES:
         self.label = muted ? HEADPHONE_MUTED_ICON : HEADPHONE_ICON;
         break;
-      case SPEAKER_PORT:
+      case SPEAKERS:
         self.label = muted ? SPEAKER_MUTED_ICON   : SPEAKER_ICON;
         break;
       default:
@@ -46,10 +45,10 @@ export const ToggleOutputButton = (child: Gtk.Widget, { ...props} = {}) => Widge
   child,
 
   onClicked: () => {
-    if (Audio.speaker.stream?.port === HEADPHONE_PORT) {
-      Audio.speaker.stream.port = SPEAKER_PORT;
-    } else if (Audio.speaker.stream?.port === SPEAKER_PORT) {
-      Audio.speaker.stream.port = HEADPHONE_PORT;
+    if (Audio.speaker.stream?.name === HEADPHONES) {
+      Audio.speaker.stream.port = SPEAKERS;
+    } else if (Audio.speaker.stream) {
+      Audio.speaker.stream.port = HEADPHONES;
     }
   },
 });
