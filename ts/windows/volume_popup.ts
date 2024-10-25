@@ -40,7 +40,7 @@ export const VolumePopup = async (monitor: number | undefined = undefined) => Wi
 
   attribute: {
     timeoutId: <Source | null> null,
-    counter: 2, // amount of events to ignore at startup
+    counter: 1, // amount of events to ignore at startup
     lastVolume: 0,
     lastPort: <string | null | undefined> null,
   },
