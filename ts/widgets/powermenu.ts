@@ -12,7 +12,7 @@ const PowerButton = (name: string, tooltip: string, label: string, cmd: (_: any,
 const logout_menu = Menu([
   MenuLabel('Wyloguj się', () => {
     App.closeWindow('startmenu');
-    Hyprland.messageAsync('exit');
+    Hyprland.messageAsync('dispatch exit');
   }),
   MenuLabel('Anuluj'),
 ]);
