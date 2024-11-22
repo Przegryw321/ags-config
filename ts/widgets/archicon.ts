@@ -1,4 +1,4 @@
 export const ArchIcon = ({ ...rest } = {}) => Widget.Icon({
   ...rest,
-  icon: 'archlinux-logo',
+  icon: '/home/jakub/.config/ags/Genchu.png',
 });
