@@ -12,9 +12,8 @@ export const Emerge: Variable<EmergeStatus | null> = Variable(null)
 
 async function check_log(path: string): Promise<void> {
     return readFileAsync(path).then(contents => {
-        const lines      = contents.split('\n')
-        const last       = lines[lines.length - 2]
-        const words      = last.split(' ')
+        const last  = contents.slice(contents.lastIndexOf('\n', contents.length - 2))
+        const words = last.split(' ')
 
         switch (words[2]) {
             case '===':
