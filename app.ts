@@ -7,7 +7,6 @@ import GLib from "gi://GLib"
 import Bar from "./windows/bar"
 import Startmenu from "./windows/startmenu"
 
-
 const theme = "./themes/catppuccin_mocha"
 const scss = `${theme}/style.scss`
 const css = `${GLib.get_user_runtime_dir()}/ags_style.css`

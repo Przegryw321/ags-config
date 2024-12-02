@@ -19,14 +19,15 @@ export default async function Startmenu(): Promise<JSX.Element> {
     const anchor = Astal.WindowAnchor.TOP | Astal.WindowAnchor.LEFT
 
     return <window name="startmenu"
+                   className="startmenu-window"
                    namespace="startmenu"
                    anchor={anchor}
                    visible={false}
                    margin={15}
                    application={App}>
-        <box className="startmenu" css="min-width: 50rem; min-height: 20rem;">
+        <box className="startmenu" css="min-height: 20rem;">
             <Left className="startmenu-left"/>
-            <Right className="startmenu-right"/>
+            <Right className="startmenu-right" css="margin-right: 1rem;"/>
         </box>
     </window>
 }
