@@ -1,4 +1,5 @@
 import { Variable, monitorFile, readFileAsync, bind } from "astal"
+import Gio from "gi://Gio"
 
 export const EMERGE_LOG = "/var/log/emerge.log"
 
@@ -10,7 +11,9 @@ export interface EmergeStatus {
 
 export const Emerge: Variable<EmergeStatus | null> = Variable(null)
 
-async function check_log(path: string): Promise<void> {
+async function check_log(path: string, event?: Gio.FileMonitorEvent): Promise<void> {
+    if (event !== undefined && event !== Gio.FileMonitorEvent.CHANGED) return
+
     return readFileAsync(path).then(contents => {
         const last  = contents.slice(contents.lastIndexOf('\n', contents.length - 2))
         const words = last.split(' ')

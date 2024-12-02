@@ -63,10 +63,7 @@
     .emerge {
         font-weight: bold;
     }
-    .current {
-        color: $yellow;
-    }
-    .count {
+    .current, .count {
         color: $yellow;
     }
     .name {
@@ -86,8 +83,4 @@
 .bar-network {
     color: $text;
     font-size: 1.4rem;
-}
-
-.current {
-    color: red;
 }
