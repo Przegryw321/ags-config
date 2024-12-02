@@ -1,0 +1,93 @@
+.bar {
+    font-family: Cabin, Noto Sans Emoji;
+    background: $crust;
+}
+
+.bar-contents {
+    padding: .4rem;
+    padding-left: .3rem;
+}
+
+.workspaces {
+    font-family: Baloo;
+    border-color: $mantle;
+    border-radius: 1rem;
+    padding: .7rem .3rem;
+}
+
+.workspace {
+    min-width: 2rem;
+    margin-top: 1px;
+}
+
+.workspace-occupied {
+    color: $text;
+    background: lighten($base, 5%);
+}
+
+// gradient: background -> border-color
+.workspace-active {
+    color: $crust;
+    background: $blue;
+    border-color: $mauve;
+    padding: .1rem;
+}
+
+.startmenu-button {
+    @extend .hover;
+}
+
+.bar-clock {
+    font-weight: bold;
+}
+
+.bar-player-summary {
+    .album {
+        border-radius: .3rem;
+    }
+    .pause-icon {
+        background: rgba(black, 0.8);
+        border-radius: .4rem;
+    }
+    .artist {
+        color: $subtext;
+    }
+}
+
+.bar-shutdown {
+    font-family: monospace;
+    color: $red;
+}
+
+.bar-emerge {
+    .emerge {
+        font-weight: bold;
+    }
+    .current {
+        color: $yellow;
+    }
+    .count {
+        color: $yellow;
+    }
+    .name {
+        color: $green;
+    }
+}
+
+.bar-active-window {
+    font-style: italic;
+    color: $subtext1;
+}
+
+.bar-systray {
+    @extend .groove;
+}
+
+.bar-network {
+    color: $text;
+    font-size: 1.4rem;
+}
+
+.current {
+    color: red;
+}

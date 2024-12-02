@@ -1,0 +1,43 @@
+* {
+    all: unset;
+}
+
+@import "./colors.scss";
+@import "./mixins.scss";
+
+window {
+    color: $text;
+}
+
+tooltip {
+    @extend .border, .hover;
+    color: $text;
+    background: $mantle;
+    border-radius: .3rem;
+}
+
+menu {
+    @extend .border;
+    font-family: Cabin;
+    border-radius: .5rem;
+
+    padding: .4rem;
+
+    color: $text;
+    background: $mantle;
+
+    menuitem {
+        @extend .hover;
+        padding: inherit;
+        border-radius: inherit;
+    }
+
+    separator {
+        border-bottom: 1px solid $surface0;
+        margin: .3rem 0;
+    }
+}
+
+
+@import "bar.scss";
+@import "startmenu.scss";
