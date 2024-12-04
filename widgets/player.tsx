@@ -1,8 +1,9 @@
 import { bind } from "astal"
 import { Astal, Gtk } from "astal/gtk3"
 import { WidgetProps } from "../utils/widget"
+import { ActivePlayer } from "../variables/player"
 import Mpris from "gi://AstalMpris"
-const mpris = Mpris.get_default()
+import mpris from "../utils/player"
 
 export import PlaybackStatus = Mpris.PlaybackStatus
 
@@ -16,14 +17,6 @@ export type PlayerWidgetProps = WidgetProps & {
 
 type WidgetConstructor = (props: PlayerWidgetProps) => Gtk.Widget
 
-function add_player(stack: Astal.Stack, widget: any, player: Mpris.Player): void {
-    stack.add_named(widget(player), player.busName)
-    stack.hook(player, 'notify', self => {
-        if (self.get_child_by_name(player.busName))
-            self.set_visible_child_name(player.busName)
-    })
-}
-
 type ActivePlayerWrapperProps = WidgetProps & {
     constructor: WidgetConstructor
     props: WidgetProps
@@ -32,20 +25,24 @@ export function ActivePlayerWrapper({ constructor, props, ...mainProps }: Active
     const construct = (player: Mpris.Player) => constructor({ player, ...props })
 
     return <stack setup={(self) => {
-        let name = ''
-        for (const player of mpris.get_players()) {
-            add_player(self, construct, player)
-            name = player.busName
-        }
+        const players = mpris.get_players()
 
-        if (name) self.set_visible_child_name(name)
+        for (const player of players)
+            self.add_named(construct(player), player.busName)
+
+        if (players.length > 0)
+            self.set_visible_child_name(players[players.length - 1].busName)
 
         self
             .hook(mpris, 'player-added', (self, player) => {
-                add_player(self, construct, player)
+                self.add_named(construct(player), player.busName)
             })
             .hook(mpris, 'player-closed', (self, player) => {
                 self.get_child_by_name(player.busName)?.destroy()
+            })
+            .hook(ActivePlayer, (self, active) => {
+                if (active)
+                    self.set_visible_child_name(active.busName)
             })
     }} {...mainProps}/>
 }
