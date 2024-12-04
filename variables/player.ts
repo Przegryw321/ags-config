@@ -17,5 +17,9 @@ export const ActivePlayer = Variable(null as AstalMpris.Player | null)
     })
 
 const players = Mpris.get_players()
+
+for (const player of players)
+    ActivePlayer.observe(player, 'notify', player => player)
+
 if (players.length > 0)
     ActivePlayer.set(players[players.length - 1])

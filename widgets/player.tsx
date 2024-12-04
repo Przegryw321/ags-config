@@ -47,38 +47,38 @@ export function ActivePlayerWrapper({ constructor, props, ...mainProps }: Active
     }} {...mainProps}/>
 }
 
-export function TALabel({ player, halign, valign, ...props }: PlayerWidgetProps): JSX.Element {
-    return <box orientation={Gtk.Orientation.VERTICAL} setup={(self) => self.hook(player, 'notify', self => {
-        const title = player.title
-        const artist = player.artist
-        if (title === null || artist === null) return
+// Japanese fonts take up space differently than latin ones.
+// These hacks are to make the the text look properly centered, and have the
+// lines be at a pleasing distance form each other.
+async function set_label_hack(label: Astal.Label, text: string, isTop: boolean): Promise<void> {
+    label.visible = Boolean(text)
+    if (!label.visible) return
+    label.label = text
 
+    if (has_jp_chars(text)) {
+        if (isTop) {
+            label.css = "font-family: VL Gothic; margin-bottom: -.2rem; margin-top: -.1rem;"
+        } else {
+            label.css = "font-family: VL Gothic; margin-top: -.2rem; margin-bottom: -.2rem;"
+        }
+    } else {
+        label.css = ""
+    }
+}
+
+export function TALabel({ player, halign, valign, ...props }: PlayerWidgetProps): JSX.Element {
+    return <box orientation={Gtk.Orientation.VERTICAL} setup={(self) => {
         const titleLabel = self.children[0] as Astal.Label
         const artistLabel = self.children[1] as Astal.Label
 
-        const isTitleJP = has_jp_chars(title)
-        const isArtistJP = has_jp_chars(artist)
+        set_label_hack(titleLabel, player.title, true)
+        set_label_hack(artistLabel, player.artist, false)
 
-        titleLabel.label = title
-        artistLabel.label = artist
-
-        titleLabel.visible = Boolean(title)
-        artistLabel.visible = Boolean(artist)
-
-        // Japanese fonts take up space differently than latin ones.
-        // These hacks are to make the the text look properly centered, and have the
-        // lines be at a pleasing distance form each other.
-        if (isTitleJP) {
-            titleLabel.css = "font-family: VL Gothic; margin-bottom: -.2rem; margin-top: -.1rem;"
-        } else {
-            titleLabel.css = ""
-        }
-        if (isArtistJP) {
-            artistLabel.css = "font-family: VL Gothic; margin-top: -.2rem; margin-bottom: -.2rem;"
-        } else {
-            artistLabel.css = ""
-        }
-    })} {...props}>
+        self.hook(player, 'notify', _ => {
+            set_label_hack(titleLabel, player.title, true)
+            set_label_hack(artistLabel, player.artist, false)
+        })
+    }} {...props}>
         <label className="title" halign={halign} valign={valign}/>
         <label className="artist" halign={halign} valign={valign}/>
     </box>

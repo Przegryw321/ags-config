@@ -27,6 +27,17 @@ export async function next(): Promise<void> {
     ActivePlayer.get()?.next()
 }
 
+export async function shift(step: number = 1): Promise<void> {
+    const player = ActivePlayer.get()
+    if (!player) return
+
+    const players = Mpris.get_players()
+    const index = players.indexOf(player)
+    const length = players.length
+
+    ActivePlayer.set(players[((index + step) % length + length) % length])
+}
+
 export const PlayerControlObj: { [key: string]: () => Promise<void> } = {
     pause,
     play,
@@ -34,6 +45,8 @@ export const PlayerControlObj: { [key: string]: () => Promise<void> } = {
     stop,
     previous,
     next,
+    shift,
+    unshift: () => shift(-1),
 }
 
 export default Mpris
