@@ -61,7 +61,7 @@ export function DateTimeClassLabel({ format, classFunc, ...props }: DateTimeClas
                 className={ignoreNull(label)}
                 setup={(self) => self.hook(Now, self => {
                   self.label = now_format(format)
-                  self.className = ignoreNull(label)
+                  self.className = ignoreNull(self.label)
                 })} {...props}/>
 }
 
