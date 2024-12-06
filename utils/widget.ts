@@ -1,19 +1,23 @@
 import { Gtk } from "astal/gtk3"
+import { Binding } from "astal"
+
+export type Bindable<Type> = Type | Binding<Type>
 
 export type WidgetProps = {
-    className?: string
-    css?: string
-    halign?: Gtk.Align
-    valign?: Gtk.Align
-    hexpand?: boolean
-    vexpand?: boolean
-    tooltipText?: string
-    tooltipMarkup?: string
+    className?: Bindable<string>
+    css?: Bindable<string>
+    halign?: Bindable<Gtk.Align>
+    valign?: Bindable<Gtk.Align>
+    hexpand?: Bindable<boolean>
+    vexpand?: Bindable<boolean>
+    visible?: Bindable<boolean>
+    tooltipText?: Bindable<string>
+    tooltipMarkup?: Bindable<string>
 }
 
 export type LabelProps = WidgetProps & {
-    label?: string
-    truncate?: boolean
+    label?: Bindable<string>
+    truncate?: Bindable<boolean>
 }
 
 export type ContainerProps = WidgetProps & {
@@ -22,6 +26,6 @@ export type ContainerProps = WidgetProps & {
 }
 
 export type BoxProps = ContainerProps & {
-    orientation?: Gtk.Orientation
-    spacing?: number
+    orientation?: Bindable<Gtk.Orientation>
+    spacing?: Bindable<number>
 }

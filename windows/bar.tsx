@@ -4,9 +4,8 @@ import StartmenuIcon from "../widgets/bar/startmenu_icon"
 import BarDate from "../widgets/bar/bardate"
 import BarPlayer from "../widgets/bar/barplayer"
 import BarNetwork from "../widgets/bar/barnetwork"
-import BarShutdown from "../widgets/bar/barshutdown"
 import Systray from "../widgets/bar/systray"
-import EmergeStatus from "../widgets/emerge"
+import SystemProcess from "../widgets/bar/systemprocess"
 import { ActivePlayerWrapper } from "../widgets/player"
 import { ActiveWindowTitle } from "../widgets/bar/activewindow"
 import { WidgetProps, ContainerProps } from "../utils/widget"
@@ -18,10 +17,9 @@ function Content({ child, children, ...props }: ContainerProps): JSX.Element {
     </box>
 }
 
-//<BarShutdown className="bar-shutdown" hexpand halign={halign} valign={valign}/>
 function Status({ halign, valign, ...props }: WidgetProps): JSX.Element {
     return <box orientation={Gtk.Orientation.VERTICAL} halign={halign} valign={valign} {...props}>
-        <EmergeStatus className="bar-emerge" halign={halign} valign={valign}/>
+        <SystemProcess className="bar-system-process"/>
         <ActiveWindowTitle className="bar-active-window" hexpand halign={halign} valign={valign}/>
     </box>
 }

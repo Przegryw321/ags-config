@@ -54,20 +54,22 @@
     }
 }
 
-.bar-shutdown {
-    font-family: monospace;
-    color: $red;
-}
+.bar-system-process {
+    .shutdown {
+        font-family: monospace;
+        color: $red;
+    }
 
-.bar-emerge {
     .emerge {
-        font-weight: bold;
-    }
-    .current, .count {
-        color: $yellow;
-    }
-    .name {
-        color: $green;
+        .emerge {
+            font-weight: bold;
+        }
+        .current, .count {
+            color: $yellow;
+        }
+        .name {
+            color: $green;
+        }
     }
 }
 
