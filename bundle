@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [[ -n "$(git status -s)" ]]; then
+if [ -n "$(git status -s)" ]; then
   echo "Working tree is dirty, cannot bundle (try commiting changes)."
   exit 1
 fi
