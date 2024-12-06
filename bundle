@@ -8,7 +8,7 @@ fi
 entry="${1:-app.ts}"
 outfile="${2:-ui}"
 
-sed -i $entry '/scss_auto_reload"$/d'
+sed -i '/scss_auto_reload"$/d' $entry
 
 ags bundle "$entry" "$outfile"
 
