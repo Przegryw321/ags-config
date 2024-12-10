@@ -21,11 +21,17 @@ export default async function VolumePopup(): Promise<JSX.Element> {
                    margin={20}
                    anchor={Astal.WindowAnchor.TOP}
                    layer={Astal.Layer.OVERLAY}
-                   setup={(self) => self.hook(bind(Speaker, "volume"), self => {
-                       self.visible = true
-                       self.timer?.cancel()
-                       self.timer = timeout(TIMEOUT, () => self.visible = false)
-                   })}>
+                   setup={(self) => {
+                       self.counter = 1
+                       self.hook(bind(Speaker, "volume"), self => {
+                           if (self.counter > 0) {
+                               --self.counter
+                               return
+                           }
+                           self.visible = true
+                           self.timer?.cancel()
+                           self.timer = timeout(TIMEOUT, () => self.visible = false)
+                   })}}>
         <box className="volpop"
              orientation={Gtk.Orientation.VERTICAL}
              spacing={5}
