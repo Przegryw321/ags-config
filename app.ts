@@ -3,6 +3,7 @@ import { App } from "astal/gtk3"
 
 import Bar from "./windows/bar"
 import Startmenu from "./windows/startmenu"
+import VolumePopup from "./windows/volumepopup"
 
 import { PlayerControlObj } from "./utils/player"
 
@@ -15,6 +16,7 @@ App.start({
     main() {
         Bar().catch(printerr)
         Startmenu().catch(printerr)
+        VolumePopup().catch(printerr)
     },
     requestHandler(request: string, res: (response: any) => void) {
         // HACK: can't figure out what tsconfig option makes the lsp accept this function

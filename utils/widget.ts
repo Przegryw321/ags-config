@@ -1,4 +1,4 @@
-import { Gtk } from "astal/gtk3"
+import { Astal, Gtk } from "astal/gtk3"
 import { Binding } from "astal"
 
 export type Bindable<Type> = Type | Binding<Type>
@@ -13,6 +13,11 @@ export type WidgetProps = {
     visible?: Bindable<boolean>
     tooltipText?: Bindable<string>
     tooltipMarkup?: Bindable<string>
+    cursor?: string
+}
+
+export type OrientableProps = WidgetProps & {
+    orientation?: Bindable<Gtk.Orientation>
 }
 
 export type LabelProps = WidgetProps & {
@@ -20,12 +25,17 @@ export type LabelProps = WidgetProps & {
     truncate?: Bindable<boolean>
 }
 
-export type ContainerProps = WidgetProps & {
+export type ContainerProps = OrientableProps & {
     child?: JSX.Element
     children?: Array<JSX.Element>
+    spacing?: Bindable<number>
 }
 
-export type BoxProps = ContainerProps & {
-    orientation?: Bindable<Gtk.Orientation>
-    spacing?: Bindable<number>
+export type SliderProps = OrientableProps & {
+    onDragged?: (self: Astal.Slider) => void
+    thickness?: number
+    length?: number
+    min?: Bindable<number>
+    max?: Bindable<number>
+    value?: Bindable<number>
 }

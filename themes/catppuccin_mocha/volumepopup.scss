@@ -1,0 +1,19 @@
+.volpop {
+    background: $base;
+
+    padding: .5rem;
+
+    border: 3px solid;
+    border-radius: .5rem;
+}
+
+.volpop-slider {
+    trough {
+        border-radius: .5rem;
+        background: $mantle;
+    }
+    highlight {
+        @extend trough;
+        @include gyr-gradient-background(to right, 8.7rem);
+    }
+}

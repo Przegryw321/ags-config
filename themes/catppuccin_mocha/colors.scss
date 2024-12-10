@@ -45,6 +45,11 @@ $subtext: $subtext0;
 .summer { color: darken($yellow, 20%); }
 .autumn { color: $peach; }
 
+// volume: level
+.low-volume { color: $green; }
+.medium-volume { color: $yellow; }
+.high-volume { color: $red; }
+
 // weather: temperature
 .hot { color: $red; }
 .warm { color: $yellow; }
