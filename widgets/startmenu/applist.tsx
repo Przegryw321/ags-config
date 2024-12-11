@@ -19,7 +19,7 @@ type AppButtonProps = WidgetProps & {
     app: string
 }
 async function launch_app(app: string): Promise<string> {
-    App.get_window('startmenu')?.close()
+    App.get_window('startmenu')?.set_visible(false)
     return execAsync(app)
 }
 export function AppButton({ app, ...props }: AppButtonProps): JSX.Element {
