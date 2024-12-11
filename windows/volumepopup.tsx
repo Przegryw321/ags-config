@@ -1,12 +1,12 @@
 import { bind, timeout } from "astal"
 import { Astal, App, Gtk } from "astal/gtk3"
 
-import { Speaker } from "../utils/audio"
 import { VolumeSlider, VolumeLabel } from "../widgets/audio"
 
+import { Speaker } from "../utils/audio"
 import { get_property } from "../utils/draw"
-
 import { interpolate_colors, Color } from "../utils/math"
+import Hyprland from "../utils/hyprland"
 
 const dummyLow = <label className="low-volume"/>
 const dummyMedium = <label className="medium-volume"/>
@@ -21,17 +21,38 @@ export default async function VolumePopup(): Promise<JSX.Element> {
                    margin={20}
                    anchor={Astal.WindowAnchor.TOP}
                    layer={Astal.Layer.OVERLAY}
+                   exclusivity={Astal.Exclusivity.NORMAL}
                    setup={(self) => {
                        self.counter = 1
-                       self.hook(bind(Speaker, "volume"), self => {
-                           if (self.counter > 0) {
-                               --self.counter
-                               return
-                           }
-                           self.visible = true
-                           self.timer?.cancel()
-                           self.timer = timeout(TIMEOUT, () => self.visible = false)
-                   })}}>
+                       self
+                           .hook(bind(Speaker, "volume"), self => {
+                               // popup logic
+                               if (self.counter > 0) {
+                                   --self.counter
+                                   return
+                               }
+                               self.visible = true
+                               self.timer?.cancel()
+                               self.timer = timeout(TIMEOUT, () => self.visible = false)
+                           })
+                           .hook(Hyprland, 'event', (self, event, args) => {
+                               // ignore bar when fullscreen
+                               switch (event) {
+                                   case "fullscreen":
+                                       // using get_focused workspace doesn't work with fullscreen
+                                       // event for some reason
+                                       self.exclusivity = args === "0" ? Astal.Exclusivity.NORMAL
+                                                        : Astal.Exclusivity.IGNORE
+                                       break
+                                   case "workspacev2":
+                                       const ws = Hyprland.get_focused_workspace()
+                                       self.exclusivity = ws.hasFullscreen ? Astal.Exclusivity.IGNORE
+                                                        : Astal.Exclusivity.NORMAL
+                                       break
+
+                               }
+                           })
+                   }}>
         <box className="volpop"
              orientation={Gtk.Orientation.VERTICAL}
              spacing={5}
