@@ -23,7 +23,9 @@ async function launch_app(app: string): Promise<string> {
     return execAsync(app)
 }
 export function AppButton({ app, ...props }: AppButtonProps): JSX.Element {
-    return <button onClicked={() => launch_app(app)} tooltipText={`Uruchom ${app}`} {...props}>
+    return <button onClicked={() => launch_app(app)}
+                   tooltipText={`Uruchom ${app}`}
+                   cursor="pointer" {...props}>
         <box orientation={Gtk.Orientation.VERTICAL}>
             <icon icon={app} css="font-size: 4rem;"/>
             <label label={app} css="padding-top: .2rem;"/>

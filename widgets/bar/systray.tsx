@@ -1,6 +1,6 @@
 import { bind } from "astal"
-import { Astal } from "astal/gtk3"
-import { WidgetProps, BoxProps } from "../../utils/widget"
+import { Astal, Gdk } from "astal/gtk3"
+import { WidgetProps, ContainerProps } from "../../utils/widget"
 import AstalTray from "gi://AstalTray"
 import Tray from "../../utils/tray"
 
@@ -10,25 +10,25 @@ type SystrayItemProps = WidgetProps & {
 export function SystrayItem({ item, ...props }: SystrayItemProps): JSX.Element {
     const menu = item.create_menu()
 
-    return <eventbox onClickRelease={(_self, event) => {
-        switch (event.button) {
-            case Astal.MouseButton.PRIMARY:
-                item.activate(event.x, event.y)
-                break
-            case Astal.MouseButton.MIDDLE:
-                item.secondary_activate(event.x, event.y)
-                break
-            case Astal.MouseButton.SECONDARY:
-                menu?.popup_at_pointer(null)
-                break
-        }
-    }}
-                   {...props}>
+    return <button onDestroy={() => menu?.destroy()}
+                   onClickRelease={(self, event) => {
+                       switch (event.button) {
+                           case Astal.MouseButton.PRIMARY:
+                               item.activate(event.x, event.y)
+                               break
+                            case Astal.MouseButton.MIDDLE:
+                               item.secondary_activate(event.x, event.y)
+                               break
+                           case Astal.MouseButton.SECONDARY:
+                               menu?.popup_at_widget(self, Gdk.Gravity.SOUTH, Gdk.Gravity.NORTH, null)
+                               break
+                       }
+                   }} {...props}>
         <icon icon={item.iconName}/>
-    </eventbox>
+    </button>
 }
 
-export default function Systray(props: BoxProps): JSX.Element {
+export default function Systray(props: ContainerProps): JSX.Element {
     const itemProps = {
         css: "font-size: 1.5rem;",
     }

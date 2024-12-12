@@ -1,38 +1,76 @@
-import { Astal, Widget } from "astal/gtk3"
-import { WidgetProps, BoxProps } from "../../utils/widget"
+import { App, Astal, Widget } from "astal/gtk3"
+import { WidgetProps, ContainerProps } from "../../utils/widget"
 import { sleep } from "../../utils/power"
-import { show_logout_menu, show_poweroff_menu, show_reboot_menu } from "../power"
+import { Menu, MenuLabel, MenuButton } from "../menu"
+
+import { logout, reboot, poweroff, shutdown, shutdown_cancel } from "../../utils/power"
 
 type PowerButtonProps = WidgetProps & {
     icon?: string
-    action?: (self: Widget.Button, event: Astal.ClickEvent) => void
+    onClicked?: (self: Widget.Button, event: Astal.ClickEvent) => void
+    popup?: Menu
 }
-export function PowerButton({ className, icon, action, ...props }: PowerButtonProps): JSX.Element {
-    return <button className={`powerbutton ${className}`} onClickRelease={action} {...props}>
-        <icon icon={icon}/>
-    </button>
+export function PowerButton({ className, icon, ...props }: PowerButtonProps): JSX.Element {
+    return <MenuButton className={`powerbutton ${className}`}
+                       cursor="pointer"
+                       sensitive
+                       {...props}>
+        <icon icon={icon} css="font-size: 2rem;"/>
+    </MenuButton>
 }
 
-export default function Powermenu(props: BoxProps): JSX.Element {
-    return <box css="font-size: 2rem;" {...props}>
+function close_startmenu(): void {
+    App.get_window('startmenu')?.set_visible(false)
+}
+
+export default function Powermenu(props: ContainerProps): JSX.Element {
+    const LogoutMenu = <Menu>
+        <MenuLabel label="Wyloguj się" onActivate={() => {
+            close_startmenu()
+            logout()
+        }}/>
+        <MenuLabel label="Anuluj"/>
+    </Menu> as Menu
+
+    const RebootMenu = <Menu>
+        <MenuLabel label="Uruchom ponownie" onActivate={() => {
+            close_startmenu()
+            reboot()
+        }}/>
+        <MenuLabel label="Anuluj"/>
+    </Menu> as Menu
+
+    const PoweroffMenu = <Menu>
+        <MenuLabel label="Zamknij" onActivate={() => {
+            close_startmenu()
+            poweroff()
+        }}/>
+        <MenuLabel label="Zamknij za 1 minutę" onActivate={() => {
+            close_startmenu()
+            shutdown()
+        }}/>
+        <MenuLabel label="Anuluj" onActivate={shutdown_cancel}/>
+    </Menu> as Menu
+
+    return <box {...props}>
         <PowerButton className="sleep"
                      tooltipText="Uśpij"
                      icon="moon-symbolic"
-                     action={sleep}/>
+                     onClicked={sleep}/>
 
         <PowerButton className="logout"
                      tooltipText="Wyloguj"
                      icon="logout-symbolic"
-                     action={show_logout_menu}/>
+                     popup={LogoutMenu}/>
 
         <PowerButton className="reboot"
                      tooltipText="Uruchom ponownie"
                      icon="restart-symbolic"
-                     action={show_reboot_menu}/>
+                     popup={RebootMenu}/>
 
         <PowerButton className="poweroff"
                      tooltipText="Zamknij"
                      icon="power-symbolic"
-                     action={show_poweroff_menu}/>
+                     popup={PoweroffMenu}/>
     </box>
 }

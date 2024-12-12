@@ -15,7 +15,15 @@ export class MenuItem extends astalify(Gtk.MenuItem) {
     static { GObject.registerClass(this) }
 
     constructor(props: ConstructProps<MenuItem, Gtk.MenuItem.ConstructorProps, {
+    }>) {
+        super(props as any)
+    }
+}
 
+export class MenuButton extends astalify(Gtk.MenuButton) {
+    static { GObject.registerClass(this) }
+
+    constructor(props: ConstructProps<MenuButton, Gtk.MenuButton.ConstructorProps, {
     }>) {
         super(props as any)
     }
@@ -26,9 +34,7 @@ type MenuLabelProps = LabelProps & {
 }
 export function MenuLabel({ onActivate, ...props }: MenuLabelProps) {
 
-    return <MenuItem setup={(self) => {
-        if (onActivate) self.connect('activate', onActivate)
-    }}>
+    return <MenuItem onActivate={onActivate}>
     <label halign={Gtk.Align.START} {...props}/>
     </MenuItem>
 }
