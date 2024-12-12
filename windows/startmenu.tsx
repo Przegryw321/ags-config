@@ -22,6 +22,7 @@ export default async function Startmenu(): Promise<JSX.Element> {
                    className="startmenu-window"
                    namespace="startmenu"
                    anchor={anchor}
+                   layer={Astal.Layer.OVERLAY}
                    visible={false}
                    margin={15}
                    application={App}>
