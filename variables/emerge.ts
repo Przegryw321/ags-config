@@ -20,8 +20,8 @@ async function check_log(path: string, event?: Gio.FileMonitorEvent): Promise<vo
 
         switch (words[2]) {
             case '===':
-                const current    = Number(words[3].slice(1))
-                const count      = Number(words[5].slice(0, -1))
+                const current    = Number(words[3]?.slice(1))
+                const count      = Number(words[5]?.slice(0, -1))
                 const packageRaw = words[words.length - 1]
                 const name       = packageRaw.slice(1, packageRaw.indexOf(':'))
                 Emerge.set({ current, count, name })

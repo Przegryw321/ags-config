@@ -1,0 +1,38 @@
+.launcher {
+    @extend .border;
+    border-top: none;
+    border-radius: 0 0 1rem 1rem;
+
+    background: $mantle;
+
+    padding: 1rem;
+
+    entry {
+        border-radius: .5rem;
+        font-size: 1.5rem;
+        background: $base;
+        caret-color: $subtext;
+    }
+
+    .info {
+        padding: .5rem;
+    }
+
+    .app-button:not(:last-child) {
+        border-bottom: 1px solid $surface0;
+    }
+
+    .name {
+        font-size: 1.2rem;
+    }
+
+    .description {
+        color: $subtext;
+    }
+
+    .not-found {
+        font-size: 1.5rem;
+        color: $subtext;
+        padding: 1rem;
+    }
+}

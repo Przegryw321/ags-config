@@ -5,6 +5,7 @@ import Bar from "./windows/bar"
 import Startmenu from "./windows/startmenu"
 import VolumePopup from "./windows/volumepopup"
 import Clickaway from "./windows/clickaway"
+import Launcher from "./windows/launcher"
 
 import { PlayerControlObj } from "./utils/player"
 
@@ -16,7 +17,8 @@ App.start({
     icons: `${SRC}/icons`,
     async main() {
         const clickaway_windows = [
-            Startmenu()
+            Startmenu(),
+            Launcher(),
         ]
         Bar()
         VolumePopup()
