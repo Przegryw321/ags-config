@@ -12,9 +12,16 @@ export const IsEmerge = Variable.derive(
     (shutdown, emerge) => shutdown === null && emerge !== null
 )
 
-export default function SystemProcess(props: WidgetProps): JSX.Element {
+export default function SystemProcess({ halign, valign, ...props }: WidgetProps): JSX.Element {
     return <box {...props}>
-        <BarShutdown className="shutdown"/>
-        <BarEmerge className="emerge" visible={bind(IsEmerge)}/>
+        <BarShutdown className="shutdown"
+                     halign={halign}
+                     valign={valign}
+                     hexpand/>
+        <BarEmerge className="emerge"
+                   visible={bind(IsEmerge)}
+                   halign={halign}
+                   valign={valign}
+                   hexpand/>
     </box>
 }

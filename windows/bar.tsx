@@ -19,7 +19,7 @@ function Content({ child, children, ...props }: ContainerProps): JSX.Element {
 
 function Status({ halign, valign, ...props }: WidgetProps): JSX.Element {
     return <box orientation={Gtk.Orientation.VERTICAL} halign={halign} valign={valign} {...props}>
-        <SystemProcess className="bar-system-process"/>
+        <SystemProcess className="bar-system-process" halign={halign} valign={valign}/>
         <ActiveWindowTitle className="bar-active-window" hexpand halign={halign} valign={valign}/>
     </box>
 }
