@@ -1,15 +1,12 @@
 #!/bin/sh
 
-if [ -n "$(git status -s)" ]; then
-  echo "Working tree is dirty, cannot bundle (try commiting changes)."
-  exit 1
-fi
-
 entry="${1:-app.ts}"
 outfile="${2:-ui}"
+backup="${3:-/tmp/entry.ts.bak}"
 
-sed -i '/scss_auto_reload"$/d' $entry
+cp "$entry" "$backup"
+sed -i '/scss_auto_reload"$/d' "$entry"
+cp "$backup" "$entry"
+rm "$backup"
 
 ags bundle "$entry" "$outfile"
-
-git restore .
