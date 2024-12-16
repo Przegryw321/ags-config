@@ -27,6 +27,7 @@ function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: num
     const bgRadius = get_property(style, 'border-radius') as number
 
     const dummyStyle = dummyWs.get_style_context()
+    const normalFg = get_property(dummyStyle, 'color') as Gdk.RGBA
     const diameter = get_property(dummyStyle, 'min-width') as number
     const textOffset = get_property(dummyStyle, 'margin-top') as number
     const radius = diameter / 2
@@ -51,14 +52,18 @@ function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: num
     layout.set_font_description(fontDesc)
 
     // Draw workspaces bg
-    rounded_rect(cr, 0, 0, width, height, bgRadius)
-    set_color(cr, wsBg)
-    cr.fill()
+    if (wsBg.alpha > 1) { // when not specified its 1 by default for some reason
+        set_color(cr, wsBg)
+        rounded_rect(cr, 0, 0, width, height, bgRadius)
+        cr.fill()
+    }
 
     const centerY = height / 2
     const mask = self.attribute
     for (let i = 1; i <= count; ++i) {
         const centerX = diameter * i + offset - radius
+
+        set_color(cr, normalFg)
 
         // Draw occupied workspace bg
         if (mask & (1 << i)) {
@@ -78,6 +83,7 @@ function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: num
                 cr.rectangle(centerX, centerY - radius, radius, diameter)
                 cr.fill()
             }
+            set_color(cr, occupiedFg)
         }
 
         // Draw active workspace bg
@@ -95,8 +101,6 @@ function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: num
             cr.arc(centerX, centerY, radius - activePadding, 0, 2 * Math.PI)
             cr.fill()
             set_color(cr, activeFg)
-        } else {
-            set_color(cr, occupiedFg)
         }
 
         // Draw text

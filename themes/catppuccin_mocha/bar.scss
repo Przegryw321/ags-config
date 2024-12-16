@@ -9,20 +9,21 @@
 }
 
 .workspaces {
+    color: $text;
     font-family: Baloo;
-    border-color: $mantle;
     border-radius: 1rem;
     padding: .7rem .3rem;
 }
 
 .workspace {
+    color: $subtext;
     min-width: 2rem;
     margin-top: 1px;
 }
 
 .workspace-occupied {
     color: $text;
-    background: lighten($base, 5%);
+    background: $base;
 }
 
 // gradient: background -> border-color
@@ -30,7 +31,7 @@
     color: $crust;
     background: $blue;
     border-color: $mauve;
-    padding: .1rem;
+    padding: .18rem;
 }
 
 .startmenu-button {
