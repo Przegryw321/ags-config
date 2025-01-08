@@ -70,7 +70,7 @@ export default function Powermenu(props: ContainerProps): JSX.Element {
 
         <PowerButton className="poweroff"
                      tooltipText="Zamknij"
-                     icon="power-symbolic"
+                     icon="poweroff-symbolic"
                      popup={PoweroffMenu}/>
     </box>
 }
