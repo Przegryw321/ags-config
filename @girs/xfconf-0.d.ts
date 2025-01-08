@@ -1,6 +1,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -16,6 +17,7 @@ declare module 'gi://Xfconf?version=0' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace Xfconf {
         /**
@@ -119,6 +121,9 @@ declare module 'gi://Xfconf?version=0' {
          * may or may not already exist in the Xfconf store.  The type of
          * `object_property` will be determined automatically.  If the two
          * types do not match, a conversion will be attempted.
+         *
+         * If you are binding a #GdkColor or #GdkRGBA property, pass #G_TYPE_PTR_ARRAY
+         * for `xfconf_property_type`.
          * @param channel An #XfconfChannel.
          * @param xfconf_property A property on @channel.
          * @param xfconf_property_type The type of @xfconf_property.
@@ -130,7 +135,7 @@ declare module 'gi://Xfconf?version=0' {
             channel: Channel,
             xfconf_property: string,
             xfconf_property_type: GObject.GType,
-            object: any | null,
+            object: any,
             object_property: string,
         ): number;
         /**
@@ -155,7 +160,7 @@ declare module 'gi://Xfconf?version=0' {
         function property_bind_gdkcolor(
             channel: Channel,
             xfconf_property: string,
-            object: any | null,
+            object: any,
             object_property: string,
         ): number;
         /**
@@ -178,7 +183,7 @@ declare module 'gi://Xfconf?version=0' {
         function property_bind_gdkrgba(
             channel: Channel,
             xfconf_property: string,
-            object: any | null,
+            object: any,
             object_property: string,
         ): number;
         /**
@@ -195,7 +200,7 @@ declare module 'gi://Xfconf?version=0' {
          * removed.
          * @param channel_or_object A #GObject or #XfconfChannel.
          */
-        function property_unbind_all(channel_or_object?: any | null): void;
+        function property_unbind_all(channel_or_object: any): void;
         /**
          * Causes an Xfconf channel previously bound to a #GObject property
          * (see xfconf_g_property_bind()) to no longer be bound.
@@ -207,7 +212,7 @@ declare module 'gi://Xfconf?version=0' {
         function property_unbind_by_property(
             channel: Channel,
             xfconf_property: string,
-            object: any | null,
+            object: any,
             object_property: string,
         ): void;
         /**
@@ -304,6 +309,8 @@ declare module 'gi://Xfconf?version=0' {
 
             _init(...args: any[]): void;
 
+            static get(channel_name: string): Channel;
+
             static ['new'](channel_name: string): Channel;
 
             static new_with_property_base(channel_name: string, property_base: string): Channel;
@@ -323,18 +330,6 @@ declare module 'gi://Xfconf?version=0' {
             ): number;
             emit(signal: 'property-changed', property: string, value: GObject.Value | any): void;
 
-            // Static methods
-
-            /**
-             * Either creates a new channel, or fetches a singleton object for
-             * `channel_name`.  This function always returns a valid object; no
-             * checking is done to see if the channel exists or has a valid name.
-             *
-             * The reference count of the returned channel is owned by libxfconf.
-             * @param channel_name A channel name.
-             */
-            static get(channel_name: string): Channel;
-
             // Methods
 
             /**
@@ -349,21 +344,21 @@ declare module 'gi://Xfconf?version=0' {
              * Retrieves the boolean value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns The boolean value, or, if @property is not in @channel,          @default_value is returned.
+             * @returns The boolean value, or, if @property is not in @channel or if its type does not match,          @default_value is returned.
              */
             get_bool(property: string, default_value: boolean): boolean;
             /**
              * Retrieves the double value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns The double value, or, if @property is not in @channel,          @default_value is returned.
+             * @returns The double value, or, if @property is not in @channel or if its type does not match,          @default_value is returned.
              */
             get_double(property: string, default_value: number): number;
             /**
              * Retrieves the int value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns The int value, or, if @property is not in @channel,          @default_value is returned.
+             * @returns The int value, or, if @property is not in @channel or if its type does not match,          @default_value is returned.
              */
             get_int(property: string, default_value: number): number;
             /**
@@ -390,7 +385,7 @@ declare module 'gi://Xfconf?version=0' {
              * @param property_base The base property name of properties to retrieve.
              * @returns A newly-allocated #GHashTable, which should be freed with          g_hash_table_destroy() when no longer needed.
              */
-            get_properties(property_base: string): GLib.HashTable<string, GObject.Value>;
+            get_properties(property_base?: string | null): GLib.HashTable<string, GObject.Value>;
             /**
              * Gets a property on `channel` and stores it in `value`.  The caller is
              * responsible for calling g_value_unset() when finished with `value`.
@@ -414,9 +409,9 @@ declare module 'gi://Xfconf?version=0' {
              * Retrieves the string value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns A newly-allocated string which should be freed with g_free()          when no longer needed.  If @property is not in @channel,          a g_strdup()ed copy of @default_value is returned.
+             * @returns A newly-allocated string which should                                      be freed with g_free() when no longer                                      needed.  If @property is not in                                      @channel or if its type does not match,                                      a g_strdup()ed copy of                                      @default_value is returned.
              */
-            get_string(property: string, default_value: string): string;
+            get_string(property: string, default_value?: string | null): string | null;
             /**
              * Retrieves the string list value associated with `property` on `channel`.
              * @param property A property name.
@@ -446,14 +441,14 @@ declare module 'gi://Xfconf?version=0' {
              * Retrieves the unsigned int value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns The uint value, or, if @property is not in @channel,          @default_value is returned.
+             * @returns The uint value, or, if @property is not in @channel or if its type does not match,          @default_value is returned.
              */
             get_uint(property: string, default_value: number): number;
             /**
              * Retrieves the 64-bit int value associated with `property` on `channel`.
              * @param property A property name.
              * @param default_value A fallback value.
-             * @returns The uint64 value, or, if @property is not in @channel,          @default_value is returned.
+             * @returns The uint64 value, or, if @property is not in @channel or if its type does not match,          @default_value is returned.
              */
             get_uint64(property: string, default_value: number): number;
             /**
@@ -544,6 +539,8 @@ declare module 'gi://Xfconf?version=0' {
             set_property(...args: never[]): any;
             /**
              * Sets `value` for `property` on `channel` in the configuration store.
+             *
+             * If `value` is %NULL, the empty string ("") will be stored.
              * @param property A property name.
              * @param value The value to set.
              * @returns %TRUE on success, %FALSE if an error occured.

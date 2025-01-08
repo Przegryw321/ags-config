@@ -3,6 +3,8 @@ const Mpris = AstalMpris.get_default()
 
 import { ActivePlayer } from "../variables/player"
 
+import { double_wrap } from "../utils/math"
+
 export async function pause(): Promise<void> {
     ActivePlayer.get()?.pause()
 }
@@ -35,7 +37,7 @@ export async function shift(step: number = 1): Promise<void> {
     const index = players.indexOf(player)
     const length = players.length
 
-    ActivePlayer.set(players[((index + step) % length + length) % length])
+    ActivePlayer.set(players[double_wrap(index + step, length)])
 }
 
 export const PlayerControlObj: { [key: string]: () => Promise<void> } = {

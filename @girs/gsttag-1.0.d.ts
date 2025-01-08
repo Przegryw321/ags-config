@@ -908,8 +908,36 @@ declare module 'gi://GstTag?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * identify tag and determine the size required to parse the
+             * tag. Buffer may be larger than the specified minimum size.
+             * Subclassed MUST override this vfunc in their class_init function.
+             * @param buffer
+             * @param start_tag
+             * @param tag_size
+             */
             vfunc_identify_tag(buffer: Gst.Buffer, start_tag: boolean, tag_size: number): boolean;
+            /**
+             * merge start and end tags. Subclasses may want to override this
+             * vfunc to allow prioritising of start or end tag according to user
+             * preference.  Note that both start_tags and end_tags may be NULL. By default
+             * start tags are preferred over end tags.
+             * @param start_tags
+             * @param end_tags
+             */
             vfunc_merge_tags(start_tags: Gst.TagList, end_tags: Gst.TagList): Gst.TagList;
+            /**
+             * parse the tag. Buffer will be exactly of the size determined by
+             * the identify_tag vfunc before. The parse_tag vfunc may change the size
+             * stored in *tag_size and return GST_TAG_DEMUX_RESULT_AGAIN to request a
+             * larger or smaller buffer. It is also permitted to adjust the tag_size to a
+             * smaller value and then return GST_TAG_DEMUX_RESULT_OK in one go.
+             * Subclassed MUST override the parse_tag vfunc in their class_init function.
+             * @param buffer
+             * @param start_tag
+             * @param tag_size
+             * @param tags
+             */
             vfunc_parse_tag(
                 buffer: Gst.Buffer,
                 start_tag: boolean,
@@ -955,7 +983,17 @@ declare module 'gi://GstTag?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * create a tag buffer to add to the end of the
+             *     input stream given a tag list, or NULL
+             * @param tag_list
+             */
             vfunc_render_end_tag(tag_list: Gst.TagList): Gst.Buffer;
+            /**
+             * create a tag buffer to add to the beginning of the
+             *     input stream given a tag list, or NULL
+             * @param tag_list
+             */
             vfunc_render_start_tag(tag_list: Gst.TagList): Gst.Buffer;
 
             // Inherited methods
@@ -1071,6 +1109,24 @@ declare module 'gi://GstTag?version=1.0' {
              * subclasses of #GstElement.
              */
             create_all_pads(): void;
+            /**
+             * Creates a stream-id for `element` by combining the upstream information with
+             * the `stream_id`.
+             *
+             * This function generates an unique stream-id by getting the upstream
+             * stream-start event stream ID and appending `stream_id` to it. If the element
+             * has no sinkpad it will generate an upstream stream-id by doing an URI query
+             * on the element and in the worst case just uses a random number. Source
+             * elements that don't implement the URI handler interface should ideally
+             * generate a unique, deterministic stream-id manually instead.
+             *
+             * Since stream IDs are sorted alphabetically, any numbers in the stream ID
+             * should be printed with a fixed number of characters, preceded by 0's, such as
+             * by using the format \%03u instead of \%u.
+             * @param stream_id The stream-id
+             * @returns A stream-id for @element.
+             */
+            decorate_stream_id(stream_id: string): string;
             /**
              * Call `func` with `user_data` for each of `element'`s pads. `func` will be called
              * exactly once for each pad that exists at the time of this call, unless
@@ -1811,6 +1867,10 @@ declare module 'gi://GstTag?version=1.0' {
              * @param query the #GstQuery.
              */
             vfunc_query(query: Gst.Query): boolean;
+            /**
+             * called when a request pad is to be released
+             * @param pad
+             */
             vfunc_release_pad(pad: Gst.Pad): void;
             /**
              * Retrieves a request pad from the element according to the provided template.
@@ -1874,6 +1934,12 @@ declare module 'gi://GstTag?version=1.0' {
              * @param state the element's new #GstState.
              */
             vfunc_set_state(state: Gst.State): Gst.StateChangeReturn;
+            /**
+             * called immediately after a new state was set.
+             * @param oldstate
+             * @param newstate
+             * @param pending
+             */
             vfunc_state_changed(oldstate: Gst.State, newstate: Gst.State, pending: Gst.State): void;
         }
 

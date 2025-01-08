@@ -52,8 +52,24 @@ declare module 'gi://CudaGst?version=1.0' {
 
         enum device_attribute {
             TEXTURE_ALIGNMENT,
+            UNIFIED_ADDRESSING,
             COMPUTE_CAPABILITY_MAJOR,
             COMPUTE_CAPABILITY_MINOR,
+            VIRTUAL_MEMORY_MANAGEMENT_SUPPORTED,
+            HANDLE_TYPE_POSIX_FILE_DESCRIPTOR_SUPPORTED,
+            HANDLE_TYPE_WIN32_HANDLE_SUPPORTED,
+            HANDLE_TYPE_WIN32_KMT_HANDLE_SUPPORTED,
+        }
+
+        export namespace event_flags {
+            export const $gtype: GObject.GType<event_flags>;
+        }
+
+        enum event_flags {
+            DEFAULT,
+            BLOCKING_SYNC,
+            DISABLE_TIMING,
+            INTERPROCESS,
         }
 
         export namespace filter_mode {
@@ -85,6 +101,66 @@ declare module 'gi://CudaGst?version=1.0' {
             WRITE_DISCARD,
             SURFACE_LOAD_STORE,
             TEXTURE_GATHER,
+        }
+
+        export namespace ipcMem_flags {
+            export const $gtype: GObject.GType<ipcMem_flags>;
+        }
+
+        enum ipcMem_flags {
+            IPC_MEM_LAZY_ENABLE_PEER_ACCESS,
+        }
+
+        export namespace memAccess_flags {
+            export const $gtype: GObject.GType<memAccess_flags>;
+        }
+
+        enum memAccess_flags {
+            NONE,
+            READ,
+            READWRITE,
+            MAX,
+        }
+
+        export namespace memAllocationGranularity_flags {
+            export const $gtype: GObject.GType<memAllocationGranularity_flags>;
+        }
+
+        enum memAllocationGranularity_flags {
+            MINIMUM,
+            RECOMMENDED,
+        }
+
+        export namespace memAllocationHandleType {
+            export const $gtype: GObject.GType<memAllocationHandleType>;
+        }
+
+        enum memAllocationHandleType {
+            NONE,
+            POSIX_FILE_DESCRIPTOR,
+            WIN32,
+            WIN32_KMT,
+            MAX,
+        }
+
+        export namespace memAllocationType {
+            export const $gtype: GObject.GType<memAllocationType>;
+        }
+
+        enum memAllocationType {
+            INVALID,
+            PINNED,
+            MAX,
+        }
+
+        export namespace memLocationType {
+            export const $gtype: GObject.GType<memLocationType>;
+        }
+
+        enum memLocationType {
+            INVALID,
+            DEVICE,
+            MAX,
         }
 
         export namespace memorytype {
@@ -123,6 +199,9 @@ declare module 'gi://CudaGst?version=1.0' {
 
         enum result {
             SUCCESS,
+            ERROR_NO_DEVICE,
+            ERROR_ALREADY_MAPPED,
+            ERROR_NOT_SUPPORTED,
         }
 
         export namespace stream_flags {
@@ -133,6 +212,7 @@ declare module 'gi://CudaGst?version=1.0' {
             DEFAULT,
             NON_BLOCKING,
         }
+        const IPC_HANDLE_SIZE: number;
         const TRSF_READ_AS_INTEGER: number;
         const VERSION: number;
         class DA_MEMCPY2D {
@@ -216,10 +296,108 @@ declare module 'gi://CudaGst?version=1.0' {
             _init(...args: any[]): void;
         }
 
+        class ipcEventHandle {
+            static $gtype: GObject.GType<ipcEventHandle>;
+
+            // Fields
+
+            reserved: number[];
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    reserved: number[];
+                }>,
+            );
+            _init(...args: any[]): void;
+        }
+
+        class ipcMemHandle {
+            static $gtype: GObject.GType<ipcMemHandle>;
+
+            // Fields
+
+            reserved: number[];
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    reserved: number[];
+                }>,
+            );
+            _init(...args: any[]): void;
+        }
+
+        class memAccessDesc {
+            static $gtype: GObject.GType<memAccessDesc>;
+
+            // Fields
+
+            flags: memAccess_flags;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
+        class memAllocationProp {
+            static $gtype: GObject.GType<memAllocationProp>;
+
+            // Fields
+
+            type: memAllocationType;
+            requestedHandleTypes: memAllocationHandleType;
+            win32HandleMetaData: any;
+            allocFlags: memAllocationPropAllocFlags;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
+        class memAllocationPropAllocFlags {
+            static $gtype: GObject.GType<memAllocationPropAllocFlags>;
+
+            // Fields
+
+            compressionType: number;
+            gpuDirectRDMACapable: number;
+            usage: number;
+            reserved: Uint8Array;
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    compressionType: number;
+                    gpuDirectRDMACapable: number;
+                    usage: number;
+                    reserved: Uint8Array;
+                }>,
+            );
+            _init(...args: any[]): void;
+        }
+
+        class memLocation {
+            static $gtype: GObject.GType<memLocation>;
+
+            // Fields
+
+            type: memLocationType;
+            id: number;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
         type array = any;
         type context = any;
         type device = number;
         type deviceptr = never;
+        type event = any;
         type __function = any;
         type graphicsResource = any;
         type mipmappedArray = any;

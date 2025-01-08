@@ -479,7 +479,7 @@ declare module 'gi://Atk?version=1.0' {
             /**
              * An object the user can manipulate to tell the application to do something
              */
-            PUSH_BUTTON,
+            BUTTON,
             /**
              * A specialized check box that will cause other radio buttons in the same group to become unchecked when this one is checked
              */
@@ -899,6 +899,7 @@ declare module 'gi://Atk?version=1.0' {
              * not a valid role, used for finding end of the enumeration
              */
             LAST_DEFINED,
+            PUSH_BUTTON,
         }
         /**
          * Specifies where an object should be placed on the screen when using scroll_to.
@@ -2343,7 +2344,7 @@ declare module 'gi://Atk?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -2496,10 +2497,45 @@ declare module 'gi://Atk?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -2515,6 +2551,16 @@ declare module 'gi://Atk?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -2658,8 +2704,16 @@ declare module 'gi://Atk?version=1.0' {
             set accessible_description(val: string);
             get accessibleDescription(): string;
             set accessibleDescription(val: string);
+            get accessible_help_text(): string;
+            set accessible_help_text(val: string);
+            get accessibleHelpText(): string;
+            set accessibleHelpText(val: string);
             get accessible_hypertext_nlinks(): number;
             get accessibleHypertextNlinks(): number;
+            get accessible_id(): string;
+            set accessible_id(val: string);
+            get accessibleId(): string;
+            set accessibleId(val: string);
             get accessible_name(): string;
             set accessible_name(val: string);
             get accessibleName(): string;
@@ -3185,12 +3239,27 @@ declare module 'gi://Atk?version=1.0' {
              */
             get_page_count(): number;
             /**
+             * Returns an array of AtkTextSelections within this document.
+             * @returns a GArray of AtkTextSelection structures representing the selection.
+             */
+            get_text_selections(): TextSelection[];
+            /**
              * Sets the value for the given `attribute_name` inside `document`.
              * @param attribute_name a character string representing the name of the attribute   whose value is being set.
              * @param attribute_value a string value to be associated with @attribute_name.
              * @returns %TRUE if @attribute_value is successfully associated   with @attribute_name for this @document, and %FALSE if if the   document does not allow the attribute to be modified
              */
             set_attribute_value(attribute_name: string, attribute_value: string): boolean;
+            /**
+             * Makes 1 or more selections within this document denoted by the given
+             * array of AtkTextSelections. Any existing physical selection (inside or
+             * outside this document) is replaced by the new selections. All objects within
+             * the given selection ranges must be descendants of this document. Otherwise
+             * FALSE will be returned.
+             * @param selections a GArray of AtkTextSelections              to be selected.
+             * @returns TRUE if the selection was made successfully; FALSE otherwise.
+             */
+            set_text_selections(selections: TextSelection[]): boolean;
             /**
              * Retrieves the current page number inside `document`.
              */
@@ -3228,11 +3297,24 @@ declare module 'gi://Atk?version=1.0' {
              */
             vfunc_get_page_count(): number;
             /**
+             * Returns an array of AtkTextSelections within this document.
+             */
+            vfunc_get_text_selections(): TextSelection[];
+            /**
              * Sets the value for the given `attribute_name` inside `document`.
              * @param attribute_name a character string representing the name of the attribute   whose value is being set.
              * @param attribute_value a string value to be associated with @attribute_name.
              */
             vfunc_set_document_attribute(attribute_name: string, attribute_value: string): boolean;
+            /**
+             * Makes 1 or more selections within this document denoted by the given
+             * array of AtkTextSelections. Any existing physical selection (inside or
+             * outside this document) is replaced by the new selections. All objects within
+             * the given selection ranges must be descendants of this document. Otherwise
+             * FALSE will be returned.
+             * @param selections a GArray of AtkTextSelections              to be selected.
+             */
+            vfunc_set_text_selections(selections: TextSelection[]): boolean;
             /**
              * Copy text from `start_pos` up to, but not including `end_pos`
              * to the clipboard.
@@ -4393,6 +4475,13 @@ declare module 'gi://Atk?version=1.0' {
             vfunc_set_selection(selection_num: number, start_offset: number, end_offset: number): boolean;
             vfunc_text_attributes_changed(): void;
             vfunc_text_caret_moved(location: number): void;
+            /**
+             * the signal handler which is executed when there is a
+             *   text change. This virtual function is deprecated sice 2.9.4 and
+             *   it should not be overriden.
+             * @param position
+             * @param length
+             */
             vfunc_text_changed(position: number, length: number): void;
             vfunc_text_selection_changed(): void;
             /**
@@ -4702,7 +4791,7 @@ declare module 'gi://Atk?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -4855,10 +4944,45 @@ declare module 'gi://Atk?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -4874,6 +4998,16 @@ declare module 'gi://Atk?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -4892,6 +5026,11 @@ declare module 'gi://Atk?version=1.0' {
              * @returns a character string representing the accessible id of the object, or NULL if no such string was set.
              */
             get_accessible_id(): string;
+            /**
+             * Gets the help text associated with the accessible.
+             * @returns a character string representing the help text or the object, or NULL if no such string was set.
+             */
+            get_help_text(): string;
             /**
              * Gets the 0-based index of this accessible in its parent; returns -1 if the
              * accessible does not have an accessible parent.
@@ -4991,9 +5130,18 @@ declare module 'gi://Atk?version=1.0' {
              * Typically, this is the gtkbuilder ID. Such an ID will be available for
              * instance to identify a given well-known accessible object for tailored screen
              * reading, or for automatic regression testing.
-             * @param name a character string to be set as the accessible id
+             * @param id a character string to be set as the accessible id
              */
-            set_accessible_id(name: string): void;
+            set_accessible_id(id: string): void;
+            /**
+             * Sets the help text associated with the accessible. This can be used to
+             * expose context-sensitive information to help a user understand how to
+             * interact with the object. You can't set the help text to NULL.
+             * This is reserved for the initial value. If you want to set the name to
+             * an empty value, you can use "".
+             * @param help_text a character string to be set as the accessible's help text
+             */
+            set_help_text(help_text: string): void;
             /**
              * Sets the accessible name of the accessible. You can't set the name
              * to NULL. This is reserved for the initial value. In this aspect
@@ -5014,6 +5162,13 @@ declare module 'gi://Atk?version=1.0' {
             set_role(role: Role | null): void;
             vfunc_active_descendant_changed(child?: any | null): void;
             vfunc_children_changed(change_index: number, changed_child?: any | null): void;
+            /**
+             * The signal handler which is executed when there is a
+             *   focus event for an object. This virtual function is deprecated
+             *   since 2.9.4 and it should not be overriden. Use
+             *   the #AtkObject::state-change "focused" signal instead.
+             * @param focus_in
+             */
             vfunc_focus_event(focus_in: boolean): void;
             /**
              * Get a list of properties applied to this object as a whole, as an #AtkAttributeSet consisting of
@@ -5129,6 +5284,10 @@ declare module 'gi://Atk?version=1.0' {
                 (arg1: string): void;
             }
 
+            interface AttributeChanged {
+                (arg1: string, arg2: string): void;
+            }
+
             interface ChildrenChanged {
                 (arg1: number, arg2: Object): void;
             }
@@ -5162,8 +5321,12 @@ declare module 'gi://Atk?version=1.0' {
                 accessibleComponentMdiZorder: number;
                 accessible_description: string;
                 accessibleDescription: string;
+                accessible_help_text: string;
+                accessibleHelpText: string;
                 accessible_hypertext_nlinks: number;
                 accessibleHypertextNlinks: number;
+                accessible_id: string;
+                accessibleId: string;
                 accessible_name: string;
                 accessibleName: string;
                 accessible_parent: Object;
@@ -5226,8 +5389,16 @@ declare module 'gi://Atk?version=1.0' {
             set accessible_description(val: string);
             get accessibleDescription(): string;
             set accessibleDescription(val: string);
+            get accessible_help_text(): string;
+            set accessible_help_text(val: string);
+            get accessibleHelpText(): string;
+            set accessibleHelpText(val: string);
             get accessible_hypertext_nlinks(): number;
             get accessibleHypertextNlinks(): number;
+            get accessible_id(): string;
+            set accessible_id(val: string);
+            get accessibleId(): string;
+            set accessibleId(val: string);
             get accessible_name(): string;
             set accessible_name(val: string);
             get accessibleName(): string;
@@ -5334,6 +5505,12 @@ declare module 'gi://Atk?version=1.0' {
             connect(signal: 'announcement', callback: (_source: this, arg1: string) => void): number;
             connect_after(signal: 'announcement', callback: (_source: this, arg1: string) => void): number;
             emit(signal: 'announcement', arg1: string): void;
+            connect(signal: 'attribute-changed', callback: (_source: this, arg1: string, arg2: string) => void): number;
+            connect_after(
+                signal: 'attribute-changed',
+                callback: (_source: this, arg1: string, arg2: string) => void,
+            ): number;
+            emit(signal: 'attribute-changed', arg1: string, arg2: string): void;
             connect(signal: 'children-changed', callback: (_source: this, arg1: number, arg2: Object) => void): number;
             connect_after(
                 signal: 'children-changed',
@@ -5366,6 +5543,13 @@ declare module 'gi://Atk?version=1.0' {
 
             vfunc_active_descendant_changed(child?: any | null): void;
             vfunc_children_changed(change_index: number, changed_child?: any | null): void;
+            /**
+             * The signal handler which is executed when there is a
+             *   focus event for an object. This virtual function is deprecated
+             *   since 2.9.4 and it should not be overriden. Use
+             *   the #AtkObject::state-change "focused" signal instead.
+             * @param focus_in
+             */
             vfunc_focus_event(focus_in: boolean): void;
             /**
              * Get a list of properties applied to this object as a whole, as an #AtkAttributeSet consisting of
@@ -5497,6 +5681,11 @@ declare module 'gi://Atk?version=1.0' {
              */
             get_description(): string;
             /**
+             * Gets the help text associated with the accessible.
+             * @returns a character string representing the help text or the object, or NULL if no such string was set.
+             */
+            get_help_text(): string;
+            /**
              * Gets the 0-based index of this accessible in its parent; returns -1 if the
              * accessible does not have an accessible parent.
              * @returns an integer which is the index of the accessible in its parent
@@ -5611,9 +5800,9 @@ declare module 'gi://Atk?version=1.0' {
              * Typically, this is the gtkbuilder ID. Such an ID will be available for
              * instance to identify a given well-known accessible object for tailored screen
              * reading, or for automatic regression testing.
-             * @param name a character string to be set as the accessible id
+             * @param id a character string to be set as the accessible id
              */
-            set_accessible_id(name: string): void;
+            set_accessible_id(id: string): void;
             /**
              * Sets the accessible description of the accessible. You can't set
              * the description to NULL. This is reserved for the initial value. In
@@ -5622,6 +5811,15 @@ declare module 'gi://Atk?version=1.0' {
              * @param description a character string to be set as the accessible description
              */
             set_description(description: string): void;
+            /**
+             * Sets the help text associated with the accessible. This can be used to
+             * expose context-sensitive information to help a user understand how to
+             * interact with the object. You can't set the help text to NULL.
+             * This is reserved for the initial value. If you want to set the name to
+             * an empty value, you can use "".
+             * @param help_text a character string to be set as the accessible's help text
+             */
+            set_help_text(help_text: string): void;
             /**
              * Sets the accessible name of the accessible. You can't set the name
              * to NULL. This is reserved for the initial value. In this aspect
@@ -6168,7 +6366,7 @@ declare module 'gi://Atk?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -6321,10 +6519,45 @@ declare module 'gi://Atk?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -6340,6 +6573,16 @@ declare module 'gi://Atk?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -7063,7 +7306,7 @@ declare module 'gi://Atk?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -7216,10 +7459,45 @@ declare module 'gi://Atk?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -7235,6 +7513,16 @@ declare module 'gi://Atk?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -7626,6 +7914,43 @@ declare module 'gi://Atk?version=1.0' {
                     height: number;
                 }>,
             );
+            _init(...args: any[]): void;
+        }
+
+        /**
+         * This structure represents a single  text selection within a document. This
+         * selection is defined by two points in the content, where each one is defined
+         * by an AtkObject supporting the AtkText interface and a character offset
+         * relative to it.
+         *
+         * The end object must appear after the start object in the accessibility tree,
+         * i.e. the end object must be reachable from the start object by navigating
+         * forward (next, first child etc).
+         *
+         * This struct also contains a `start_is_active` boolean, to communicate if the
+         * start of the selection is the active point or not.
+         *
+         * The active point corresponds to the user's focus or point of interest. The
+         * user moves the active point to expand or collapse the range. The anchor
+         * point is the other point of the range and typically remains constant. In
+         * most cases, anchor is the start of the range and active is the end. However,
+         * when selecting backwards (e.g. pressing shift+left arrow in a text field),
+         * the start of the range is the active point, as the user moves this to
+         * manipulate the selection.
+         */
+        class TextSelection {
+            static $gtype: GObject.GType<TextSelection>;
+
+            // Fields
+
+            start_object: Object;
+            start_offset: number;
+            end_object: Object;
+            end_offset: number;
+            start_is_active: boolean;
+
+            // Constructors
+
             _init(...args: any[]): void;
         }
 
@@ -8116,12 +8441,27 @@ declare module 'gi://Atk?version=1.0' {
              */
             get_page_count(): number;
             /**
+             * Returns an array of AtkTextSelections within this document.
+             * @returns a GArray of AtkTextSelection structures representing the selection.
+             */
+            get_text_selections(): TextSelection[];
+            /**
              * Sets the value for the given `attribute_name` inside `document`.
              * @param attribute_name a character string representing the name of the attribute   whose value is being set.
              * @param attribute_value a string value to be associated with @attribute_name.
              * @returns %TRUE if @attribute_value is successfully associated   with @attribute_name for this @document, and %FALSE if if the   document does not allow the attribute to be modified
              */
             set_attribute_value(attribute_name: string, attribute_value: string): boolean;
+            /**
+             * Makes 1 or more selections within this document denoted by the given
+             * array of AtkTextSelections. Any existing physical selection (inside or
+             * outside this document) is replaced by the new selections. All objects within
+             * the given selection ranges must be descendants of this document. Otherwise
+             * FALSE will be returned.
+             * @param selections a GArray of AtkTextSelections              to be selected.
+             * @returns TRUE if the selection was made successfully; FALSE otherwise.
+             */
+            set_text_selections(selections: TextSelection[]): boolean;
 
             // Virtual methods
 
@@ -8162,11 +8502,24 @@ declare module 'gi://Atk?version=1.0' {
              */
             vfunc_get_page_count(): number;
             /**
+             * Returns an array of AtkTextSelections within this document.
+             */
+            vfunc_get_text_selections(): TextSelection[];
+            /**
              * Sets the value for the given `attribute_name` inside `document`.
              * @param attribute_name a character string representing the name of the attribute   whose value is being set.
              * @param attribute_value a string value to be associated with @attribute_name.
              */
             vfunc_set_document_attribute(attribute_name: string, attribute_value: string): boolean;
+            /**
+             * Makes 1 or more selections within this document denoted by the given
+             * array of AtkTextSelections. Any existing physical selection (inside or
+             * outside this document) is replaced by the new selections. All objects within
+             * the given selection ranges must be descendants of this document. Otherwise
+             * FALSE will be returned.
+             * @param selections a GArray of AtkTextSelections              to be selected.
+             */
+            vfunc_set_text_selections(selections: TextSelection[]): boolean;
         }
 
         export const Document: DocumentNamespace & {
@@ -9649,6 +10002,13 @@ declare module 'gi://Atk?version=1.0' {
             vfunc_set_selection(selection_num: number, start_offset: number, end_offset: number): boolean;
             vfunc_text_attributes_changed(): void;
             vfunc_text_caret_moved(location: number): void;
+            /**
+             * the signal handler which is executed when there is a
+             *   text change. This virtual function is deprecated sice 2.9.4 and
+             *   it should not be overriden.
+             * @param position
+             * @param length
+             */
             vfunc_text_changed(position: number, length: number): void;
             vfunc_text_selection_changed(): void;
         }

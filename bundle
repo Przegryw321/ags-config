@@ -1,7 +1,7 @@
 #!/bin/sh
 
 entry="${1:-app.ts}"
-outfile="${2:-ui}"
+outfile="${2:-astal-ui}"
 backup="${3:-/tmp/entry.ts.bak}"
 
 cp "$entry" "$backup"

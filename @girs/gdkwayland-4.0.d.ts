@@ -7,8 +7,8 @@
 /// <reference path="./harfbuzz-0.0.d.ts" />
 /// <reference path="./freetype2-2.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
-/// <reference path="./gdkpixbuf-2.0.d.ts" />
 /// <reference path="./gmodule-2.0.d.ts" />
+/// <reference path="./gdkpixbuf-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -30,8 +30,8 @@ declare module 'gi://GdkWayland?version=4.0' {
     import type HarfBuzz from 'gi://HarfBuzz?version=0.0';
     import type freetype2 from 'gi://freetype2?version=2.0';
     import type Gio from 'gi://Gio?version=2.0';
-    import type GdkPixbuf from 'gi://GdkPixbuf?version=2.0';
     import type GModule from 'gi://GModule?version=2.0';
+    import type GdkPixbuf from 'gi://GdkPixbuf?version=2.0';
 
     export namespace GdkWayland {
         /**
@@ -310,7 +310,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             /**
              * Present `popup` after having processed the `GdkPopupLayout` rules.
              *
-             * If the popup was previously now showing, it will be showed,
+             * If the popup was previously not showing, it will be shown,
              * otherwise it will change position according to `layout`.
              *
              * After calling this function, the result should be handled in response
@@ -1056,6 +1056,11 @@ declare module 'gi://GdkWayland?version=4.0' {
              * @returns %TRUE if the desktop environment supports tiled window states
              */
             supports_edge_constraints(): boolean;
+            /**
+             * Performs a title bar gesture.
+             * @param gesture a `GdkTitlebarGesture`
+             * @returns whether the gesture was performed
+             */
             titlebar_gesture(gesture: Gdk.TitlebarGesture | null): boolean;
             /**
              * Emits a short beep associated to `surface`.

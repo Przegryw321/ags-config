@@ -20,15 +20,6 @@ export class MenuItem extends astalify(Gtk.MenuItem) {
     }
 }
 
-export class MenuButton extends astalify(Gtk.MenuButton) {
-    static { GObject.registerClass(this) }
-
-    constructor(props: ConstructProps<MenuButton, Gtk.MenuButton.ConstructorProps, {
-    }>) {
-        super(props as any)
-    }
-}
-
 type MenuLabelProps = LabelProps & {
     onActivate?: () => void
 }

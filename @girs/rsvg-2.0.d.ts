@@ -2,8 +2,8 @@
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
-/// <reference path="./gdkpixbuf-2.0.d.ts" />
 /// <reference path="./gmodule-2.0.d.ts" />
+/// <reference path="./gdkpixbuf-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -20,8 +20,8 @@ declare module 'gi://Rsvg?version=2.0' {
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type Gio from 'gi://Gio?version=2.0';
-    import type GdkPixbuf from 'gi://GdkPixbuf?version=2.0';
     import type GModule from 'gi://GModule?version=2.0';
+    import type GdkPixbuf from 'gi://GdkPixbuf?version=2.0';
 
     export namespace Rsvg {
         /**
@@ -57,11 +57,19 @@ declare module 'gi://Rsvg?version=2.0' {
         /**
          * Units for the `RsvgLength` struct.  These have the same meaning as [CSS length
          * units](https://www.w3.org/TR/CSS21/syndata.html#length-units).
+         *
+         * If you test for the values of this enum, please note that librsvg may add other units in the future
+         * as its support for CSS improves.  Please make your code handle unknown units gracefully (e.g. with
+         * a `default` case in a `switch()` statement).
          */
 
         /**
          * Units for the `RsvgLength` struct.  These have the same meaning as [CSS length
          * units](https://www.w3.org/TR/CSS21/syndata.html#length-units).
+         *
+         * If you test for the values of this enum, please note that librsvg may add other units in the future
+         * as its support for CSS improves.  Please make your code handle unknown units gracefully (e.g. with
+         * a `default` case in a `switch()` statement).
          */
         export namespace Unit {
             export const $gtype: GObject.GType<Unit>;
@@ -104,7 +112,14 @@ declare module 'gi://Rsvg?version=2.0' {
              * picas, or 1/6 inch (12 points)
              */
             PC,
+            /**
+             * advance measure of a '0' character (depends on the text orientation)
+             */
+            CH,
         }
+        const HAVE_CSS: boolean;
+        const HAVE_PIXBUF: number;
+        const HAVE_SVGZ: boolean;
         /**
          * This is a C macro that expands to a number with the major version
          * of librsvg against which your program is compiled.
@@ -459,6 +474,10 @@ declare module 'gi://Rsvg?version=2.0' {
          * [method`Rsvg`.Handle.set_dpi_x_y] on an [class`Rsvg`.Handle] to set the DPI before rendering
          * it.
          *
+         * For historical reasons, the default DPI is 90.  Current CSS assumes a default DPI of 96, so
+         * you may want to set the DPI of a [class`Rsvg`.Handle] immediately after creating it with
+         * [method`Rsvg`.Handle.set_dpi].
+         *
          * # Rendering
          *
          * The preferred way to render a whole SVG document is to use
@@ -515,21 +534,33 @@ declare module 'gi://Rsvg?version=2.0' {
             get desc(): string;
             /**
              * Horizontal resolution in dots per inch.
+             *
+             * The default is 90.  Note that current CSS assumes a default of 96,
+             * so you may want to set it to `96.0` before rendering the handle.
              */
             get dpi_x(): number;
             set dpi_x(val: number);
             /**
              * Horizontal resolution in dots per inch.
+             *
+             * The default is 90.  Note that current CSS assumes a default of 96,
+             * so you may want to set it to `96.0` before rendering the handle.
              */
             get dpiX(): number;
             set dpiX(val: number);
             /**
              * Horizontal resolution in dots per inch.
+             *
+             * The default is 90.  Note that current CSS assumes a default of 96,
+             * so you may want to set it to `96.0` before rendering the handle.
              */
             get dpi_y(): number;
             set dpi_y(val: number);
             /**
              * Horizontal resolution in dots per inch.
+             *
+             * The default is 90.  Note that current CSS assumes a default of 96,
+             * so you may want to set it to `96.0` before rendering the handle.
              */
             get dpiY(): number;
             set dpiY(val: number);
@@ -763,6 +794,10 @@ declare module 'gi://Rsvg?version=2.0' {
              * uses the computed value of the `font-size` property for the toplevel
              * `<svg>` element.  In those cases, this function returns `TRUE`.
              *
+             * For historical reasons, the default DPI is 90.  Current CSS assumes a default DPI of 96, so
+             * you may want to set the DPI of a [class`Rsvg`.Handle] immediately after creating it with
+             * [method`Rsvg`.Handle.set_dpi].
+             *
              * This function is not able to extract the size in pixels directly from the intrinsic
              * dimensions of the SVG document if the `width` or
              * `height` are in percentage units (or if they do not exist, in which
@@ -812,9 +847,22 @@ declare module 'gi://Rsvg?version=2.0' {
              * This function depends on the [class`Rsvg`.Handle]'s dots-per-inch value (DPI) to compute the
              * "natural size" of the document in pixels, so you should call [method`Rsvg`.Handle.set_dpi]
              * beforehand.
-             * @returns A pixbuf, or %NULL on error. during rendering.
+             * @returns A pixbuf, or %NULL on error during rendering.
              */
             get_pixbuf(): GdkPixbuf.Pixbuf | null;
+            /**
+             * Returns the pixbuf loaded by `handle`.  The pixbuf returned will be reffed, so
+             * the caller of this function must assume that ref.
+             *
+             * API ordering: This function must be called on a fully-loaded `handle`.  See
+             * the section "[API ordering](class.Handle.html#api-ordering)" for details.
+             *
+             * This function depends on the [class`Rsvg`.Handle]'s dots-per-inch value (DPI) to compute the
+             * "natural size" of the document in pixels, so you should call [method`Rsvg`.Handle.set_dpi]
+             * beforehand.
+             * @returns A pixbuf, or %NULL on error during rendering.
+             */
+            get_pixbuf_and_error(): GdkPixbuf.Pixbuf | null;
             /**
              * Creates a `GdkPixbuf` the same size as the entire SVG loaded into `handle,` but
              * only renders the sub-element that has the specified `id` (and all its
@@ -1064,6 +1112,20 @@ declare module 'gi://Rsvg?version=2.0' {
              * @param base_uri The base uri
              */
             set_base_uri(base_uri: string): void;
+            /**
+             * Sets a cancellable object that can be used to interrupt rendering
+             * while the handle is being rendered in another thread.  For example,
+             * you can set a cancellable from your main thread, spawn a thread to
+             * do the rendering, and interrupt the rendering from the main thread
+             * by calling g_cancellable_cancel().
+             *
+             * If rendering is interrupted, the corresponding call to
+             * rsvg_handle_render_document() (or any of the other rendering
+             * functions) will return an error with domain `G_IO_ERROR`, and code
+             * `G_IO_ERROR_CANCELLED`.
+             * @param cancellable A [class@Gio.Cancellable] or `NULL`.
+             */
+            set_cancellable_for_rendering(cancellable?: Gio.Cancellable | null): void;
             /**
              * Sets the DPI at which the `handle` will be rendered. Common values are
              * 75, 90, and 300 DPI.

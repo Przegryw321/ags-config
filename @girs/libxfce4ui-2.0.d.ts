@@ -2,6 +2,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 /// <reference path="./gtk-3.0.d.ts" />
 /// <reference path="./xlib-2.0.d.ts" />
 /// <reference path="./gdk-3.0.d.ts" />
@@ -10,7 +11,6 @@
 /// <reference path="./harfbuzz-0.0.d.ts" />
 /// <reference path="./freetype2-2.0.d.ts" />
 /// <reference path="./gdkpixbuf-2.0.d.ts" />
-/// <reference path="./gmodule-2.0.d.ts" />
 /// <reference path="./atk-1.0.d.ts" />
 
 /**
@@ -28,6 +28,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
     import type Gtk from 'gi://Gtk?version=3.0';
     import type xlib from 'gi://xlib?version=2.0';
     import type Gdk from 'gi://Gdk?version=3.0';
@@ -36,7 +37,6 @@ declare module 'gi://Libxfce4ui?version=2.0' {
     import type HarfBuzz from 'gi://HarfBuzz?version=0.0';
     import type freetype2 from 'gi://freetype2?version=2.0';
     import type GdkPixbuf from 'gi://GdkPixbuf?version=2.0';
-    import type GModule from 'gi://GModule?version=2.0';
     import type Atk from 'gi://Atk?version=1.0';
 
     export namespace Libxfce4ui {
@@ -802,6 +802,24 @@ declare module 'gi://Libxfce4ui?version=2.0' {
          * @returns %TRUE if the widget could be moved, %FALSE otherwise.
          */
         function widget_reparent(widget: Gtk.Widget, new_parent: Gtk.Widget): boolean;
+        module ClipboardManager {
+            // Constructor properties interface
+
+            interface ConstructorProps extends GObject.Object.ConstructorProps {}
+        }
+
+        class ClipboardManager extends GObject.Object {
+            static $gtype: GObject.GType<ClipboardManager>;
+
+            // Constructors
+
+            constructor(properties?: Partial<ClipboardManager.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            static ['new'](replace: boolean): ClipboardManager;
+        }
+
         module FilenameInput {
             // Signal callback interfaces
 
@@ -1109,7 +1127,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -1262,10 +1280,45 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -1281,6 +1334,16 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -1681,8 +1744,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
             // Methods
 
             /**
-             * This function is a replacement for #gtk_dialog_add_action_widget and assumes that
-             * you have called #xfce_titled_dialog_create_action_area before.
+             * This function is a replacement for #gtk_dialog_add_action_widget.
              *
              * Children with #GTK_RESPONSE_HELP will be added to the secondary group of children
              * (see #gtk_button_box_set_child_secondary for reference).
@@ -1691,8 +1753,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              */
             add_action_widget(child: Gtk.Widget, response_id: number): void;
             /**
-             * This function is a replacement for #gtk_dialog_add_button and assumes that
-             * you have called #xfce_titled_dialog_create_action_area before.
+             * This function is a replacement for #gtk_dialog_add_button.
              *
              * Buttons with #GTK_RESPONSE_HELP will be added to the secondary group of children
              * (see #gtk_button_box_set_child_secondary for reference).
@@ -1702,12 +1763,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              */
             add_button(button_text: string, response_id: number): Gtk.Widget;
             /**
-             * This function creates a custom action area (of type #GtkButtonBox) and has to
-             * be used in combination with #xfce_titled_dialog_add_action_widget.
-             *
-             * When using the XfceTitledDialogClass directly to create dialogs this function is
-             * useful to keep action widgets out of the #GtkHeaderBar in which they would
-             * normally end up by calling #gtk_dialog_add_action_widget.
+             * This function is a no-op since 4.19.3.
              */
             create_action_area(): void;
             /**
@@ -1915,7 +1971,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -2068,10 +2124,45 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -2087,6 +2178,16 @@ declare module 'gi://Libxfce4ui?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -2095,6 +2196,7 @@ declare module 'gi://Libxfce4ui?version=2.0' {
             stop_emission_by_name(detailedName: string): any;
         }
 
+        type ClipboardManagerClass = typeof ClipboardManager;
         type FilenameInputClass = typeof FilenameInput;
         /**
          * Replacement for the deprecated #GtkActionEntry.

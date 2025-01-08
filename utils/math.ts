@@ -37,3 +37,11 @@ export function interpolate_colors(x: number, pairs: [Color, number][]): Color {
 
     return obj
 }
+
+export function mask_has_val(mask: number, val: number): boolean {
+    return (mask & val) === val
+}
+
+export function double_wrap(value: number, max: number): number {
+    return (value % max + max) % max
+}

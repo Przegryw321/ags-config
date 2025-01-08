@@ -1,6 +1,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -16,6 +17,7 @@ declare module 'gi://Libxfce4util?version=1.0' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace Libxfce4util {
         /**
@@ -523,6 +525,87 @@ declare module 'gi://Libxfce4util?version=1.0' {
         interface PosixSignalHandler {
             (signal: number): void;
         }
+        module Consolekit {
+            // Constructor properties interface
+
+            interface ConstructorProps extends GObject.Object.ConstructorProps {}
+        }
+
+        class Consolekit extends GObject.Object {
+            static $gtype: GObject.GType<Consolekit>;
+
+            // Constructors
+
+            constructor(properties?: Partial<Consolekit.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            // Static methods
+
+            /**
+             * Create a new #XfceConsolekit instance or increase reference count.
+             */
+            static get(): Consolekit;
+
+            // Methods
+
+            /**
+             * Check whether ConsoleKit can trigger and has authorization for Hibernate.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_hibernate(): [boolean, boolean, boolean];
+            /**
+             * Check whether ConsoleKit can trigger and has authorization for HybridSleep.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_hybrid_sleep(): [boolean, boolean, boolean];
+            /**
+             * Check whether ConsoleKit can trigger PowerOff.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_power_off(): [boolean, boolean, boolean];
+            /**
+             * Check whether ConsoleKit can trigger Reboot.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_reboot(): [boolean, boolean, boolean];
+            /**
+             * Check whether ConsoleKit can trigger and has authorization for Suspend.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_suspend(): [boolean, boolean, boolean];
+            /**
+             * Ask ConsoleKit to trigger Hibernate.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            hibernate(polkit_interactive: boolean): boolean;
+            /**
+             * Ask ConsoleKit to trigger HybridSleep.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            hybrid_sleep(polkit_interactive: boolean): boolean;
+            /**
+             * Ask ConsoleKit to trigger PowerOff.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            power_off(polkit_interactive: boolean): boolean;
+            /**
+             * Ask ConsoleKit to trigger Reboot.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            reboot(polkit_interactive: boolean): boolean;
+            /**
+             * Ask ConsoleKit to trigger Suspend.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            suspend(polkit_interactive: boolean): boolean;
+        }
+
         module Kiosk {
             // Constructor properties interface
 
@@ -556,6 +639,88 @@ declare module 'gi://Libxfce4util?version=1.0' {
             query(capability: string): boolean;
         }
 
+        module Systemd {
+            // Constructor properties interface
+
+            interface ConstructorProps extends GObject.Object.ConstructorProps {}
+        }
+
+        class Systemd extends GObject.Object {
+            static $gtype: GObject.GType<Systemd>;
+
+            // Constructors
+
+            constructor(properties?: Partial<Systemd.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            // Static methods
+
+            /**
+             * Create a new #XfceSystemd instance or increase reference count.
+             */
+            static get(): Systemd;
+
+            // Methods
+
+            /**
+             * Check whether systemd can trigger and has authorization for Hibernate.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_hibernate(): [boolean, boolean, boolean];
+            /**
+             * Check whether systemd can trigger and has authorization for HybridSleep.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_hybrid_sleep(): [boolean, boolean, boolean];
+            /**
+             * Check whether systemd can trigger PowerOff.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_power_off(): [boolean, boolean, boolean];
+            /**
+             * Check whether systemd can trigger Reboot.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_reboot(): [boolean, boolean, boolean];
+            /**
+             * Check whether systemd can trigger and has authorization for Suspend.
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            can_suspend(): [boolean, boolean, boolean];
+            /**
+             * Ask systemd to trigger Hibernate.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            hibernate(polkit_interactive: boolean): boolean;
+            /**
+             * Ask systemd to trigger HybridSleep.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            hybrid_sleep(polkit_interactive: boolean): boolean;
+            /**
+             * Ask systemd to trigger PowerOff.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            power_off(polkit_interactive: boolean): boolean;
+            /**
+             * Ask systemd to trigger Reboot.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            reboot(polkit_interactive: boolean): boolean;
+            /**
+             * Ask systemd to trigger Suspend.
+             * @param polkit_interactive whether PolicyKit should ask the user to authenticate if needed
+             * @returns %TRUE if the D-Bus request was successful, %FALSE otherwise and @error is set.
+             */
+            suspend(polkit_interactive: boolean): boolean;
+        }
+
+        type ConsolekitClass = typeof Consolekit;
         type KioskClass = typeof Kiosk;
         abstract class Rc {
             static $gtype: GObject.GType<Rc>;
@@ -781,6 +946,7 @@ declare module 'gi://Libxfce4util?version=1.0' {
             write_list_entry(key: string, value: string, separator: string): void;
         }
 
+        type SystemdClass = typeof Systemd;
         /**
          * Name of the imported GIR library
          * `see` https://gitlab.gnome.org/GNOME/gjs/-/blob/master/gi/ns.cpp#L188

@@ -7,6 +7,7 @@
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./harfbuzz-0.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -28,6 +29,7 @@ declare module 'gi://PangoOT?version=1.0' {
     import type GLib from 'gi://GLib?version=2.0';
     import type HarfBuzz from 'gi://HarfBuzz?version=0.0';
     import type Gio from 'gi://Gio?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace PangoOT {
         /**

@@ -6,6 +6,6 @@ export default function StartmenuIcon(props: WidgetProps) {
                    cursor="pointer"
                    onClicked={() => App.toggle_window("startmenu")}
                    {...props}>
-        <icon icon="Genchu" className="startmenu-icon"/>
+        <icon icon="archlinux-logo" className="startmenu-icon"/>
     </button>
 }

@@ -886,7 +886,7 @@ declare module 'gi://GstWebRTC?version=1.0' {
 
             // Virtual methods
 
-            vfunc_add_candidate(stream: WebRTCICEStream, candidate: string): void;
+            vfunc_add_candidate(stream: WebRTCICEStream, candidate: string, promise?: Gst.Promise | null): void;
             vfunc_add_stream(session_id: number): WebRTCICEStream | null;
             vfunc_add_turn_server(uri: string): boolean;
             vfunc_find_transport(stream: WebRTCICEStream, component: WebRTCICEComponent): WebRTCICETransport | null;
@@ -906,7 +906,7 @@ declare module 'gi://GstWebRTC?version=1.0' {
             vfunc_set_force_relay(force_relay: boolean): void;
             /**
              * Set HTTP Proxy to be used when connecting to TURN server.
-             * @param uri URI of the HTTP proxy of the form   http://[username:password@]hostname[:port]
+             * @param uri URI of the HTTP proxy of the form   http://[username:password@]hostname[:port][?alpn=<alpn>]
              */
             vfunc_set_http_proxy(uri: string): void;
             vfunc_set_is_controller(controller: boolean): void;
@@ -919,7 +919,7 @@ declare module 'gi://GstWebRTC?version=1.0' {
 
             // Methods
 
-            add_candidate(stream: WebRTCICEStream, candidate: string): void;
+            add_candidate(stream: WebRTCICEStream, candidate: string, promise?: Gst.Promise | null): void;
             add_stream(session_id: number): WebRTCICEStream | null;
             add_turn_server(uri: string): boolean;
             find_transport(stream: WebRTCICEStream, component: WebRTCICEComponent | null): WebRTCICETransport | null;
@@ -934,7 +934,7 @@ declare module 'gi://GstWebRTC?version=1.0' {
             set_force_relay(force_relay: boolean): void;
             /**
              * Set HTTP Proxy to be used when connecting to TURN server.
-             * @param uri URI of the HTTP proxy of the form   http://[username:password@]hostname[:port]
+             * @param uri URI of the HTTP proxy of the form   http://[username:password@]hostname[:port][?alpn=<alpn>]
              */
             set_http_proxy(uri: string): void;
             set_is_controller(controller: boolean): void;

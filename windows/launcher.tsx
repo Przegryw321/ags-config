@@ -56,7 +56,7 @@ export default async function Launcher(): Promise<JSX.Element> {
                    application={App}
                    anchor={anchor}
                    visible={false}
-                   onKeyPressEvent={(self, event: Gdk.Event) => {
+                   onKeyPressEvent={(_self, event: Gdk.Event) => {
                        if (event.get_keyval()[1] === Gdk.KEY_Escape)
                            close_launcher()
                    }}

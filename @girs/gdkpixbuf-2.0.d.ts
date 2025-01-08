@@ -773,7 +773,7 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * @param b Blue value to substitute.
              * @returns A newly-created pixbuf
              */
-            add_alpha(substitute_color: boolean, r: number, g: number, b: number): Pixbuf;
+            add_alpha(substitute_color: boolean, r: number, g: number, b: number): Pixbuf | null;
             /**
              * Takes an existing pixbuf and checks for the presence of an
              * associated "orientation" option.
@@ -1303,7 +1303,7 @@ declare module 'gi://GdkPixbuf?version=2.0' {
             equal(icon2?: Gio.Icon | null): boolean;
             /**
              * Gets a hash for an icon.
-             * @returns a #guint containing a hash for the @icon, suitable for use in a #GHashTable or similar data structure.
+             * @returns a #guint containing a hash for the @icon, suitable for   use in a #GHashTable or similar data structure.
              */
             hash(): number;
             /**
@@ -1607,7 +1607,7 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -1760,10 +1760,45 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -1779,6 +1814,16 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -1886,6 +1931,11 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * @param start_time time when the animation starts playing
              */
             vfunc_get_iter(start_time?: GLib.TimeVal | null): PixbufAnimationIter;
+            /**
+             * fills `width` and `height` with the frame size of the animation.
+             * @param width
+             * @param height
+             */
             vfunc_get_size(width: number, height: number): void;
             /**
              * Retrieves a static image for the animation.
@@ -2483,7 +2533,7 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * Creates a copy of `format`.
              * @returns the newly allocated copy of a `GdkPixbufFormat`. Use   gdk_pixbuf_format_free() to free the resources when done
              */
-            copy(): PixbufFormat;
+            copy(): PixbufFormat | null;
             /**
              * Frees the resources allocated when copying a `GdkPixbufFormat`
              * using gdk_pixbuf_format_copy()
@@ -2493,13 +2543,13 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * Returns a description of the format.
              * @returns a description of the format.
              */
-            get_description(): string;
+            get_description(): string | null;
             /**
              * Returns the filename extensions typically used for files in the
              * given format.
              * @returns an array of   filename extensions
              */
-            get_extensions(): string[];
+            get_extensions(): string[] | null;
             /**
              * Returns information about the license of the image loader for the format.
              *
@@ -2507,17 +2557,17 @@ declare module 'gi://GdkPixbuf?version=2.0' {
              * "LGPL", "GPL", "QPL", "GPL/QPL", or "other" to indicate some other license.
              * @returns a string describing the license of the pixbuf format
              */
-            get_license(): string;
+            get_license(): string | null;
             /**
              * Returns the mime types supported by the format.
              * @returns an array of mime types
              */
-            get_mime_types(): string[];
+            get_mime_types(): string[] | null;
             /**
              * Returns the name of the format.
              * @returns the name of the format.
              */
-            get_name(): string;
+            get_name(): string | null;
             /**
              * Returns whether this image format is disabled.
              *

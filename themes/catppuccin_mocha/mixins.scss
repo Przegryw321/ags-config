@@ -22,6 +22,10 @@
     }
 }
 
+.force-hover {
+    background: $selection;
+}
+
 .groove {
     background: $mantle;
     border-radius: 2rem;

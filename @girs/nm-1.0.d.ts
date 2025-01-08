@@ -1,6 +1,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -16,6 +17,7 @@ declare module 'gi://NM?version=1.0' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace NM {
         /**
@@ -2303,6 +2305,35 @@ declare module 'gi://NM?version=1.0' {
             TAP,
         }
         /**
+         * Indicates the wireless channel width.
+         */
+
+        /**
+         * Indicates the wireless channel width.
+         */
+        export namespace SettingWirelessChannelWidth {
+            export const $gtype: GObject.GType<SettingWirelessChannelWidth>;
+        }
+
+        enum SettingWirelessChannelWidth {
+            /**
+             * automatically determine the width
+             */
+            AUTO,
+            /**
+             * use a 20MHz channel width
+             */
+            '20MHZ',
+            /**
+             * use a 40MHz channel width
+             */
+            '40MHZ',
+            /**
+             * use a 80MHz channel width
+             */
+            '80MHZ',
+        }
+        /**
          * These flags indicate whether wireless powersave must be enabled.
          */
 
@@ -2699,24 +2730,27 @@ declare module 'gi://NM?version=1.0' {
             WPA3_SUITE_B_192,
         }
         /**
-         * %_NM_VERSION_INFO_CAPABILITY_UNUSED: a dummy capability. It has no meaning,
-         *   don't use it.
-         * Currently no enum values are defined. These capabilities are exposed
-         * on D-Bus in the "VersionInfo" bit field.
+         * The numeric values represent the bit index of the capability. These capabilities
+         * can be queried in the "VersionInfo" D-Bus property.
          */
 
         /**
-         * %_NM_VERSION_INFO_CAPABILITY_UNUSED: a dummy capability. It has no meaning,
-         *   don't use it.
-         * Currently no enum values are defined. These capabilities are exposed
-         * on D-Bus in the "VersionInfo" bit field.
+         * The numeric values represent the bit index of the capability. These capabilities
+         * can be queried in the "VersionInfo" D-Bus property.
          */
         export namespace VersionInfoCapability {
             export const $gtype: GObject.GType<VersionInfoCapability>;
         }
 
         enum VersionInfoCapability {
-            UNUSED,
+            /**
+             * Contains the fix to a bug that
+             *   caused that routes in table other than main were not removed on reapply nor
+             *   on connection down.
+             *   https://issues.redhat.com/browse/RHEL-66262
+             *   https://issues.redhat.com/browse/RHEL-67324
+             */
+            TABLE,
         }
         /**
          * A selector for traffic priority maps; these map Linux SKB priorities
@@ -4184,6 +4218,7 @@ declare module 'gi://NM?version=1.0' {
         const SETTING_WIRELESS_BAND: string;
         const SETTING_WIRELESS_BSSID: string;
         const SETTING_WIRELESS_CHANNEL: string;
+        const SETTING_WIRELESS_CHANNEL_WIDTH: string;
         const SETTING_WIRELESS_CLONED_MAC_ADDRESS: string;
         const SETTING_WIRELESS_GENERATE_MAC_ADDRESS_MASK: string;
         const SETTING_WIRELESS_HIDDEN: string;
@@ -7604,7 +7639,7 @@ declare module 'gi://NM?version=1.0' {
              * Expose version info and capabilities of NetworkManager. If non-empty,
              * the first element is NM_VERSION, which encodes the version of the
              * daemon as "(major << 16 | minor << 8 | micro)". The following elements
-             * is a bitfields of %NMVersionInfoCapabilities. If a bit is set, then
+             * is a bitfields of %NMVersionInfoCapability. If a bit is set, then
              * the running NetworkManager has the respective capability.
              */
             get version_info(): number[];
@@ -7612,7 +7647,7 @@ declare module 'gi://NM?version=1.0' {
              * Expose version info and capabilities of NetworkManager. If non-empty,
              * the first element is NM_VERSION, which encodes the version of the
              * daemon as "(major << 16 | minor << 8 | micro)". The following elements
-             * is a bitfields of %NMVersionInfoCapabilities. If a bit is set, then
+             * is a bitfields of %NMVersionInfoCapability. If a bit is set, then
              * the running NetworkManager has the respective capability.
              */
             get versionInfo(): number[];
@@ -8834,7 +8869,7 @@ declare module 'gi://NM?version=1.0' {
             /**
              * If available, the first element in the array is NM_VERSION which
              * encodes the daemon version as "(major << 16 | minor << 8 | micro)".
-             * The following elements are a bitfield of %NMVersionInfoCapabilities
+             * The following elements are a bitfield of %NMVersionInfoCapability
              * that indicate that the daemon supports a certain capability.
              * @returns the   list of capabilities reported by the server or %NULL   if the capabilities are unknown.
              */
@@ -9196,7 +9231,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              */
             init_async(io_priority: number, cancellable?: Gio.Cancellable | null): Promise<boolean>;
@@ -9237,7 +9272,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -9283,7 +9318,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -9343,7 +9378,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -9620,7 +9655,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -9773,10 +9808,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -9792,6 +9862,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -13590,8 +13670,18 @@ declare module 'gi://NM?version=1.0' {
              * @returns %TRUE if the secrets are valid, %FALSE if they are not
              */
             verify_secrets(): boolean;
+            /**
+             * emitted when any change to the connection's settings occurs
+             */
             vfunc_changed(): void;
+            /**
+             * emitted when the connection's secrets are cleared
+             */
             vfunc_secrets_cleared(): void;
+            /**
+             * emitted when the connection's secrets are updated
+             * @param setting
+             */
             vfunc_secrets_updated(setting: string): void;
             /**
              * Creates a binding between `source_property` on `source` and `target_property`
@@ -13770,7 +13860,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -13923,10 +14013,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -13942,6 +14067,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -14357,7 +14492,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              */
             init_async(io_priority: number, cancellable?: Gio.Cancellable | null): Promise<boolean>;
@@ -14398,7 +14533,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -14444,7 +14579,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -14504,7 +14639,7 @@ declare module 'gi://NM?version=1.0' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -14781,7 +14916,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -14934,10 +15069,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -14953,6 +15123,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -25675,6 +25855,8 @@ declare module 'gi://NM?version=1.0' {
                 band: string;
                 bssid: string;
                 channel: number;
+                channel_width: number;
+                channelWidth: number;
                 cloned_mac_address: string;
                 clonedMacAddress: string;
                 generate_mac_address_mask: string;
@@ -25780,6 +25962,40 @@ declare module 'gi://NM?version=1.0' {
              */
             get channel(): number;
             set channel(val: number);
+            /**
+             * Specifies width of the wireless channel in Access Point (AP) mode.
+             *
+             * When set to %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO (the default), the
+             * channel width is automatically determined. At the moment, this means that
+             * the safest (smallest) width is chosen.
+             *
+             * If the value is not %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO, then the
+             * 'channel' property must also be set. When using the 2.4GHz band, the width
+             * can be at most 40MHz.
+             *
+             * This property can be set to a value different from
+             * %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO only when the interface is configured
+             * in AP mode.
+             */
+            get channel_width(): number;
+            set channel_width(val: number);
+            /**
+             * Specifies width of the wireless channel in Access Point (AP) mode.
+             *
+             * When set to %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO (the default), the
+             * channel width is automatically determined. At the moment, this means that
+             * the safest (smallest) width is chosen.
+             *
+             * If the value is not %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO, then the
+             * 'channel' property must also be set. When using the 2.4GHz band, the width
+             * can be at most 40MHz.
+             *
+             * This property can be set to a value different from
+             * %NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO only when the interface is configured
+             * in AP mode.
+             */
+            get channelWidth(): number;
+            set channelWidth(val: number);
             /**
              * If specified, request that the device use this MAC address instead.
              * This is known as MAC cloning or spoofing.
@@ -26133,6 +26349,11 @@ declare module 'gi://NM?version=1.0' {
             get_band(): string;
             get_bssid(): string;
             get_channel(): number;
+            /**
+             * Returns the #NMSettingWireless:channel-width property.
+             * @returns the channel width
+             */
+            get_channel_width(): SettingWirelessChannelWidth;
             get_cloned_mac_address(): string;
             get_generate_mac_address_mask(): string;
             get_hidden(): boolean;
@@ -27152,8 +27373,18 @@ declare module 'gi://NM?version=1.0' {
              * @returns %TRUE if the secrets are valid, %FALSE if they are not
              */
             verify_secrets(): boolean;
+            /**
+             * emitted when any change to the connection's settings occurs
+             */
             vfunc_changed(): void;
+            /**
+             * emitted when the connection's secrets are cleared
+             */
             vfunc_secrets_cleared(): void;
+            /**
+             * emitted when the connection's secrets are updated
+             * @param setting
+             */
             vfunc_secrets_updated(setting: string): void;
             /**
              * Creates a binding between `source_property` on `source` and `target_property`
@@ -27332,7 +27563,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -27485,10 +27716,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -27504,6 +27770,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -27948,7 +28224,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -28101,10 +28377,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -28120,6 +28431,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -28553,7 +28874,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -28706,10 +29027,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -28725,6 +29081,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             set(properties: { [key: string]: any }): void;
             block_signal_handler(id: number): any;
@@ -29176,7 +29542,7 @@ declare module 'gi://NM?version=1.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -29329,10 +29695,45 @@ declare module 'gi://NM?version=1.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -29348,6 +29749,16 @@ declare module 'gi://NM?version=1.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             set(properties: { [key: string]: any }): void;
             block_signal_handler(id: number): any;
@@ -31339,8 +31750,18 @@ declare module 'gi://NM?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * emitted when any change to the connection's settings occurs
+             */
             vfunc_changed(): void;
+            /**
+             * emitted when the connection's secrets are cleared
+             */
             vfunc_secrets_cleared(): void;
+            /**
+             * emitted when the connection's secrets are updated
+             * @param setting
+             */
             vfunc_secrets_updated(setting: string): void;
         }
 
@@ -31366,8 +31787,24 @@ declare module 'gi://NM?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * emitted when the value of a UI widget changes.  May trigger a
+             *   validity check via `update_connection` to write values to the connection.
+             */
             vfunc_changed(): void;
+            /**
+             * return the #GtkWidget for the VPN editor's UI
+             */
             vfunc_get_widget<T = GObject.Object>(): T;
+            /**
+             * called to save the user-entered options to the connection
+             *   object.  Should return %FALSE and set `error` if the current options are
+             *   invalid.  `error` should contain enough information for the plugin to
+             *   determine which UI widget is invalid at a later point in time.  For
+             *   example, creating unique error codes for what error occurred and populating
+             *   the message field of `error` with the name of the invalid property.
+             * @param connection
+             */
             vfunc_update_connection(connection: Connection): boolean;
         }
 
@@ -31468,11 +31905,42 @@ declare module 'gi://NM?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * Export the given connection to the specified path.  Return
+             *   %TRUE on success.  On error, return %FALSE and set `error` with additional
+             *   error information.  Note that `error` can be %NULL, in which case no
+             *   additional error information should be provided.
+             * @param path
+             * @param connection
+             */
             vfunc_export_to_file(path: string, connection: Connection): boolean;
+            /**
+             * returns a bitmask of capabilities.
+             */
             vfunc_get_capabilities(): VpnEditorPluginCapability;
+            /**
+             * returns an #NMVpnEditor, pre-filled with values from `connection`
+             *   if non-%NULL.
+             * @param connection the #NMConnection to be edited
+             */
             vfunc_get_editor(connection: Connection): VpnEditor;
+            /**
+             * For a given connection, return a suggested file
+             *   name.  Returned value will be %NULL or a suggested file name to be freed by
+             *   the caller.
+             * @param connection
+             */
             vfunc_get_suggested_filename(connection: Connection): string;
+            /**
+             * return a virtual function table to implement further functions in
+             *   the plugin, without requiring to update libnm. Used by nm_vpn_editor_plugin_get_vt().
+             * @param out_vt_size
+             */
             vfunc_get_vt(out_vt_size: number): VpnEditorPluginVT;
+            /**
+             * A callback to be called when the plugin info is set.
+             * @param plugin_info
+             */
             vfunc_notify_plugin_info_set(plugin_info: VpnPluginInfo): void;
         }
 

@@ -1,7 +1,7 @@
 import { App, Astal, Widget } from "astal/gtk3"
 import { WidgetProps, ContainerProps } from "../../utils/widget"
 import { sleep } from "../../utils/power"
-import { Menu, MenuLabel, MenuButton } from "../menu"
+import { Menu, MenuLabel } from "../menu"
 
 import { logout, reboot, poweroff, shutdown, shutdown_cancel } from "../../utils/power"
 
@@ -11,12 +11,12 @@ type PowerButtonProps = WidgetProps & {
     popup?: Menu
 }
 export function PowerButton({ className, icon, ...props }: PowerButtonProps): JSX.Element {
-    return <MenuButton className={`powerbutton ${className}`}
+    return <menubutton className={`powerbutton ${className}`}
                        cursor="pointer"
                        sensitive
                        {...props}>
         <icon icon={icon} css="font-size: 2rem;"/>
-    </MenuButton>
+    </menubutton>
 }
 
 function close_startmenu(): void {
@@ -56,7 +56,7 @@ export default function Powermenu(props: ContainerProps): JSX.Element {
         <PowerButton className="sleep"
                      tooltipText="Uśpij"
                      icon="moon-symbolic"
-                     onClicked={sleep}/>
+                     onClicked={() => console.log('SLEEEEEEEEEEEEEEEEEEEEEP!!!!!!!!!!!')}/>
 
         <PowerButton className="logout"
                      tooltipText="Wyloguj"

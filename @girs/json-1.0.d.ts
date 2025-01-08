@@ -1,6 +1,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -16,6 +17,7 @@ declare module 'gi://Json?version=1.0' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace Json {
         /**
@@ -82,17 +84,29 @@ declare module 'gi://Json?version=1.0' {
              */
             static INVALID_BAREWORD: number;
             /**
-             * empty member name (Since: 0.16)
+             * Empty member name.
              */
             static EMPTY_MEMBER_NAME: number;
             /**
-             * invalid data (Since: 0.18)
+             * Invalid data.
              */
             static INVALID_DATA: number;
             /**
              * unknown error
              */
             static UNKNOWN: number;
+            /**
+             * Too many levels of nesting.
+             */
+            static NESTING: number;
+            /**
+             * Invalid structure.
+             */
+            static INVALID_STRUCTURE: number;
+            /**
+             * Invalid assignment.
+             */
+            static INVALID_ASSIGNMENT: number;
 
             // Constructors
 
@@ -192,6 +206,10 @@ declare module 'gi://Json?version=1.0' {
          * Json minor version component (e.g. 2 if `JSON_VERSION` is "1.2.3")
          */
         const MINOR_VERSION: number;
+        /**
+         * The maximum recursion depth for a JSON tree.
+         */
+        const PARSER_MAX_RECURSION_DEPTH: number;
         /**
          * The version of JSON-GLib, encoded as a string, useful for printing and
          * concatenation.
@@ -550,7 +568,7 @@ declare module 'gi://Json?version=1.0' {
              */
             add_null_value(): Builder | null;
             /**
-             * Adds a boolean value to the currently open object member or array.
+             * Adds a string value to the currently open object member or array.
              *
              * If called after [method`Json`.Builder.set_member_name], sets the given value
              * as the value of the current member in the open object; otherwise, the value
@@ -754,6 +772,14 @@ declare module 'gi://Json?version=1.0' {
              */
             set_root(node: Node): void;
             /**
+             * Sets the root of the JSON data stream to be serialized by
+             * the given generator.
+             *
+             * The ownership of the passed `node` is transferred to the generator object.
+             * @param node the root node
+             */
+            take_root(node?: Node | null): void;
+            /**
              * Generates a JSON data stream from `generator` and returns it as a
              * buffer.
              * @returns a newly allocated string holding a JSON data stream
@@ -827,6 +853,7 @@ declare module 'gi://Json?version=1.0' {
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
                 immutable: boolean;
+                strict: boolean;
             }
         }
 
@@ -861,7 +888,7 @@ declare module 'gi://Json?version=1.0' {
          * ```
          *
          * By default, the entire process of loading the data and parsing it is
-         * synchronous; the [method`Json`.Parser.load_from_stream_async()] API will
+         * synchronous; the [method`Json`.Parser.load_from_stream_async] API will
          * load the data asynchronously, but parse it in the main context as the
          * signals of the parser must be emitted in the same thread. If you do
          * not use signals, and you wish to also parse the JSON data without blocking,
@@ -881,6 +908,12 @@ declare module 'gi://Json?version=1.0' {
              * of traversing it to make it immutable later.
              */
             get immutable(): boolean;
+            /**
+             * Whether the parser should be strictly conforming to the
+             * JSON format, or allow custom extensions like comments.
+             */
+            get strict(): boolean;
+            set strict(val: boolean);
 
             // Constructors
 
@@ -936,14 +969,48 @@ declare module 'gi://Json?version=1.0' {
 
             // Virtual methods
 
+            /**
+             * class handler for the JsonParser::array-element signal
+             * @param array
+             * @param index_
+             */
             vfunc_array_element(array: Array, index_: number): void;
+            /**
+             * class handler for the JsonParser::array-end signal
+             * @param array
+             */
             vfunc_array_end(array: Array): void;
+            /**
+             * class handler for the JsonParser::array-start signal
+             */
             vfunc_array_start(): void;
+            /**
+             * class handler for the JsonParser::error signal
+             * @param error
+             */
             vfunc_error(error: GLib.Error): void;
+            /**
+             * class handler for the JsonParser::object-end signal
+             * @param object
+             */
             vfunc_object_end(object: Object): void;
+            /**
+             * class handler for the JsonParser::object-member signal
+             * @param object
+             * @param member_name
+             */
             vfunc_object_member(object: Object, member_name: string): void;
+            /**
+             * class handler for the JsonParser::object-start signal
+             */
             vfunc_object_start(): void;
+            /**
+             * class handler for the JsonParser::parse-end signal
+             */
             vfunc_parse_end(): void;
+            /**
+             * class handler for the JsonParser::parse-start signal
+             */
             vfunc_parse_start(): void;
 
             // Methods
@@ -976,6 +1043,11 @@ declare module 'gi://Json?version=1.0' {
              * @returns the root node.
              */
             get_root(): Node | null;
+            /**
+             * Retrieves whether the parser is operating in strict mode.
+             * @returns true if the parser is strict, and false otherwise
+             */
+            get_strict(): boolean;
             /**
              * A JSON data stream might sometimes contain an assignment, like:
              *
@@ -1094,6 +1166,17 @@ declare module 'gi://Json?version=1.0' {
              * @returns `TRUE` if the content of the stream was successfully retrieved   and parsed, and `FALSE` otherwise
              */
             load_from_stream_finish(result: Gio.AsyncResult): boolean;
+            /**
+             * Sets whether the parser should operate in strict mode.
+             *
+             * If `strict` is true, `JsonParser` will strictly conform to
+             * the JSON format.
+             *
+             * If `strict` is false, `JsonParser` will allow custom extensions
+             * to the JSON format, like comments.
+             * @param strict whether the parser should be strict
+             */
+            set_strict(strict: boolean): void;
             /**
              * Steals the top level node from the parsed JSON stream.
              *
@@ -1299,26 +1382,42 @@ declare module 'gi://Json?version=1.0' {
          *
          * It is similar, in spirit, to the XML Reader API.
          *
+         * The cursor is moved by the `json_reader_read_*` and the `json_reader_end_*`
+         * functions. You can enter a JSON object using [method`Json`.Reader.read_member]
+         * with the name of the object member, access the value at that position, and
+         * move the cursor back one level using [method`Json`.Reader.end_member]; arrays
+         * work in a similar way, using [method`Json`.Reader.read_element] with the
+         * index of the element, and using [method`Json`.Reader.end_element] to move
+         * the cursor back.
+         *
          * ## Using `JsonReader`
          *
          * ```c
          * g_autoptr(JsonParser) parser = json_parser_new ();
          *
-         * // str is defined elsewhere
+         * // str is defined elsewhere and contains:
+         * // { "url" : "http://www.gnome.org/img/flash/two-thirty.png", "size" : [ 652, 242 ] }
          * json_parser_load_from_data (parser, str, -1, NULL);
          *
          * g_autoptr(JsonReader) reader = json_reader_new (json_parser_get_root (parser));
          *
+         * // Enter the "url" member of the object
          * json_reader_read_member (reader, "url");
          *   const char *url = json_reader_get_string_value (reader);
+         *   // url now contains "http://www.gnome.org/img/flash/two-thirty.png"
          *   json_reader_end_member (reader);
          *
+         * // Enter the "size" member of the object
          * json_reader_read_member (reader, "size");
+         *   // Enter the first element of the array
          *   json_reader_read_element (reader, 0);
          *     int width = json_reader_get_int_value (reader);
+         *     // width now contains 652
          *     json_reader_end_element (reader);
+         *   // Enter the second element of the array
          *   json_reader_read_element (reader, 1);
          *     int height = json_reader_get_int_value (reader);
+         *     // height now contains 242
          *     json_reader_end_element (reader);
          *   json_reader_end_member (reader);
          * ```
@@ -2358,7 +2457,8 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the array
              * stored in `member_name` of `object`. It is an error to specify a
-             * `member_name` which does not exist.
+             * `member_name` which does not exist or which holds a non-`null`, non-array
+             * value.
              *
              * If `member_name` contains `null`, then this function will return `NULL`.
              *
@@ -2370,7 +2470,8 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the boolean value
              * stored in `member_name` of `object`. It is an error to specify a
-             * `member_name` which does not exist.
+             * `member_name` which does not exist or which holds a non-scalar,
+             * non-`null` value.
              *
              * See also: [method`Json`.Object.get_boolean_member_with_default],
              *   [method`Json`.Object.get_member], [method`Json`.Object.has_member]
@@ -2383,7 +2484,9 @@ declare module 'gi://Json?version=1.0' {
              * stored in `member_name` of `object`.
              *
              * If `member_name` does not exist, does not contain a scalar value,
-             * or contains `null`, then `default_value` is returned instead.
+             * or contains `null`, then `default_value` is returned instead. If
+             * `member_name` contains a non-boolean, non-`null` scalar value, then
+             * whatever json_node_get_boolean() would return is returned.
              * @param member_name the name of the @object member
              * @param default_value the value to return if @member_name is not valid
              * @returns the boolean value of the object's member, or the   given default
@@ -2392,7 +2495,8 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the floating point value
              * stored in `member_name` of `object`. It is an error to specify a
-             * `member_name` which does not exist.
+             * `member_name` which does not exist or which holds a non-scalar,
+             * non-`null` value.
              *
              * See also: [method`Json`.Object.get_double_member_with_default],
              *   [method`Json`.Object.get_member], [method`Json`.Object.has_member]
@@ -2405,7 +2509,9 @@ declare module 'gi://Json?version=1.0' {
              * stored in `member_name` of `object`.
              *
              * If `member_name` does not exist, does not contain a scalar value,
-             * or contains `null`, then `default_value` is returned instead.
+             * or contains `null`, then `default_value` is returned instead. If
+             * `member_name` contains a non-double, non-`null` scalar value, then
+             * whatever json_node_get_double() would return is returned.
              * @param member_name the name of the @object member
              * @param default_value the value to return if @member_name is not valid
              * @returns the floating point value of the object's member, or the   given default
@@ -2414,7 +2520,8 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the integer value
              * stored in `member_name` of `object`. It is an error to specify a
-             * `member_name` which does not exist.
+             * `member_name` which does not exist or which holds a non-scalar,
+             * non-`null` value.
              *
              * See also: [method`Json`.Object.get_int_member_with_default],
              *   [method`Json`.Object.get_member], [method`Json`.Object.has_member]
@@ -2427,7 +2534,9 @@ declare module 'gi://Json?version=1.0' {
              * stored in `member_name` of `object`.
              *
              * If `member_name` does not exist, does not contain a scalar value,
-             * or contains `null`, then `default_value` is returned instead.
+             * or contains `null`, then `default_value` is returned instead. If
+             * `member_name` contains a non-integer, non-`null` scalar value, then whatever
+             * json_node_get_int() would return is returned.
              * @param member_name the name of the object member
              * @param default_value the value to return if @member_name is not valid
              * @returns the integer value of the object's member, or the   given default
@@ -2460,7 +2569,7 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the object
              * stored in `member_name` of `object`. It is an error to specify a `member_name`
-             * which does not exist.
+             * which does not exist or which holds a non-`null`, non-object value.
              *
              * If `member_name` contains `null`, then this function will return `NULL`.
              *
@@ -2477,7 +2586,8 @@ declare module 'gi://Json?version=1.0' {
             /**
              * Convenience function that retrieves the string value
              * stored in `member_name` of `object`. It is an error to specify a
-             * `member_name` that does not exist.
+             * `member_name` that does not exist or which holds a non-scalar,
+             * non-`null` value.
              *
              * See also: [method`Json`.Object.get_string_member_with_default],
              *   [method`Json`.Object.get_member], [method`Json`.Object.has_member]
@@ -2490,7 +2600,9 @@ declare module 'gi://Json?version=1.0' {
              * stored in `member_name` of `object`.
              *
              * If `member_name` does not exist, does not contain a scalar value,
-             * or contains `null`, then `default_value` is returned instead.
+             * or contains `null`, then `default_value` is returned instead. If
+             * `member_name` contains a non-string, non-`null` scalar value, then
+             * %NULL is returned.
              * @param member_name the name of the @object member
              * @param default_value the value to return if @member_name is not valid
              * @returns the string value of the object's member, or the   given default
@@ -2867,7 +2979,11 @@ declare module 'gi://Json?version=1.0' {
              * @param pspec a property description
              * @returns a node containing the serialized property
              */
-            serialize_property(property_name: string, value: GObject.Value | any, pspec: GObject.ParamSpec): Node;
+            serialize_property(
+                property_name: string,
+                value: GObject.Value | any,
+                pspec: GObject.ParamSpec,
+            ): Node | null;
             /**
              * Calls the [vfunc`Json`.Serializable.set_property] implementation
              * on the `JsonSerializable` instance, which will set the property
@@ -2927,7 +3043,11 @@ declare module 'gi://Json?version=1.0' {
              * @param value the value of the property to serialize
              * @param pspec a property description
              */
-            vfunc_serialize_property(property_name: string, value: GObject.Value | any, pspec: GObject.ParamSpec): Node;
+            vfunc_serialize_property(
+                property_name: string,
+                value: GObject.Value | any,
+                pspec: GObject.ParamSpec,
+            ): Node | null;
             /**
              * Calls the [vfunc`Json`.Serializable.set_property] implementation
              * on the `JsonSerializable` instance, which will set the property

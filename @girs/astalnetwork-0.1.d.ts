@@ -2,6 +2,7 @@
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./nm-1.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -18,6 +19,7 @@ declare module 'gi://AstalNetwork?version=0.1' {
     import type GObject from 'gi://GObject?version=2.0';
     import type NM from 'gi://NM?version=1.0';
     import type Gio from 'gi://Gio?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace AstalNetwork {
         /**

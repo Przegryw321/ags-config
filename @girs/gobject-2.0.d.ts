@@ -287,7 +287,7 @@ declare module 'gi://GObject?version=2.0' {
         /**
          * A bit in the type number that's supposed to be left untouched.
          */
-        const TYPE_FLAG_RESERVED_ID_BIT: GLib.Type;
+        const TYPE_FLAG_RESERVED_ID_BIT: Type;
         /**
          * An integer constant that represents the number of identifiers reserved
          * for types that are assigned at compile-time.
@@ -321,6 +321,11 @@ declare module 'gi://GObject?version=2.0' {
          */
         const TYPE_RESERVED_USER_FIRST: number;
         /**
+         * The maximal number of #GTypeCValues which can be collected for a
+         * single #GValue.
+         */
+        const VALUE_COLLECT_FORMAT_MAX_LENGTH: number;
+        /**
          * For string values, indicates that the string contained is canonical and will
          * exist for the duration of the process. See g_value_set_interned_string().
          */
@@ -346,6 +351,22 @@ declare module 'gi://GObject?version=2.0' {
          */
         function boxed_free(boxed_type: GType, boxed: any): void;
         /**
+         * This function creates a new %G_TYPE_BOXED derived type id for a new
+         * boxed type with name `name`.
+         *
+         * Boxed type handling functions have to be provided to copy and free
+         * opaque boxed structures of this type.
+         *
+         * For the general case, it is recommended to use G_DEFINE_BOXED_TYPE()
+         * instead of calling g_boxed_type_register_static() directly. The macro
+         * will create the appropriate `*_get_type()` function for the boxed type.
+         * @param name Name of the new boxed type.
+         * @param boxed_copy Boxed structure copy function.
+         * @param boxed_free Boxed structure free function.
+         * @returns New %G_TYPE_BOXED derived type id for @name.
+         */
+        function boxed_type_register_static(name: string, boxed_copy: BoxedCopyFunc, boxed_free: BoxedFreeFunc): GType;
+        /**
          * A #GClosureMarshal function for use with signals with handlers that
          * take two boxed pointers as arguments and return a boolean.  If you
          * have such a signal, you will probably also need to use an
@@ -366,15 +387,16 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `gboolean (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter
-         * denotes a flags type.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value a #GValue which can store the returned #gboolean
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding instance and arg1
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with handlers that
+         * take a flags type as an argument and return a boolean.  If you have
+         * such a signal, you will probably also need to use an accumulator,
+         * such as g_signal_accumulator_true_handled().
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_BOOLEAN__FLAGS(
             closure: Closure,
@@ -385,14 +407,15 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `gchar* (*callback) (gpointer instance, GObject *arg1, gpointer arg2, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value a #GValue, which can store the returned string
-         * @param n_param_values 3
-         * @param param_values a #GValue array holding instance, arg1 and arg2
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with handlers that
+         * take a #GObject and a pointer and produce a string.  It is highly
+         * unlikely that your signal handler fits this description.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_STRING__OBJECT_POINTER(
             closure: Closure,
@@ -403,14 +426,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gboolean arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gboolean parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * boolean argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__BOOLEAN(
             closure: Closure,
@@ -421,14 +444,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, GBoxed *arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #GBoxed* parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * argument which is any boxed pointer type.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__BOXED(
             closure: Closure,
@@ -439,14 +462,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gchar arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gchar parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * character argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__CHAR(
             closure: Closure,
@@ -457,14 +480,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gdouble arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gdouble parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with one
+         * double-precision floating point argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__DOUBLE(
             closure: Closure,
@@ -475,14 +498,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter denotes an enumeration type..
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the enumeration parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * argument with an enumerated type.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__ENUM(
             closure: Closure,
@@ -493,14 +516,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter denotes a flags type.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the flags parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * argument with a flags types.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__FLAGS(
             closure: Closure,
@@ -511,14 +534,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gfloat arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gfloat parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with one
+         * single-precision floating point argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__FLOAT(
             closure: Closure,
@@ -529,14 +552,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gint parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * integer argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__INT(
             closure: Closure,
@@ -547,14 +570,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, glong arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #glong parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with with a single
+         * long integer argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__LONG(
             closure: Closure,
@@ -565,14 +588,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, GObject *arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #GObject* parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * #GObject argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__OBJECT(
             closure: Closure,
@@ -583,14 +606,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, GParamSpec *arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #GParamSpec* parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * argument of type #GParamSpec.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__PARAM(
             closure: Closure,
@@ -601,14 +624,18 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gpointer arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gpointer parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single raw
+         * pointer argument type.
+         *
+         * If it is possible, it is better to use one of the more specific
+         * functions such as g_cclosure_marshal_VOID__OBJECT() or
+         * g_cclosure_marshal_VOID__OBJECT().
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__POINTER(
             closure: Closure,
@@ -619,14 +646,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, const gchar *arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gchar* parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single string
+         * argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__STRING(
             closure: Closure,
@@ -637,14 +664,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, guchar arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #guchar parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * unsigned character argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__UCHAR(
             closure: Closure,
@@ -655,14 +682,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, guint arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #guint parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with with a single
+         * unsigned integer argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__UINT(
             closure: Closure,
@@ -673,14 +700,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, guint arg1, gpointer arg2, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 3
-         * @param param_values a #GValue array holding instance, arg1 and arg2
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with an unsigned int
+         * and a pointer as arguments.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__UINT_POINTER(
             closure: Closure,
@@ -691,14 +718,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gulong arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #gulong parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * unsigned long integer argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__ULONG(
             closure: Closure,
@@ -709,14 +736,14 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, GVariant *arg1, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 2
-         * @param param_values a #GValue array holding the instance and the #GVariant* parameter
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with a single
+         * #GVariant argument.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__VARIANT(
             closure: Closure,
@@ -727,14 +754,13 @@ declare module 'gi://GObject?version=2.0' {
             marshal_data?: any | null,
         ): void;
         /**
-         * A marshaller for a #GCClosure with a callback of type
-         * `void (*callback) (gpointer instance, gpointer user_data)`.
-         * @param closure the #GClosure to which the marshaller belongs
-         * @param return_value ignored
-         * @param n_param_values 1
-         * @param param_values a #GValue array holding only the instance
-         * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-         * @param marshal_data additional data specified when registering the marshaller
+         * A #GClosureMarshal function for use with signals with no arguments.
+         * @param closure A #GClosure.
+         * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+         * @param n_param_values The length of the @param_values array.
+         * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+         * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+         * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
          */
         function cclosure_marshal_VOID__VOID(
             closure: Closure,
@@ -1468,12 +1494,14 @@ declare module 'gi://GObject?version=2.0' {
          * for signals which don't have %G_SIGNAL_NO_HOOKS flag set.
          * @param signal_id the signal identifier, as returned by g_signal_lookup().
          * @param detail the detail on which to call the hook.
+         * @param hook_func a #GSignalEmissionHook function.
          * @param data_destroy a #GDestroyNotify for @hook_data.
          * @returns the hook id, for later use with g_signal_remove_emission_hook().
          */
         function signal_add_emission_hook(
             signal_id: number,
             detail: GLib.Quark,
+            hook_func: SignalEmissionHook,
             data_destroy?: GLib.DestroyNotify | null,
         ): number;
         /**
@@ -1490,11 +1518,14 @@ declare module 'gi://GObject?version=2.0' {
          *
          * If `closure` is a floating reference (see g_closure_sink()), this function
          * takes ownership of `closure`.
+         *
+         * This function cannot fail. If the given signal doesn’t exist, a critical
+         * warning is emitted.
          * @param instance the instance to connect to.
          * @param detailed_signal a string of the form "signal-name::detail".
          * @param closure the closure to connect.
          * @param after whether the handler should be called before or after the  default handler of the signal.
-         * @returns the handler ID (always greater than 0 for successful connections)
+         * @returns the handler ID (always greater than 0)
          */
         function signal_connect_closure(
             instance: Object,
@@ -1507,12 +1538,15 @@ declare module 'gi://GObject?version=2.0' {
          *
          * If `closure` is a floating reference (see g_closure_sink()), this function
          * takes ownership of `closure`.
+         *
+         * This function cannot fail. If the given signal doesn’t exist, a critical
+         * warning is emitted.
          * @param instance the instance to connect to.
          * @param signal_id the id of the signal.
          * @param detail the detail.
          * @param closure the closure to connect.
          * @param after whether the handler should be called before or after the  default handler of the signal.
-         * @returns the handler ID (always greater than 0 for successful connections)
+         * @returns the handler ID (always greater than 0)
          */
         function signal_connect_closure_by_id(
             instance: Object,
@@ -1611,6 +1645,7 @@ declare module 'gi://GObject?version=2.0' {
          * @param mask Mask indicating which of @signal_id, @detail, @closure, @func  and/or @data the handlers have to match.
          * @param signal_id Signal the handlers have to be connected to.
          * @param detail Signal detail the handlers have to be connected to.
+         * @param closure The closure the handlers will invoke.
          * @param func The C closure callback of the handlers (useless for non-C closures).
          * @param data The closure data of the handlers' closures.
          * @returns The number of handlers that matched.
@@ -1620,6 +1655,7 @@ declare module 'gi://GObject?version=2.0' {
             mask: SignalMatchType | null,
             signal_id: number,
             detail: GLib.Quark,
+            closure?: Closure | null,
             func?: any | null,
             data?: any | null,
         ): number;
@@ -1649,6 +1685,7 @@ declare module 'gi://GObject?version=2.0' {
          * @param mask Mask indicating which of @signal_id, @detail, @closure, @func  and/or @data the handlers have to match.
          * @param signal_id Signal the handlers have to be connected to.
          * @param detail Signal detail the handlers have to be connected to.
+         * @param closure The closure the handlers will invoke.
          * @param func The C closure callback of the handlers (useless for non-C closures).
          * @param data The closure data of the handlers' closures.
          * @returns The number of handlers that matched.
@@ -1658,6 +1695,7 @@ declare module 'gi://GObject?version=2.0' {
             mask: SignalMatchType | null,
             signal_id: number,
             detail: GLib.Quark,
+            closure?: Closure | null,
             func?: any | null,
             data?: any | null,
         ): number;
@@ -1681,6 +1719,7 @@ declare module 'gi://GObject?version=2.0' {
          * @param mask Mask indicating which of @signal_id, @detail, @closure, @func  and/or @data the handlers have to match.
          * @param signal_id Signal the handlers have to be connected to.
          * @param detail Signal detail the handlers have to be connected to.
+         * @param closure The closure the handlers will invoke.
          * @param func The C closure callback of the handlers (useless for non-C closures).
          * @param data The closure data of the handlers' closures.
          * @returns The number of handlers that matched.
@@ -1690,6 +1729,7 @@ declare module 'gi://GObject?version=2.0' {
             mask: SignalMatchType | null,
             signal_id: number,
             detail: GLib.Quark,
+            closure?: Closure | null,
             func?: any | null,
             data?: any | null,
         ): number;
@@ -1726,9 +1766,8 @@ declare module 'gi://GObject?version=2.0' {
          * Validate a signal name. This can be useful for dynamically-generated signals
          * which need to be validated at run-time before actually trying to create them.
          *
-         * See [canonical parameter names][canonical-parameter-names] for details of
-         * the rules for valid names. The rules for signal names are the same as those
-         * for property names.
+         * See [func`GObject`.signal_new] for details of the rules for valid names.
+         * The rules for signal names are the same as those for property names.
          * @param name the canonical name of the signal
          * @returns %TRUE if @name is a valid signal name, %FALSE otherwise.
          */
@@ -1780,6 +1819,24 @@ declare module 'gi://GObject?version=2.0' {
          */
         function signal_override_class_closure(signal_id: number, instance_type: GType, class_closure: Closure): void;
         /**
+         * Overrides the class closure (i.e. the default handler) for the
+         * given signal for emissions on instances of `instance_type` with
+         * callback `class_handler`. `instance_type` must be derived from the
+         * type to which the signal belongs.
+         *
+         * See g_signal_chain_from_overridden() and
+         * g_signal_chain_from_overridden_handler() for how to chain up to the
+         * parent class closure from inside the overridden one.
+         * @param signal_name the name for the signal
+         * @param instance_type the instance type on which to override the class handler  for the signal.
+         * @param class_handler the handler.
+         */
+        function signal_override_class_handler(
+            signal_name: string,
+            instance_type: GType,
+            class_handler: Callback,
+        ): void;
+        /**
          * Internal function to parse a signal name into its `signal_id`
          * and `detail` quark.
          * @param detailed_signal a string of the form "signal-name::detail".
@@ -1808,20 +1865,6 @@ declare module 'gi://GObject?version=2.0' {
          * @param hook_id the id of the emission hook, as returned by  g_signal_add_emission_hook()
          */
         function signal_remove_emission_hook(signal_id: number, hook_id: number): void;
-        /**
-         * Change the #GSignalCVaMarshaller used for a given signal.  This is a
-         * specialised form of the marshaller that can often be used for the
-         * common case of a single connected signal handler and avoids the
-         * overhead of #GValue.  Its use is optional.
-         * @param signal_id the signal id
-         * @param instance_type the instance type on which to set the marshaller.
-         * @param va_marshaller the marshaller to set.
-         */
-        function signal_set_va_marshaller(
-            signal_id: number,
-            instance_type: GType,
-            va_marshaller: SignalCVaMarshaller,
-        ): void;
         /**
          * Stops a signal's current emission.
          *
@@ -2302,6 +2345,7 @@ declare module 'gi://GObject?version=2.0' {
          * @returns %TRUE if the transformation is possible, %FALSE otherwise.
          */
         function value_type_transformable(src_type: GType, dest_type: GType): boolean;
+        function variant_get_gtype(): GType;
         interface BaseFinalizeFunc {
             (g_class: TypeClass): void;
         }
@@ -2412,6 +2456,41 @@ declare module 'gi://GObject?version=2.0' {
         interface WeakNotify<A = Object> {
             (data: any | null, where_the_object_was: A): void;
         }
+        type Array = object | null;
+        type BookmarkFile = object | null;
+        type ByteArray = object | null;
+        type Bytes = object | null;
+        type Checksum = object | null;
+        type Date = object | null;
+        type DateTime = object | null;
+        type Dir = object | null;
+        type Error = object | null;
+        type HashTable = object | null;
+        type Hmac = object | null;
+        type IOChannel = object | null;
+        type KeyFile = object | null;
+        type MainContext = object | null;
+        type MainLoop = object | null;
+        type MappedFile = object | null;
+        type MarkupParseContext = object | null;
+        type MatchInfo = object | null;
+        type OptionGroup = object | null;
+        type PatternSpec = object | null;
+        type PollFD = object | null;
+        type PtrArray = object | null;
+        type Rand = object | null;
+        type Regex = object | null;
+        type Source = object | null;
+        type String = object | null;
+        type Strv = object | null;
+        type StrvBuilder = object | null;
+        type Thread = object | null;
+        type TimeZone = object | null;
+        type Tree = object | null;
+        type Uri = object | null;
+        type VariantBuilder = object | null;
+        type VariantDict = object | null;
+        type VariantType = object | null;
         /**
          * Flags to be passed to g_object_bind_property() or
          * g_object_bind_property_full().
@@ -2485,6 +2564,19 @@ declare module 'gi://GObject?version=2.0' {
              *  calling the handler; see g_signal_connect_swapped() for an example.
              */
             SWAPPED,
+        }
+
+        export namespace IOCondition {
+            export const $gtype: GType<IOCondition>;
+        }
+
+        enum IOCondition {
+            IN,
+            OUT,
+            PRI,
+            ERR,
+            HUP,
+            NVAL,
         }
         /**
          * Through the #GParamFlags flag values, certain aspects of parameters
@@ -2802,13 +2894,11 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * #GBinding is the representation of a binding between a property on a
-         * #GObject instance (or source) and another property on another #GObject
+         * `GObject` instance (or source) and another property on another `GObject`
          * instance (or target).
          *
          * Whenever the source property changes, the same value is applied to the
          * target property; for instance, the following binding:
-         *
          *
          * ```c
          *   g_object_bind_property (object1, "property-a",
@@ -2816,15 +2906,13 @@ declare module 'gi://GObject?version=2.0' {
          *                           G_BINDING_DEFAULT);
          * ```
          *
-         *
          * will cause the property named "property-b" of `object2` to be updated
-         * every time g_object_set() or the specific accessor changes the value of
+         * every time [method`GObject`.set] or the specific accessor changes the value of
          * the property "property-a" of `object1`.
          *
          * It is possible to create a bidirectional binding between two properties
-         * of two #GObject instances, so that if either property changes, the
+         * of two `GObject` instances, so that if either property changes, the
          * other is updated as well, for instance:
-         *
          *
          * ```c
          *   g_object_bind_property (object1, "property-a",
@@ -2832,14 +2920,12 @@ declare module 'gi://GObject?version=2.0' {
          *                           G_BINDING_BIDIRECTIONAL);
          * ```
          *
-         *
          * will keep the two properties in sync.
          *
          * It is also possible to set a custom transformation function (in both
          * directions, in case of a bidirectional binding) to apply a custom
          * transformation from the source value to the target value before
          * applying it; for instance, the following binding:
-         *
          *
          * ```c
          *   g_object_bind_property_full (adjustment1, "value",
@@ -2849,7 +2935,6 @@ declare module 'gi://GObject?version=2.0' {
          *                                fahrenheit_to_celsius,
          *                                NULL, NULL);
          * ```
-         *
          *
          * will keep the "value" property of the two adjustments in sync; the
          * `celsius_to_fahrenheit` function will be called whenever the "value"
@@ -2863,31 +2948,27 @@ declare module 'gi://GObject?version=2.0' {
          *
          * Note that #GBinding does not resolve cycles by itself; a cycle like
          *
-         *
          * ```
          *   object1:propertyA -> object2:propertyB
          *   object2:propertyB -> object3:propertyC
          *   object3:propertyC -> object1:propertyA
          * ```
          *
-         *
          * might lead to an infinite loop. The loop, in this particular case,
-         * can be avoided if the objects emit the #GObject::notify signal only
+         * can be avoided if the objects emit the `GObject::notify` signal only
          * if the value has effectively been changed. A binding is implemented
-         * using the #GObject::notify signal, so it is susceptible to all the
-         * various ways of blocking a signal emission, like g_signal_stop_emission()
-         * or g_signal_handler_block().
+         * using the `GObject::notify` signal, so it is susceptible to all the
+         * various ways of blocking a signal emission, like [func`GObject`.signal_stop_emission]
+         * or [func`GObject`.signal_handler_block].
          *
          * A binding will be severed, and the resources it allocates freed, whenever
-         * either one of the #GObject instances it refers to are finalized, or when
+         * either one of the `GObject` instances it refers to are finalized, or when
          * the #GBinding instance loses its last reference.
          *
          * Bindings for languages with garbage collection can use
-         * g_binding_unbind() to explicitly release a binding between the source
+         * [method`GObject`.Binding.unbind] to explicitly release a binding between the source
          * and target properties, instead of relying on the last reference on the
          * binding, source, and target instances to drop.
-         *
-         * #GBinding is available since GObject 2.26
          */
         class Binding extends Object {
             static $gtype: GType<Binding>;
@@ -3033,13 +3114,13 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * The #GBindingGroup can be used to bind multiple properties
+         * `GBindingGroup` can be used to bind multiple properties
          * from an object collectively.
          *
          * Use the various methods to bind properties from a single source
          * object to multiple destination objects. Properties can be bound
          * bidirectionally and are connected when the source object is set
-         * with g_binding_group_set_source().
+         * with [method`GObject`.BindingGroup.set_source].
          */
         class BindingGroup extends Object {
             static $gtype: GType<BindingGroup>;
@@ -3176,16 +3257,26 @@ declare module 'gi://GObject?version=2.0' {
         /**
          * The base object type.
          *
-         * All the fields in the `GObject` structure are private to the implementation
-         * and should never be accessed directly.
+         * `GObject` is the fundamental type providing the common attributes and
+         * methods for all object types in GTK, Pango and other libraries
+         * based on GObject. The `GObject` class provides methods for object
+         * construction and destruction, property access methods, and signal
+         * support. Signals are described in detail [here][gobject-Signals].
          *
-         * Since GLib 2.72, all #GObjects are guaranteed to be aligned to at least the
-         * alignment of the largest basic GLib type (typically this is #guint64 or
-         * #gdouble). If you need larger alignment for an element in a #GObject, you
-         * should allocate it on the heap (aligned), or arrange for your #GObject to be
-         * appropriately padded. This guarantee applies to the #GObject (or derived)
-         * struct, the #GObjectClass (or derived) struct, and any private data allocated
-         * by G_ADD_PRIVATE().
+         * For a tutorial on implementing a new `GObject` class, see [How to define and
+         * implement a new GObject](tutorial.html#how-to-define-and-implement-a-new-gobject).
+         * For a list of naming conventions for GObjects and their methods, see the
+         * [GType conventions](concepts.html#conventions). For the high-level concepts
+         * behind GObject, read
+         * [Instantiatable classed types: Objects](concepts.html#instantiatable-classed-types-objects).
+         *
+         * Since GLib 2.72, all `GObject`s are guaranteed to be aligned to at least the
+         * alignment of the largest basic GLib type (typically this is `guint64` or
+         * `gdouble`). If you need larger alignment for an element in a `GObject`, you
+         * should allocate it on the heap (aligned), or arrange for your `GObject` to be
+         * appropriately padded. This guarantee applies to the `GObject` (or derived)
+         * struct, the `GObjectClass` (or derived) struct, and any private data allocated
+         * by `G_ADD_PRIVATE()`.
          */
         class Object {
             static $gtype: GType<Object>;
@@ -3256,10 +3347,45 @@ declare module 'gi://GObject?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: Value | any, pspec: ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -3275,6 +3401,16 @@ declare module 'gi://GObject?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: Value | any, pspec: ParamSpec): void;
 
             // Methods
@@ -3478,7 +3614,7 @@ declare module 'gi://GObject?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -3639,17 +3775,16 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * #GParamSpec is an object structure that encapsulates the metadata
-         * required to specify parameters, such as e.g. #GObject properties.
+         * `GParamSpec` encapsulates the metadata required to specify parameters, such as `GObject` properties.
          *
-         * ## Parameter names # {#canonical-parameter-names}
+         * ## Parameter names
          *
          * A property name consists of one or more segments consisting of ASCII letters
          * and digits, separated by either the `-` or `_` character. The first
          * character of a property name must be a letter. These are the same rules as
-         * for signal naming (see g_signal_new()).
+         * for signal naming (see [func`GObject`.signal_new]).
          *
-         * When creating and looking up a #GParamSpec, either separator can be
+         * When creating and looking up a `GParamSpec`, either separator can be
          * used, but they cannot be mixed. Using `-` is considerably more
          * efficient, and is the ‘canonical form’. Using `_` is discouraged.
          */
@@ -3674,8 +3809,8 @@ declare module 'gi://GObject?version=2.0' {
              * dynamically-generated properties which need to be validated at run-time
              * before actually trying to create them.
              *
-             * See [canonical parameter names][canonical-parameter-names] for details of
-             * the rules for valid names.
+             * See [canonical parameter names][class`GObject`.ParamSpec#parameter-names]
+             * for details of the rules for valid names.
              * @param name the canonical name of the property
              */
             static is_valid_name(name: string): boolean;
@@ -3816,10 +3951,38 @@ declare module 'gi://GObject?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * The instance finalization function (optional), should chain
+             *  up to the finalize method of the parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * Checks if contents of `value` comply with the specifications
+             *   set out by this type, without modifying the value. This vfunc is optional.
+             *   If it isn't set, GObject will use `value_validate`. Since 2.74
+             * @param value
+             */
             vfunc_value_is_valid(value: Value | any): boolean;
+            /**
+             * Resets a `value` to the default value for this type
+             *  (recommended, the default is g_value_reset()), see
+             *  g_param_value_set_default().
+             * @param value
+             */
             vfunc_value_set_default(value: Value | any): void;
+            /**
+             * Ensures that the contents of `value` comply with the
+             *  specifications set out by this type (optional), see
+             *  g_param_value_validate().
+             * @param value
+             */
             vfunc_value_validate(value: Value | any): boolean;
+            /**
+             * Compares `value1` with `value2` according to this type
+             *  (recommended, the default is memcmp()), see g_param_values_cmp().
+             * @param value1
+             * @param value2
+             */
             vfunc_values_cmp(value1: Value | any, value2: Value | any): number;
 
             // Methods
@@ -3925,9 +4088,10 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * #GSignalGroup manages to simplify the process of connecting
-         * many signals to a #GObject as a group. As such there is no API
-         * to disconnect a signal from the group.
+         * `GSignalGroup` manages a collection of signals on a `GObject`.
+         *
+         * `GSignalGroup` simplifies the process of connecting  many signals to a `GObject`
+         * as a group. As such there is no API to disconnect a signal from the group.
          *
          * In particular, this allows you to:
          *
@@ -3936,12 +4100,12 @@ declare module 'gi://GObject?version=2.0' {
          *  - Block and unblock signals as a group
          *  - Ensuring that blocked state transfers across target instances.
          *
-         * One place you might want to use such a structure is with #GtkTextView and
-         * #GtkTextBuffer. Often times, you'll need to connect to many signals on
-         * #GtkTextBuffer from a #GtkTextView subclass. This allows you to create a
+         * One place you might want to use such a structure is with `GtkTextView` and
+         * `GtkTextBuffer`. Often times, you'll need to connect to many signals on
+         * `GtkTextBuffer` from a `GtkTextView` subclass. This allows you to create a
          * signal group during instance construction, simply bind the
-         * #GtkTextView:buffer property to #GSignalGroup:target and connect
-         * all the signals you need. When the #GtkTextView:buffer property changes
+         * `GtkTextView:buffer` property to `GSignalGroup:target` and connect
+         * all the signals you need. When the `GtkTextView:buffer` property changes
          * all of the signals will be transitioned correctly.
          */
         class SignalGroup extends Object {
@@ -4061,36 +4225,37 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * #GTypeModule provides a simple implementation of the #GTypePlugin
+         * `GTypeModule` provides a simple implementation of the `GTypePlugin`
          * interface.
          *
-         * The model of #GTypeModule is a dynamically loaded module which
+         * The model of `GTypeModule` is a dynamically loaded module which
          * implements some number of types and interface implementations.
          *
          * When the module is loaded, it registers its types and interfaces
-         * using g_type_module_register_type() and g_type_module_add_interface().
+         * using [method`GObject`.TypeModule.register_type] and
+         * [method`GObject`.TypeModule.add_interface].
          * As long as any instances of these types and interface implementations
          * are in use, the module is kept loaded. When the types and interfaces
          * are gone, the module may be unloaded. If the types and interfaces
          * become used again, the module will be reloaded. Note that the last
          * reference cannot be released from within the module code, since that
-         * would lead to the caller's code being unloaded before g_object_unref()
+         * would lead to the caller's code being unloaded before `g_object_unref()`
          * returns to it.
          *
          * Keeping track of whether the module should be loaded or not is done by
          * using a use count - it starts at zero, and whenever it is greater than
          * zero, the module is loaded. The use count is maintained internally by
          * the type system, but also can be explicitly controlled by
-         * g_type_module_use() and g_type_module_unuse(). Typically, when loading
-         * a module for the first type, g_type_module_use() will be used to load
-         * it so that it can initialize its types. At some later point, when the
-         * module no longer needs to be loaded except for the type
-         * implementations it contains, g_type_module_unuse() is called.
+         * [method`GObject`.TypeModule.use] and [method`GObject`.TypeModule.unuse].
+         * Typically, when loading a module for the first type, `g_type_module_use()`
+         * will be used to load it so that it can initialize its types. At some later
+         * point, when the module no longer needs to be loaded except for the type
+         * implementations it contains, `g_type_module_unuse()` is called.
          *
-         * #GTypeModule does not actually provide any implementation of module
+         * `GTypeModule` does not actually provide any implementation of module
          * loading and unloading. To create a particular module type you must
-         * derive from #GTypeModule and implement the load and unload functions
-         * in #GTypeModuleClass.
+         * derive from `GTypeModule` and implement the load and unload functions
+         * in `GTypeModuleClass`.
          */
         abstract class TypeModule extends Object implements TypePlugin {
             static $gtype: GType<TypeModule>;
@@ -4110,7 +4275,14 @@ declare module 'gi://GObject?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * loads the module and registers one or more types using
+             *  g_type_module_register_type().
+             */
             vfunc_load(): boolean;
+            /**
+             * unloads the module
+             */
             vfunc_unload(): void;
 
             // Methods
@@ -4404,7 +4576,7 @@ declare module 'gi://GObject?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -4557,10 +4729,45 @@ declare module 'gi://GObject?version=2.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: Value | any, pspec: ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -4576,6 +4783,16 @@ declare module 'gi://GObject?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: Value | any, pspec: ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -4621,15 +4838,16 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `gboolean (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter
-             * denotes a flags type.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value a #GValue which can store the returned #gboolean
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding instance and arg1
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with handlers that
+             * take a flags type as an argument and return a boolean.  If you have
+             * such a signal, you will probably also need to use an accumulator,
+             * such as g_signal_accumulator_true_handled().
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_BOOLEAN__FLAGS(
                 closure: Closure,
@@ -4640,14 +4858,15 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `gchar* (*callback) (gpointer instance, GObject *arg1, gpointer arg2, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value a #GValue, which can store the returned string
-             * @param n_param_values 3
-             * @param param_values a #GValue array holding instance, arg1 and arg2
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with handlers that
+             * take a #GObject and a pointer and produce a string.  It is highly
+             * unlikely that your signal handler fits this description.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_STRING__OBJECT_POINTER(
                 closure: Closure,
@@ -4658,14 +4877,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gboolean arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gboolean parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * boolean argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__BOOLEAN(
                 closure: Closure,
@@ -4676,14 +4895,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, GBoxed *arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #GBoxed* parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * argument which is any boxed pointer type.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__BOXED(
                 closure: Closure,
@@ -4694,14 +4913,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gchar arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gchar parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * character argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__CHAR(
                 closure: Closure,
@@ -4712,14 +4931,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gdouble arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gdouble parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with one
+             * double-precision floating point argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__DOUBLE(
                 closure: Closure,
@@ -4730,14 +4949,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter denotes an enumeration type..
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the enumeration parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * argument with an enumerated type.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__ENUM(
                 closure: Closure,
@@ -4748,14 +4967,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)` where the #gint parameter denotes a flags type.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the flags parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * argument with a flags types.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__FLAGS(
                 closure: Closure,
@@ -4766,14 +4985,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gfloat arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gfloat parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with one
+             * single-precision floating point argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__FLOAT(
                 closure: Closure,
@@ -4784,14 +5003,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gint arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gint parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * integer argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__INT(
                 closure: Closure,
@@ -4802,14 +5021,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, glong arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #glong parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with with a single
+             * long integer argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__LONG(
                 closure: Closure,
@@ -4820,14 +5039,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, GObject *arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #GObject* parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * #GObject argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__OBJECT(
                 closure: Closure,
@@ -4838,14 +5057,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, GParamSpec *arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #GParamSpec* parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * argument of type #GParamSpec.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__PARAM(
                 closure: Closure,
@@ -4856,14 +5075,18 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gpointer arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gpointer parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single raw
+             * pointer argument type.
+             *
+             * If it is possible, it is better to use one of the more specific
+             * functions such as g_cclosure_marshal_VOID__OBJECT() or
+             * g_cclosure_marshal_VOID__OBJECT().
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__POINTER(
                 closure: Closure,
@@ -4874,14 +5097,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, const gchar *arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gchar* parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single string
+             * argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__STRING(
                 closure: Closure,
@@ -4892,14 +5115,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, guchar arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #guchar parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * unsigned character argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__UCHAR(
                 closure: Closure,
@@ -4910,14 +5133,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, guint arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #guint parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with with a single
+             * unsigned integer argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__UINT(
                 closure: Closure,
@@ -4928,14 +5151,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, guint arg1, gpointer arg2, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 3
-             * @param param_values a #GValue array holding instance, arg1 and arg2
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with an unsigned int
+             * and a pointer as arguments.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__UINT_POINTER(
                 closure: Closure,
@@ -4946,14 +5169,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gulong arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #gulong parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * unsigned long integer argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__ULONG(
                 closure: Closure,
@@ -4964,14 +5187,14 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, GVariant *arg1, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 2
-             * @param param_values a #GValue array holding the instance and the #GVariant* parameter
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with a single
+             * #GVariant argument.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__VARIANT(
                 closure: Closure,
@@ -4982,14 +5205,13 @@ declare module 'gi://GObject?version=2.0' {
                 marshal_data?: any | null,
             ): void;
             /**
-             * A marshaller for a #GCClosure with a callback of type
-             * `void (*callback) (gpointer instance, gpointer user_data)`.
-             * @param closure the #GClosure to which the marshaller belongs
-             * @param return_value ignored
-             * @param n_param_values 1
-             * @param param_values a #GValue array holding only the instance
-             * @param invocation_hint the invocation hint given as the last argument  to g_closure_invoke()
-             * @param marshal_data additional data specified when registering the marshaller
+             * A #GClosureMarshal function for use with signals with no arguments.
+             * @param closure A #GClosure.
+             * @param return_value A #GValue to store the return value. May be %NULL   if the callback of closure doesn't return a value.
+             * @param n_param_values The length of the @param_values array.
+             * @param param_values An array of #GValues holding the arguments   on which to invoke the callback of closure.
+             * @param invocation_hint The invocation hint given as the last argument to   g_closure_invoke().
+             * @param marshal_data Additional data specified when registering the   marshaller, see g_closure_set_marshal() and   g_closure_set_meta_marshal()
              */
             static marshal_VOID__VOID(
                 closure: Closure,
@@ -5175,6 +5397,10 @@ declare module 'gi://GObject?version=2.0' {
 
             // Methods
 
+            /**
+             * Frees the resources allocated by a #GParamSpecPool.
+             */
+            free(): void;
             /**
              * Inserts a #GParamSpec in the pool.
              * @param pspec the #GParamSpec to insert
@@ -5975,6 +6201,19 @@ declare module 'gi://GObject?version=2.0' {
              */
             set_variant(variant?: GLib.Variant | null): void;
             /**
+             * Steal ownership on contents of a %G_TYPE_STRING #GValue.
+             * As a result of this operation the value's contents will be reset to %NULL.
+             *
+             * The purpose of this call is to provide a way to avoid an extra copy
+             * when some object have been serialized into string through #GValue API.
+             *
+             * NOTE: for safety and compatibility purposes, if #GValue contains
+             * static string, or an interned one, this function will return a copy
+             * of the string. Otherwise the transfer notation would be ambiguous.
+             * @returns string content of @value;  Should be freed with g_free() when no longer needed.
+             */
+            steal_string(): string | null;
+            /**
              * Sets the contents of a %G_TYPE_BOXED derived #GValue to `v_boxed`
              * and takes over the ownership of the caller’s reference to `v_boxed;`
              * the caller doesn’t have to unref it any more.
@@ -6024,7 +6263,29 @@ declare module 'gi://GObject?version=2.0' {
         }
 
         /**
-         * A #GValueArray contains an array of #GValue elements.
+         * A `GValueArray` is a container structure to hold an array of generic values.
+         *
+         * The prime purpose of a `GValueArray` is for it to be used as an
+         * object property that holds an array of values. A `GValueArray` wraps
+         * an array of `GValue` elements in order for it to be used as a boxed
+         * type through `G_TYPE_VALUE_ARRAY`.
+         *
+         * `GValueArray` is deprecated in favour of `GArray` since GLib 2.32.
+         * It is possible to create a `GArray` that behaves like a `GValueArray`
+         * by using the size of `GValue` as the element size, and by setting
+         * [method`GObject`.Value.unset] as the clear function using
+         * [func`GLib`.Array.set_clear_func], for instance, the following code:
+         *
+         * ```c
+         *   GValueArray *array = g_value_array_new (10);
+         * ```
+         *
+         * can be replaced by:
+         *
+         * ```c
+         *   GArray *array = g_array_sized_new (FALSE, TRUE, sizeof (GValue), 10);
+         *   g_array_set_clear_func (array, (GDestroyNotify) g_value_unset);
+         * ```
          */
         class ValueArray {
             static $gtype: GType<ValueArray>;
@@ -6056,7 +6317,7 @@ declare module 'gi://GObject?version=2.0' {
              */
             copy(): ValueArray;
             /**
-             * Return a pointer to the value at `index_` containd in `value_array`.
+             * Return a pointer to the value at `index_` contained in `value_array`.
              * @param index_ index of the value of interest
              * @returns pointer to a value at @index_ in @value_array
              */
@@ -6138,11 +6399,31 @@ declare module 'gi://GObject?version=2.0' {
             _init(...args: any[]): void;
         }
 
+        /**
+         * A union holding one collected value.
+         */
         class TypeCValue {
             static $gtype: GType<TypeCValue>;
 
+            // Fields
+
+            v_int: number;
+            v_long: number;
+            v_int64: number;
+            v_double: number;
+            v_pointer: any;
+
             // Constructors
 
+            constructor(
+                properties?: Partial<{
+                    v_int: number;
+                    v_long: number;
+                    v_int64: number;
+                    v_double: number;
+                    v_pointer: any;
+                }>,
+            );
             _init(...args: any[]): void;
         }
 
