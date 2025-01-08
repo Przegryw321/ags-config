@@ -1,3 +1,6 @@
+@use "colors.scss" as *;
+@use "mixins.scss";
+
 .bar {
     font-family: Cabin, Noto Sans Emoji;
     background: $crust;

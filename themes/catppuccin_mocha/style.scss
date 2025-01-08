@@ -1,9 +1,16 @@
+// libs
+@use "colors.scss" as *;
+@use "mixins.scss";
+
+// windows
+@use "bar.scss";
+@use "startmenu.scss";
+@use "volumepopup.scss";
+@use "launcher.scss";
+
 * {
     all: unset;
 }
-
-@import "./colors.scss";
-@import "./mixins.scss";
 
 window {
     color: $text;
@@ -37,8 +44,3 @@ menu {
         margin: .3rem 0;
     }
 }
-
-@import "bar.scss";
-@import "startmenu.scss";
-@import "volumepopup.scss";
-@import "launcher.scss";

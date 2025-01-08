@@ -1,15 +1,19 @@
+@use "colors.scss" as *;
+@use "sass:list";
+@use "sass:math";
+
 @mixin min-size($w, $h: $w) {
     min-width: $w;
     min-height: $h;
 }
 
 @function fixed-length-gradient($dir, $length, $offset, $colors...) {
-    $frac: $length / length($colors);
+    $frac: math.div($length, list.length($colors));
     $stops: ();
-    @for $i from 1 to length($colors) + 1 {
-        $stops: append($stops, $i * $frac + $offset);
+    @for $i from 1 to list.length($colors) + 1 {
+        $stops: list.append($stops, $i * $frac + $offset);
     }
-    @return linear-gradient($dir, zip($colors, $stops));
+    @return linear-gradient($dir, list.zip($colors, $stops));
 }
 
 .border {

@@ -1,3 +1,6 @@
+@use "colors.scss" as *;
+@use "mixins.scss";
+
 .startmenu-left {
     @extend .border;
     border-radius: 1rem 0 0 1rem;

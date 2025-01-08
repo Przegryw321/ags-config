@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* Catppuccin mocha palette */
 $rosewater: #f5e0dc;
 $flamingo: #f2cdcd;
@@ -42,7 +44,7 @@ $subtext: $subtext0;
 // seasons
 .winter { color: $sapphire; }
 .spring { color: $green; }
-.summer { color: darken($yellow, 20%); }
+.summer { color: color.adjust($yellow, $lightness: -20%); }
 .autumn { color: $peach; }
 
 // volume: level
@@ -54,7 +56,7 @@ $subtext: $subtext0;
 .hot { color: $red; }
 .warm { color: $yellow; }
 .cold { color: $sapphire; }
-.freezing { color: darken($sapphire, 10%); }
+.freezing { color: color.adjust($sapphire, $lightness: -10%); }
 
 // weather: other parameters
 .wind { color: $green; }

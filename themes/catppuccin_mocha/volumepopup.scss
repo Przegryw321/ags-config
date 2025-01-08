@@ -1,3 +1,6 @@
+@use "colors.scss" as *;
+@use "mixins.scss";
+
 .volpop {
     background: $base;
 
@@ -14,6 +17,6 @@
     }
     highlight {
         @extend trough;
-        @include gyr-gradient-background(to right, 8.7rem);
+        @include mixins.gyr-gradient-background(to right, 8.7rem);
     }
 }
