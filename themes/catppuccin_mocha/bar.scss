@@ -1,9 +1,10 @@
 @use "colors.scss" as *;
 @use "mixins.scss";
+@use "sass:color";
 
 .bar {
     font-family: Cabin, Noto Sans Emoji;
-    background: $crust;
+    background: color.adjust($crust, $lightness: -1%);
 }
 
 .bar-contents {
