@@ -13,6 +13,7 @@ const apps = [
     "gimp",
     "lutris",
     "virtualbox",
+    "thunderbird",
 ]
 
 type AppButtonProps = WidgetProps & {
@@ -20,7 +21,7 @@ type AppButtonProps = WidgetProps & {
 }
 async function launch_app(app: string): Promise<string> {
     App.get_window('startmenu')?.set_visible(false)
-    return execAsync(app)
+    return execAsync(app === 'spotify' ? 'spotify-launcher' : app)
 }
 export function AppButton({ app, ...props }: AppButtonProps): JSX.Element {
     return <button onClicked={() => launch_app(app)}
