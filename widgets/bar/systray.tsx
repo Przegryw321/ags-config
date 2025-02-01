@@ -33,7 +33,7 @@ export function SystrayItem({ item, ...props }: SystrayItemProps): JSX.Element {
                    onDestroy={() => {
                      Menu.drop()
                    }} {...props}>
-        <icon icon={item.iconName || 'missing'}/>
+        <icon gicon={item.gicon}/>
     </button>
 }
 
