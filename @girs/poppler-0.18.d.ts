@@ -2,6 +2,7 @@
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -18,6 +19,7 @@ declare module 'gi://Poppler?version=0.18' {
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type Gio from 'gi://Gio?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace Poppler {
         /**
@@ -1033,6 +1035,22 @@ declare module 'gi://Poppler?version=0.18' {
             NOT_VERIFIED,
         }
 
+        export namespace Stretch {
+            export const $gtype: GObject.GType<Stretch>;
+        }
+
+        enum Stretch {
+            ULTRA_CONDENSED,
+            EXTRA_CONDENSED,
+            CONDENSED,
+            SEMI_CONDENSED,
+            NORMAL,
+            SEMI_EXPANDED,
+            EXPANDED,
+            EXTRA_EXPANDED,
+            ULTRA_EXPANDED,
+        }
+
         export namespace StructureBlockAlign {
             export const $gtype: GObject.GType<StructureBlockAlign>;
         }
@@ -1257,6 +1275,32 @@ declare module 'gi://Poppler?version=0.18' {
             RL_TB,
             TB_RL,
         }
+
+        export namespace Style {
+            export const $gtype: GObject.GType<Style>;
+        }
+
+        enum Style {
+            NORMAL,
+            OBLIQUE,
+            ITALIC,
+        }
+
+        export namespace Weight {
+            export const $gtype: GObject.GType<Weight>;
+        }
+
+        enum Weight {
+            THIN,
+            ULTRALIGHT,
+            LIGHT,
+            NORMAL,
+            MEDIUM,
+            SEMIBOLD,
+            BOLD,
+            ULTRABOLD,
+            HEAVY,
+        }
         const ANNOT_TEXT_ICON_CIRCLE: string;
         const ANNOT_TEXT_ICON_COMMENT: string;
         const ANNOT_TEXT_ICON_CROSS: string;
@@ -1292,7 +1336,7 @@ declare module 'gi://Poppler?version=0.18' {
          * @param timet an uninitialized #time_t
          * @returns #TRUE, if @timet was set
          */
-        function date_parse(date: string, timet: number): boolean;
+        function date_parse(date: string, timet: never): boolean;
         function error_quark(): GLib.Quark;
         /**
          * Get all available signing certificate information
@@ -1616,6 +1660,13 @@ declare module 'gi://Poppler?version=0.18' {
              */
             get_annot_type(): AnnotType;
             /**
+             * Returns the border width of the annotation. Some PDF editors set a border
+             * width even if the border is not actually drawn.
+             * @param width a valid pointer to a double
+             * @returns true and sets @border_width to the actual border width if a border is defined, otherwise returns false and sets @border_width to 0.
+             */
+            get_border_width(width: number): boolean;
+            /**
              * Retrieves the color of `poppler_annot`.
              * @returns a new allocated #PopplerColor with the color values of               @poppler_annot, or %NULL. It must be freed with g_free() when done.
              */
@@ -1653,6 +1704,14 @@ declare module 'gi://Poppler?version=0.18' {
              * annotation `poppler_annot` is placed.
              */
             get_rectangle(): Rectangle;
+            /**
+             * Sets the border width of the annotation. Since there is currently no
+             * mechanism in the GLib binding to control the appearance of the border width,
+             * this should generally only be used to disable the border, although the
+             * API might be completed in the future.
+             * @param width the new border width
+             */
+            set_border_width(width: number): void;
             /**
              * Sets the color of `poppler_annot`.
              * @param poppler_color a #PopplerColor, or %NULL
@@ -1754,6 +1813,8 @@ declare module 'gi://Poppler?version=0.18' {
 
             _init(...args: any[]): void;
 
+            static ['new'](doc: Document, rect: Rectangle): AnnotFreeText;
+
             // Methods
 
             /**
@@ -1763,10 +1824,30 @@ declare module 'gi://Poppler?version=0.18' {
              */
             get_callout_line(): AnnotCalloutLine;
             /**
+             * Gets the font color.
+             * @returns a copy of the font's #PopplerColor.
+             */
+            get_font_color(): Color;
+            /**
+             * Gets the font description (i.e. font family name, style, weight, stretch and size).
+             * @returns a copy of the annotation font description
+             */
+            get_font_desc(): FontDescription;
+            /**
              * Retrieves the justification of the text of `poppler_annot`.
              * @returns #PopplerAnnotFreeTextQuadding of @poppler_annot.
              */
             get_quadding(): AnnotFreeTextQuadding;
+            /**
+             * Sets the font color.
+             * @param color a #PopplerColor
+             */
+            set_font_color(color: Color): void;
+            /**
+             * Sets the font description (i.e. font family name, style, weight, stretch and size).
+             * @param font_desc a #PopplerFontDescription
+             */
+            set_font_desc(font_desc: FontDescription): void;
         }
 
         module AnnotLine {
@@ -2468,7 +2549,7 @@ declare module 'gi://Poppler?version=0.18' {
              * Returns the date the document was created as seconds since the Epoch
              * @returns the date the document was created, or -1
              */
-            get_creation_date(): number;
+            get_creation_date(): never;
             /**
              * Returns the date the document was created as a #GDateTime
              * @returns the date the document was created, or %NULL
@@ -2514,7 +2595,7 @@ declare module 'gi://Poppler?version=0.18' {
              * Returns the date the document was most recently modified as seconds since the Epoch
              * @returns the date the document was most recently modified, or -1
              */
-            get_modification_date(): number;
+            get_modification_date(): never;
             /**
              * Returns the date the document was most recently modified as a #GDateTime
              * @returns the date the document was modified, or %NULL
@@ -2723,7 +2804,7 @@ declare module 'gi://Poppler?version=0.18' {
              * entry is removed from the document's Info dictionary.
              * @param creation_date A new creation date
              */
-            set_creation_date(creation_date: number): void;
+            set_creation_date(creation_date: never): void;
             /**
              * Sets the document's creation date. If `creation_datetime` is %NULL,
              * CreationDate entry is removed from the document's Info dictionary.
@@ -2747,7 +2828,7 @@ declare module 'gi://Poppler?version=0.18' {
              * entry is removed from the document's Info dictionary.
              * @param modification_date A new modification date
              */
-            set_modification_date(modification_date: number): void;
+            set_modification_date(modification_date: never): void;
             /**
              * Sets the document's modification date. If `modification_datetime` is %NULL,
              * ModDate entry is removed from the document's Info dictionary.
@@ -2814,6 +2895,11 @@ declare module 'gi://Poppler?version=0.18' {
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
         }
 
+        /**
+         * Interface for getting the Fonts of a poppler_document
+         *
+         * Since 24.10 this type supports g_autoptr
+         */
         class FontInfo extends GObject.Object {
             static $gtype: GObject.GType<FontInfo>;
 
@@ -3525,7 +3611,7 @@ declare module 'gi://Poppler?version=0.18' {
              * Retrieves the contents of the specified `selection` as text.
              * @param style a #PopplerSelectionStyle
              * @param selection the #PopplerRectangle including the text
-             * @returns a pointer to the contents of the @selection               as a string
+             * @returns a pointer to the contents of the @selection as a string
              */
             get_selected_text(style: SelectionStyle | null, selection: Rectangle): string;
             /**
@@ -4353,6 +4439,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerAnnotMapping structure represents the location
          * of `annot` on the page
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class AnnotMapping {
             static $gtype: GObject.GType<AnnotMapping>;
@@ -4389,6 +4477,8 @@ declare module 'gi://Poppler?version=0.18' {
         type AttachmentClass = typeof Attachment;
         /**
          * PopplerCertificateInfo contains detailed info about a signing certificate.
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class CertificateInfo {
             static $gtype: GObject.GType<CertificateInfo>;
@@ -4461,6 +4551,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerColor describes a RGB color. Color components
          * are values between 0 and 65535
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class Color {
             static $gtype: GObject.GType<Color>;
@@ -4507,6 +4599,8 @@ declare module 'gi://Poppler?version=0.18' {
          * with poppler_named_dest_to_bytestring() first.
          * Also note that `named_dest` does not have a defined encoding and
          * is not in a form suitable to be displayed to the user.
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class Dest {
             static $gtype: GObject.GType<Dest>;
@@ -4542,6 +4636,48 @@ declare module 'gi://Poppler?version=0.18' {
             free(): void;
         }
 
+        /**
+         * A #PopplerFontDescription structure represents the description
+         * of a font. When used together with Pango, all the fields are
+         * value-compatible with pango equivalent, although Pango font
+         * descriptions may contain more information.
+         *
+         * This type supports g_autoptr
+         */
+        class FontDescription {
+            static $gtype: GObject.GType<FontDescription>;
+
+            // Fields
+
+            font_name: string;
+            size_pt: number;
+            stretch: Stretch;
+            weight: Weight;
+            style: Style;
+
+            // Constructors
+
+            constructor(font_name: string);
+            _init(...args: any[]): void;
+
+            static ['new'](font_name: string): FontDescription;
+
+            // Methods
+
+            /**
+             * Creates a copy of `font_desc`
+             * @returns a new allocated copy of @font_desc
+             */
+            copy(): FontDescription;
+            /**
+             * Frees the given #PopplerFontDescription
+             */
+            free(): void;
+        }
+
+        /**
+         * Since 24.10 this type supports g_autoptr
+         */
         abstract class FontsIter {
             static $gtype: GObject.GType<FontsIter>;
 
@@ -4612,6 +4748,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerFormFieldMapping structure represents the location
          * of `field` on the page
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class FormFieldMapping {
             static $gtype: GObject.GType<FormFieldMapping>;
@@ -4648,6 +4786,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerImageMapping structure represents the location
          * of an image on the page
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class ImageMapping {
             static $gtype: GObject.GType<ImageMapping>;
@@ -4682,6 +4822,11 @@ declare module 'gi://Poppler?version=0.18' {
             free(): void;
         }
 
+        /**
+         * Interface for getting the Index of a poppler_document
+         *
+         * Since 24.10 this type supports g_autoptr
+         */
         class IndexIter {
             static $gtype: GObject.GType<IndexIter>;
 
@@ -4731,6 +4876,11 @@ declare module 'gi://Poppler?version=0.18' {
             next(): boolean;
         }
 
+        /**
+         * Interface for getting the Layers of a poppler_document
+         *
+         * Since 24.10 this type supports g_autoptr
+         */
         class LayersIter {
             static $gtype: GObject.GType<LayersIter>;
 
@@ -4781,6 +4931,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerLinkMapping structure represents the location
          * of `action` on the page
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class LinkMapping {
             static $gtype: GObject.GType<LinkMapping>;
@@ -4838,6 +4990,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerPageTransition structures describes a visual transition
          * to use when moving between pages during a presentation
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class PageTransition {
             static $gtype: GObject.GType<PageTransition>;
@@ -4886,6 +5040,8 @@ declare module 'gi://Poppler?version=0.18' {
 
         /**
          * A #PopplerPoint is used to describe a location point on a page
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class Point {
             static $gtype: GObject.GType<Point>;
@@ -4924,6 +5080,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerQuadrilateral is used to describe rectangle-like polygon
          *  with arbitrary inclination on a page.
+         *
+         *  Since 24.10 this type supports g_autoptr
          *
          *  Since: 0.26
          */
@@ -4967,6 +5125,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * A #PopplerRectangle is used to describe
          * locations on a page and bounding boxes
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class Rectangle {
             static $gtype: GObject.GType<Rectangle>;
@@ -5043,6 +5203,8 @@ declare module 'gi://Poppler?version=0.18' {
         /**
          * PopplerSignatureInfo contains detailed info about a signature
          * contained in a form field.
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         abstract class SignatureInfo {
             static $gtype: GObject.GType<SignatureInfo>;
@@ -5093,6 +5255,9 @@ declare module 'gi://Poppler?version=0.18' {
             get_signer_name(): string;
         }
 
+        /**
+         * Since 24.10 this type supports g_autoptr
+         */
         class SigningData {
             static $gtype: GObject.GType<SigningData>;
 
@@ -5306,6 +5471,9 @@ declare module 'gi://Poppler?version=0.18' {
             set_signature_text_left(signature_text_left: string): void;
         }
 
+        /**
+         * Since 24.10 this type supports g_autoptr
+         */
         class StructureElementIter {
             static $gtype: GObject.GType<StructureElementIter>;
 
@@ -5393,6 +5561,9 @@ declare module 'gi://Poppler?version=0.18' {
             free(): void;
         }
 
+        /**
+         * Since 24.10 this type supports g_autoptr
+         */
         abstract class TextSpan {
             static $gtype: GObject.GType<TextSpan>;
 
@@ -5444,6 +5615,8 @@ declare module 'gi://Poppler?version=0.18' {
 
         /**
          * A generic wrapper for actions that exposes only #PopplerActionType.
+         *
+         * Since 24.10 this type supports g_autoptr
          */
         class Action {
             static $gtype: GObject.GType<Action>;

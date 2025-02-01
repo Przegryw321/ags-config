@@ -798,6 +798,10 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpiceChannel::channel_event signal.
+             * @param event
+             */
             vfunc_channel_event(event: ChannelEvent): void;
             vfunc_channel_reset(migrating: boolean): void;
             vfunc_channel_send_migration_handshake(): void;
@@ -805,6 +809,10 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             vfunc_handle_msg(msg: MsgIn): void;
             vfunc_iterate_read(): void;
             vfunc_iterate_write(): void;
+            /**
+             * Signal class handler for the #SpiceChannel::open_fd signal.
+             * @param with_tls
+             */
             vfunc_open_fd(with_tls: number): void;
 
             // Methods
@@ -980,9 +988,28 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpiceCursorChannel::cursor-hide signal.
+             */
             vfunc_cursor_hide(): void;
+            /**
+             * Signal class handler for the #SpiceCursorChannel::cursor-move signal.
+             * @param x
+             * @param y
+             */
             vfunc_cursor_move(x: number, y: number): void;
+            /**
+             * Signal class handler for the #SpiceCursorChannel::cursor-reset signal.
+             */
             vfunc_cursor_reset(): void;
+            /**
+             * Signal class handler for the #SpiceCursorChannel::cursor-set signal.
+             * @param width
+             * @param height
+             * @param hot_x
+             * @param hot_y
+             * @param rgba
+             */
             vfunc_cursor_set(width: number, height: number, hot_x: number, hot_y: number, rgba?: any | null): void;
         }
 
@@ -1833,8 +1860,22 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpicePlaybackChannel::playback-data signal.
+             * @param data
+             * @param size
+             */
             vfunc_playback_data(data: any | null, size: number): void;
+            /**
+             * Signal class handler for the #SpicePlaybackChannel::playback-start signal.
+             * @param format
+             * @param channels
+             * @param freq
+             */
             vfunc_playback_start(format: number, channels: number, freq: number): void;
+            /**
+             * Signal class handler for the #SpicePlaybackChannel::playback-stop signal.
+             */
             vfunc_playback_stop(): void;
 
             // Methods
@@ -2125,8 +2166,22 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Unused (deprecated).
+             * @param data
+             * @param size
+             */
             vfunc_record_data(data: any | null, size: number): void;
+            /**
+             * Signal class handler for the #SpiceRecordChannel::record-start signal.
+             * @param format
+             * @param channels
+             * @param freq
+             */
             vfunc_record_start(format: number, channels: number, freq: number): void;
+            /**
+             * Signal class handler for the #SpiceRecordChannel::record-stop signal.
+             */
             vfunc_record_stop(): void;
 
             // Methods
@@ -2217,8 +2272,6 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
                 username: string;
                 uuid: any;
                 verify: SessionVerify;
-                webdav_server: GObject.Object;
-                webdavServer: GObject.Object;
             }
         }
 
@@ -2515,16 +2568,6 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              */
             get verify(): SessionVerify;
             set verify(val: SessionVerify);
-            /**
-             * Phodav server that is internally used by #SpiceSession to make
-             * #SpiceSession:shared-dir available to the host.
-             */
-            get webdav_server(): GObject.Object;
-            /**
-             * Phodav server that is internally used by #SpiceSession to make
-             * #SpiceSession:shared-dir available to the host.
-             */
-            get webdavServer(): GObject.Object;
 
             // Constructors
 
@@ -2549,7 +2592,15 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpiceSession::channel_destroy signal.
+             * @param channel
+             */
             vfunc_channel_destroy(channel: Channel): void;
+            /**
+             * Signal class handler for the #SpiceSession::channel_new signal.
+             * @param channel
+             */
             vfunc_channel_new(channel: Channel): void;
 
             // Methods
@@ -2700,9 +2751,25 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpiceSmartcardManager::card_inserted signal.
+             * @param reader
+             */
             vfunc_card_inserted(reader: SmartcardReader): void;
+            /**
+             * Signal class handler for the #SpiceSmartcardManager::card_removed signal.
+             * @param reader
+             */
             vfunc_card_removed(reader: SmartcardReader): void;
+            /**
+             * Signal class handler for the #SpiceSmartcardManager::reader_added signal.
+             * @param reader
+             */
             vfunc_reader_added(reader: SmartcardReader): void;
+            /**
+             * Signal class handler for the #SpiceSmartcardManager::reader_removed signal.
+             * @param reader
+             */
             vfunc_reader_removed(reader: SmartcardReader): void;
 
             // Methods
@@ -2969,9 +3036,27 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
 
             // Virtual methods
 
+            /**
+             * Signal class handler for the #SpiceUsbDeviceManager::auto-connect-failed signal.
+             * @param device
+             * @param error
+             */
             vfunc_auto_connect_failed(device: UsbDevice, error: GLib.Error): void;
+            /**
+             * Signal class handler for the #SpiceUsbDeviceManager::device-added signal.
+             * @param device
+             */
             vfunc_device_added(device: UsbDevice): void;
+            /**
+             * Signal class handler for the #SpiceUsbDeviceManager::device_error signal.
+             * @param device
+             * @param error
+             */
             vfunc_device_error(device: UsbDevice, error: GLib.Error): void;
+            /**
+             * Signal class handler for the #SpiceUsbDeviceManager::device-removed signal.
+             * @param device
+             */
             vfunc_device_removed(device: UsbDevice): void;
 
             // Methods
@@ -3372,7 +3457,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -3525,10 +3610,45 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -3544,6 +3664,16 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;

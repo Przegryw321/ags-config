@@ -1,6 +1,7 @@
 /// <reference path="./gio-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 /// <reference path="./gck-2.d.ts" />
 
 /**
@@ -17,6 +18,7 @@ declare module 'gi://Gcr?version=4' {
     import type Gio from 'gi://Gio?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
     import type Gck from 'gi://Gck?version=2';
 
     export namespace Gcr {
@@ -1740,7 +1742,14 @@ declare module 'gi://Gcr?version=4' {
 
             // Virtual methods
 
+            /**
+             * The default handler for the authenticate signal.
+             * @param count
+             */
             vfunc_authenticate(count: number): boolean;
+            /**
+             * The default handler for the parsed signal.
+             */
             vfunc_parsed(): void;
 
             // Methods
@@ -2208,6 +2217,11 @@ declare module 'gi://Gcr?version=4' {
              */
             get_subject_raw(): Uint8Array | null;
             /**
+             * Get the version of the X.509 certificate.
+             * @returns the version of the certificate
+             */
+            get_version(): number;
+            /**
              * Check if `issuer` could be the issuer of this certificate. This is done by
              * comparing the relevant subject and issuer fields. No signature check is
              * done. Proper verification of certificates must be done via a crypto
@@ -2405,7 +2419,7 @@ declare module 'gi://Gcr?version=4' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -2558,10 +2572,45 @@ declare module 'gi://Gcr?version=4' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -2577,6 +2626,16 @@ declare module 'gi://Gcr?version=4' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -2913,6 +2972,11 @@ declare module 'gi://Gcr?version=4' {
              */
             get_subject_raw(): Uint8Array | null;
             /**
+             * Get the version of the X.509 certificate.
+             * @returns the version of the certificate
+             */
+            get_version(): number;
+            /**
              * Check if `issuer` could be the issuer of this certificate. This is done by
              * comparing the relevant subject and issuer fields. No signature check is
              * done. Proper verification of certificates must be done via a crypto
@@ -3108,7 +3172,7 @@ declare module 'gi://Gcr?version=4' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -3261,10 +3325,45 @@ declare module 'gi://Gcr?version=4' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -3280,6 +3379,16 @@ declare module 'gi://Gcr?version=4' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -4039,6 +4148,9 @@ declare module 'gi://Gcr?version=4' {
              * @param warning the warning or %NULL
              */
             set_warning(warning?: string | null): void;
+            /**
+             * close a prompt
+             */
             vfunc_prompt_close(): void;
             /**
              * Prompts for confirmation asking a cancel/continue style question.
@@ -4123,7 +4235,7 @@ declare module 'gi://Gcr?version=4' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              */
             init_async(io_priority: number, cancellable?: Gio.Cancellable | null): Promise<boolean>;
@@ -4164,7 +4276,7 @@ declare module 'gi://Gcr?version=4' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -4210,7 +4322,7 @@ declare module 'gi://Gcr?version=4' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -4270,7 +4382,7 @@ declare module 'gi://Gcr?version=4' {
              * in a thread, so if you want to support asynchronous initialization via
              * threads, just implement the #GAsyncInitable interface without overriding
              * any interface methods.
-             * @param io_priority the [I/O priority][io-priority] of the operation
+             * @param io_priority the [I/O priority](iface.AsyncResult.html#io-priority) of the operation
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              * @param callback a #GAsyncReadyCallback to call when the request is satisfied
              */
@@ -4547,7 +4659,7 @@ declare module 'gi://Gcr?version=4' {
              *   static void
              *   my_object_class_init (MyObjectClass *klass)
              *   {
-             *     properties[PROP_FOO] = g_param_spec_int ("foo", "Foo", "The foo",
+             *     properties[PROP_FOO] = g_param_spec_int ("foo", NULL, NULL,
              *                                              0, 100,
              *                                              50,
              *                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -4700,10 +4812,45 @@ declare module 'gi://Gcr?version=4' {
              * @param closure #GClosure to watch
              */
             watch_closure(closure: GObject.Closure): void;
+            /**
+             * the `constructed` function is called by g_object_new() as the
+             *  final step of the object creation process.  At the point of the call, all
+             *  construction properties have been set on the object.  The purpose of this
+             *  call is to allow for object initialisation steps that can only be performed
+             *  after construction properties have been set.  `constructed` implementors
+             *  should chain up to the `constructed` call of their parent class to allow it
+             *  to complete its initialisation.
+             */
             vfunc_constructed(): void;
+            /**
+             * emits property change notification for a bunch
+             *  of properties. Overriding `dispatch_properties_changed` should be rarely
+             *  needed.
+             * @param n_pspecs
+             * @param pspecs
+             */
             vfunc_dispatch_properties_changed(n_pspecs: number, pspecs: GObject.ParamSpec): void;
+            /**
+             * the `dispose` function is supposed to drop all references to other
+             *  objects, but keep the instance otherwise intact, so that client method
+             *  invocations still work. It may be run multiple times (due to reference
+             *  loops). Before returning, `dispose` should chain up to the `dispose` method
+             *  of the parent class.
+             */
             vfunc_dispose(): void;
+            /**
+             * instance finalization function, should finish the finalization of
+             *  the instance begun in `dispose` and chain up to the `finalize` method of the
+             *  parent class.
+             */
             vfunc_finalize(): void;
+            /**
+             * the generic getter for all properties of this type. Should be
+             *  overridden for every type with properties.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_get_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             /**
              * Emits a "notify" signal for the property `property_name` on `object`.
@@ -4719,6 +4866,16 @@ declare module 'gi://Gcr?version=4' {
              * @param pspec
              */
             vfunc_notify(pspec: GObject.ParamSpec): void;
+            /**
+             * the generic setter for all properties of this type. Should be
+             *  overridden for every type with properties. If implementations of
+             *  `set_property` don't emit property change notification explicitly, this will
+             *  be done implicitly by the type system. However, if the notify signal is
+             *  emitted explicitly, the type system will not emit it a second time.
+             * @param property_id
+             * @param value
+             * @param pspec
+             */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
             disconnect(id: number): void;
             set(properties: { [key: string]: any }): void;
@@ -5179,6 +5336,11 @@ declare module 'gi://Gcr?version=4' {
              * @returns allocated memory          containing the raw subject
              */
             get_subject_raw(): Uint8Array | null;
+            /**
+             * Get the version of the X.509 certificate.
+             * @returns the version of the certificate
+             */
+            get_version(): number;
             /**
              * Check if `issuer` could be the issuer of this certificate. This is done by
              * comparing the relevant subject and issuer fields. No signature check is
@@ -6025,6 +6187,9 @@ declare module 'gi://Gcr?version=4' {
 
             // Virtual methods
 
+            /**
+             * close a prompt
+             */
             vfunc_prompt_close(): void;
             /**
              * Prompts for confirmation asking a cancel/continue style question.

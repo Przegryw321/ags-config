@@ -2490,7 +2490,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             // Methods
 
             add_disk(disk: DomainSnapshotDisk): void;
-            get_creation_time(): number;
+            get_creation_time(): never;
             get_description(): string;
             /**
              * Gets the list of disks attached to `snapshot`.  The returned list should

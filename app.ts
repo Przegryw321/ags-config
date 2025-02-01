@@ -20,8 +20,8 @@ App.start({
             Startmenu(),
             Launcher(),
         ]
-        Bar()
-        VolumePopup()
+        Bar().catch(console.error)
+        VolumePopup().catch(console.error)
 
         Clickaway(await Promise.all(clickaway_windows)).catch(console.error)
     },

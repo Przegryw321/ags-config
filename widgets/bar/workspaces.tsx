@@ -1,4 +1,5 @@
 import Astal from "gi://Astal?version=3.0"
+import { Gtk } from "astal/gtk3"
 import { WidgetProps } from "../../utils/widget"
 import Hyprland from "../../utils/hyprland"
 
@@ -8,6 +9,7 @@ import PangoCairo from "gi://PangoCairo?version=1.0"
 import Gdk from "gi://Gdk?version=3.0"
 
 import { set_color, get_property, add_color_stop, rounded_rect } from "../../utils/draw"
+import GdkPixbuf from "gi://GdkPixbuf?version=2.0"
 
 const dummyWs = <box className="workspace"/>
 const dummyOccupied = <box className="workspace-occupied"/>
@@ -18,6 +20,8 @@ const dummyActive = <box className="workspace-active"/>
 // border-color -> end color
 
 function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: number = 0) {
+    const iconTheme = Gtk.IconTheme.get_default()
+
     const activeWs = Hyprland.get_monitor(monitorId).get_active_workspace()
 
     const style = self.get_style_context()
@@ -103,6 +107,21 @@ function draw_workspaces(self: Astal.Box, cr: any, count: number, monitorId: num
             set_color(cr, activeFg)
         }
 
+        const workspace = Hyprland.get_workspace(i)
+        const icon = workspace?.clients[0]?.class
+        if (workspace?.clients.length > 0 && workspace.clients.every(c => c.class === icon)) {
+            // Draw icon
+            const size = diameter * 0.75
+            const hSize = size * 0.5
+            try {
+                const pixbuf = iconTheme.load_icon(icon === 'zen' ? 'firefox' : icon, size, null)
+                const surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 1, self.window)
+                cr.setSourceSurface(surface, centerX - hSize, centerY - hSize)
+                cr.paint()
+                continue
+            } catch (e) {}
+        }
+
         // Draw text
         layout.set_text(`${i}`, -1)
         const [ layoutWidth, layoutHeight ] = layout.get_pixel_size()
@@ -143,7 +162,16 @@ export default function Workspaces({ count, ...props }: WorkspacesProps) {
                     for (let i = 0; i < count; ++i)
                         self.add(Workspace(i + 1))
 
-                    self.hook(Hyprland, 'notify', update_workspace_mask)
+                    Hyprland.connect('event', (_Hyprland, event, _args) => {
+                        switch (event) {
+                            case 'workspacev2':
+                            case 'openwindow':
+                            case 'closewindow':
+                            case 'movewindowv2':
+                                update_workspace_mask(self)
+                                break
+                        }
+                    })
                     update_workspace_mask(self)
                 }} {...props}/>
 }

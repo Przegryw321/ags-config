@@ -4,6 +4,7 @@
 /// <reference path="./libxml2-2.0.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -22,6 +23,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
     import type libxml2 from 'gi://libxml2?version=2.0';
     import type GObject from 'gi://GObject?version=2.0';
     import type Gio from 'gi://Gio?version=2.0';
+    import type GModule from 'gi://GModule?version=2.0';
 
     export namespace LibvirtGObject {
         /**

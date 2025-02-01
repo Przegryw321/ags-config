@@ -158,6 +158,7 @@ declare module 'gi://Astal?version=4.0' {
                 min: number;
                 max: number;
                 step: number;
+                page: number;
             }
         }
 
@@ -186,6 +187,11 @@ declare module 'gi://Astal?version=4.0' {
              */
             get step(): number;
             set step(val: number);
+            /**
+             * Size of page increments. Defaults to `0.01`.
+             */
+            get page(): number;
+            set page(val: number);
 
             // Constructors
 
@@ -205,6 +211,8 @@ declare module 'gi://Astal?version=4.0' {
             set_max(value: number): void;
             get_step(): number;
             set_step(value: number): void;
+            get_page(): number;
+            set_page(value: number): void;
         }
 
         module Window {
@@ -304,6 +312,10 @@ declare module 'gi://Astal?version=4.0' {
 
             // Methods
 
+            /**
+             * Get the current [class`Gdk`.Monitor] this window resides in.
+             */
+            get_current_monitor(): Gdk.Monitor;
             get_namespace(): string;
             set_namespace(value: string): void;
             get_anchor(): WindowAnchor;
