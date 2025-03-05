@@ -50,7 +50,6 @@ function Center(props: WidgetProps): JSX.Element {
 function End(props: WidgetProps): JSX.Element {
     return <Content {...props}>
         <Systray className="bar-systray" spacing={5}/>
-        <BarNetwork className="bar-network"/>
         <BarDate className="bar-date" halign={Gtk.Align.END} valign={Gtk.Align.CENTER}/>
     </Content>
 }
