@@ -4,7 +4,7 @@
 
 .bar {
     font-family: Cabin, Noto Sans Emoji;
-    background: color.adjust($crust, $lightness: -1%);
+    background: rgba(color.adjust($crust, $lightness: -3%), 0.9);
 }
 
 .bar-contents {
