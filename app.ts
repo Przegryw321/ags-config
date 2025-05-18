@@ -17,8 +17,8 @@ App.start({
     icons: `${SRC}/icons`,
     async main() {
         const clickaway_windows = [
-            Startmenu(),
-            Launcher(),
+            Startmenu().catch(console.error),
+            Launcher().catch(console.error),
         ]
         Bar().catch(console.error)
         VolumePopup().catch(console.error)
