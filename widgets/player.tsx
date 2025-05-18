@@ -100,7 +100,7 @@ export function AlbumCover({ player, ...props }: PlayerWidgetProps): JSX.Element
                background-repeat: no-repeat;
                background-position: center;`
 
-    if (player.artUrl.includes("firefox")) css += "min-width: 4rem;"
+    if (player.artUrl.includes("firefox")) css += "min-width: 3.25rem;"
     else css += "min-width: 2rem;"
 
     // needs to be created as a background-image in order to use border-radius
