@@ -10,8 +10,8 @@
 }
 
 .bar-contents {
-  padding: .4rem;
-  padding-left: .3rem;
+  padding: .4rem .3rem;
+  padding-right: 0rem;
 }
 
 .workspaces {
@@ -40,6 +40,21 @@
   background: $blue;
   border-color: $mauve;
   padding: .18rem;
+}
+
+.bar-cpu, .bar-mem {
+  background: $mantle;
+  padding: .2rem .6rem;
+  border-radius: 1rem;
+  min-width: 5rem;
+
+  .label {
+    color: $red;
+  }
+}
+
+.bar-mem .label {
+  color: $blue;
 }
 
 .startmenu-button {

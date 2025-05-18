@@ -4,8 +4,9 @@ import Workspaces from "../widgets/bar/workspaces"
 import StartmenuIcon from "../widgets/bar/startmenu_icon"
 import BarDate from "../widgets/bar/date"
 import BarPlayer from "../widgets/bar/player"
-import BarNetwork from "../widgets/bar/network"
 import BarShutdown from "../widgets/bar/shutdown"
+import BarCpu from "../widgets/bar/cpu"
+import BarMem from "../widgets/bar/mem"
 import Systray from "../widgets/bar/systray"
 import { PlayerctldWrapper } from "../widgets/player"
 import { ActiveWindowSummary } from "../widgets/bar/activewindow"
@@ -55,9 +56,13 @@ function Center(props: WidgetProps): JSX.Element {
 }
 
 function End(props: WidgetProps): JSX.Element {
-  return <Content hexpand halign={Gtk.Align.END} {...props}>
+  return <Content hexpand {...props}>
+    <box hexpand halign={Gtk.Align.START} spacing={5}>
+      <BarCpu className="bar-cpu" />
+      <BarMem className="bar-mem" />
+    </box>
     <Systray className="bar-systray" spacing={5} />
-    <BarDate className="bar-date" halign={Gtk.Align.END} valign={Gtk.Align.CENTER} />
+    <BarDate className="bar-date" halign={Gtk.Align.END} valign={Gtk.Align.CENTER} css="margin-right: .5rem;"/>
   </Content>
 }
 
