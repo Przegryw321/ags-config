@@ -65,7 +65,7 @@ async function set_label_hack(label: Astal.Label, text: string, isTop: boolean):
 
   if (has_jp_chars(text)) {
     if (isTop) {
-      label.css = "font-family: VL Gothic; margin-bottom: -.2rem; margin-top: -.1rem;"
+      label.css = "font-family: VL Gothic; margin-bottom: -.3rem; margin-top: -.1rem;"
     } else {
       label.css = "font-family: VL Gothic; margin-top: -.2rem; margin-bottom: -.2rem;"
     }

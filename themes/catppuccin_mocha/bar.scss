@@ -4,8 +4,7 @@
 
 // Comfortaa, Itim, Lexend, Rubik, Gabarito
 .bar {
-  font-family: Comfortaa;
-  font-size: 0.9rem;
+  font-family: Itim;
   background: color.adjust($crust, $lightness: -2%);
 }
 
@@ -63,11 +62,12 @@
 
 .bar-clock {
   font-weight: bold;
+  margin-bottom: -.2rem;
 }
 
 .bar-player-summary {
   background: $mantle;
-  padding: .2rem .6rem;
+  padding: .1rem .6rem;
   border-radius: 1rem;
 
   .album {
@@ -77,6 +77,10 @@
   .pause-icon {
     background: rgba(black, 0.8);
     border-radius: .4rem;
+  }
+
+  .title {
+    margin-bottom: -.3rem;
   }
 
   .artist {
@@ -92,6 +96,7 @@
 .bar-active-window {
   .title {
     color: $text;
+    margin-bottom: -.2rem;
   }
 
   .class {
