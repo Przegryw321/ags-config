@@ -17,11 +17,18 @@ export type PlayerWidgetProps = WidgetProps & {
 
 type WidgetConstructor = (props: PlayerWidgetProps) => Gtk.Widget
 
-type ActivePlayerWrapperProps = WidgetProps & {
+type PlayerWrapperProps = WidgetProps & {
   constructor: WidgetConstructor
   props: WidgetProps
 }
-export function ActivePlayerWrapper({ constructor, props, ...mainProps }: ActivePlayerWrapperProps): JSX.Element {
+export function PlayerctldWrapper({ constructor, props }: PlayerWrapperProps): JSX.Element {
+  const player = Mpris.Player.new('playerctld')
+  return <box>
+    {constructor({ player, ...props })}
+  </box>
+}
+
+export function ActivePlayerWrapper({ constructor, props, ...mainProps }: PlayerWrapperProps): JSX.Element {
   const construct = (player: Mpris.Player) => constructor({ player, ...props })
 
   return <stack setup={(self) => {
@@ -46,6 +53,7 @@ export function ActivePlayerWrapper({ constructor, props, ...mainProps }: Active
       })
   }} {...mainProps} />
 }
+
 
 // Japanese fonts take up space differently than latin ones.
 // These hacks are to make the the text look properly centered, and have the
@@ -86,15 +94,18 @@ export function TALabel({ player, halign, valign, ...props }: PlayerWidgetProps)
 
 export function AlbumCover({ player, ...props }: PlayerWidgetProps): JSX.Element {
   const cover = bind(player, "coverArt")
-  let css = `background-size: 100%;
+
+  const widget = <box css={cover.as(c => {
+    let css = `background-size: 100%;
                background-repeat: no-repeat;
                background-position: center;`
 
-  // needs to be created as a background-image in order to use border-radius
-  if (player.busName.includes("firefox")) css += "min-width: 4.5rem;"
-  else css += "min-width: 2.5rem;"
+    if (player.artUrl.includes("firefox")) css += "min-width: 4rem;"
+    else css += "min-width: 2rem;"
 
-  const widget = <box css={cover.as(c => `${css}; background-image: url('${c}');`)} {...props} />
+    // needs to be created as a background-image in order to use border-radius
+    return `${css}; background-image: url('${c}');`
+  })} {...props} />
 
   return widget
 }

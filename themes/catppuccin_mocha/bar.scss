@@ -2,9 +2,11 @@
 @use "mixins.scss";
 @use "sass:color";
 
+// Comfortaa, Itim, Lexend, Rubik, Gabarito
 .bar {
-  font-family: Cabin, Noto Sans Emoji;
-  background: rgba(color.adjust($crust, $lightness: -3%), 0.9);
+  font-family: Comfortaa;
+  font-size: 0.9rem;
+  background: color.adjust($crust, $lightness: -2%);
 }
 
 .bar-contents {
@@ -14,7 +16,9 @@
 
 .workspaces {
   color: $text;
-  font-family: Baloo;
+  border-color: $mantle;
+  font-family: Rubik;
+  font-size: 0.9rem;
   border-radius: 1rem;
   padding: .7rem .3rem;
 }
@@ -22,12 +26,12 @@
 .workspace {
   color: $subtext;
   min-width: 2rem;
-  margin-top: 1px;
+  margin-top: 0px;
 }
 
 .workspace-occupied {
   color: $text;
-  background: $base;
+  background: color.adjust($base, $lightness: 3%);
 }
 
 // gradient: background -> border-color
@@ -47,13 +51,19 @@
 }
 
 .bar-player-summary {
+  background: $mantle;
+  padding: .2rem .6rem;
+  border-radius: 1rem;
+
   .album {
     border-radius: .3rem;
   }
+
   .pause-icon {
     background: rgba(black, 0.8);
     border-radius: .4rem;
   }
+
   .artist {
     color: $subtext;
   }
@@ -68,6 +78,7 @@
   .title {
     color: $text;
   }
+
   .class {
     color: $subtext1;
   }

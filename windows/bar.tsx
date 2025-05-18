@@ -7,7 +7,7 @@ import BarPlayer from "../widgets/bar/player"
 import BarNetwork from "../widgets/bar/network"
 import BarShutdown from "../widgets/bar/shutdown"
 import Systray from "../widgets/bar/systray"
-import { ActivePlayerWrapper } from "../widgets/player"
+import { PlayerctldWrapper } from "../widgets/player"
 import { ActiveWindowSummary } from "../widgets/bar/activewindow"
 import { WidgetProps, ContainerProps } from "../utils/widget"
 import Shutdown from "../variables/shutdown"
@@ -39,7 +39,7 @@ function Start(props: WidgetProps): JSX.Element {
     <StartmenuIcon className="startmenu-button" css="font-size: 2.3rem; min-width: 3.5rem;" />
     <Status halign={Gtk.Align.START} valign={Gtk.Align.CENTER} />
     <box hexpand halign={Gtk.Align.END}>
-      <ActivePlayerWrapper constructor={BarPlayer} props={{
+      <PlayerctldWrapper constructor={BarPlayer} props={{
         className: "bar-player-summary",
         halign: Gtk.Align.END,
         valign: Gtk.Align.CENTER,
