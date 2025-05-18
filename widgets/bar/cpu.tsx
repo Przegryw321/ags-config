@@ -1,7 +1,7 @@
 import { bind } from "astal"
 import { CpuCount, LoadAvg } from "../../variables/cpu"
 import { get_property } from "../../utils/draw"
-import { RGBA, gradient3 } from "../../variables/color"
+import { RGBA, gradient3 } from "../../utils/color"
 
 type BarCpuProps = {
   className: string

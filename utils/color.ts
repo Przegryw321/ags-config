@@ -15,8 +15,6 @@ export function interpolate2(a: number, b: number, value: number): number {
 
 export function interpolate3(a: number, b: number, c: number, value: number): number {
   value = clamp(value, 0, 1)
-  //console.log('value:', value)
-  //console.log('abc', a, b, c)
   const pa = Math.max(0, 0.5 - value) * 2
   const pb = (value < 0.5 ? value : (1 - value)) * 2
   const pc = Math.max(0, value - 0.5) * 2

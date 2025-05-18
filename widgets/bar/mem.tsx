@@ -2,7 +2,7 @@ import { bind } from "astal"
 import { Gtk, Widget } from "astal/gtk3"
 import { MemPercentage } from "../../variables/mem"
 import { get_property } from "../../utils/draw"
-import { RGBA, gradient3 } from "../../variables/color"
+import { RGBA, gradient3 } from "../../utils/color"
 
 export default function BarMem({ ...props }: Widget.BoxProps) {
   return <box {...props}>
