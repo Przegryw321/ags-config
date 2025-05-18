@@ -3,60 +3,60 @@
 @use "sass:color";
 
 .bar {
-    font-family: Cabin, Noto Sans Emoji;
-    background: rgba(color.adjust($crust, $lightness: -3%), 0.9);
+  font-family: Cabin, Noto Sans Emoji;
+  background: rgba(color.adjust($crust, $lightness: -3%), 0.9);
 }
 
 .bar-contents {
-    padding: .4rem;
-    padding-left: .3rem;
+  padding: .4rem;
+  padding-left: .3rem;
 }
 
 .workspaces {
-    color: $text;
-    font-family: Baloo;
-    border-radius: 1rem;
-    padding: .7rem .3rem;
+  color: $text;
+  font-family: Baloo;
+  border-radius: 1rem;
+  padding: .7rem .3rem;
 }
 
 .workspace {
-    color: $subtext;
-    min-width: 2rem;
-    margin-top: 1px;
+  color: $subtext;
+  min-width: 2rem;
+  margin-top: 1px;
 }
 
 .workspace-occupied {
-    color: $text;
-    background: $base;
+  color: $text;
+  background: $base;
 }
 
 // gradient: background -> border-color
 .workspace-active {
-    color: $crust;
-    background: $blue;
-    border-color: $mauve;
-    padding: .18rem;
+  color: $crust;
+  background: $blue;
+  border-color: $mauve;
+  padding: .18rem;
 }
 
 .startmenu-button {
-    @extend .hover;
+  @extend .hover;
 }
 
 .bar-clock {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .bar-player-summary {
-    .album {
-        border-radius: .3rem;
-    }
-    .pause-icon {
-        background: rgba(black, 0.8);
-        border-radius: .4rem;
-    }
-    .artist {
-        color: $subtext;
-    }
+  .album {
+    border-radius: .3rem;
+  }
+  .pause-icon {
+    background: rgba(black, 0.8);
+    border-radius: .4rem;
+  }
+  .artist {
+    color: $subtext;
+  }
 }
 
 .bar-shutdown {
@@ -65,15 +65,19 @@
 }
 
 .bar-active-window {
-    font-style: italic;
+  .title {
+    color: $text;
+  }
+  .class {
     color: $subtext1;
+  }
 }
 
 .bar-systray {
-    @extend .groove;
+  @extend .groove;
 }
 
 .bar-network {
-    color: $text;
-    font-size: 1.4rem;
+  color: $text;
+  font-size: 1.4rem;
 }
